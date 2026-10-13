@@ -1,0 +1,102 @@
+<style>
+  #s02-enjeux .eco { position: absolute; left: 120px; right: 120px; top: 320px; display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 0; align-items: center; }
+  #s02-enjeux .node { padding: 40px 36px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
+  #s02-enjeux .node .h3 { font-size: 38px; }
+  #s02-enjeux .node .lead { font-size: 26px; }
+  #s02-enjeux .jja { padding: 44px 44px; margin: 0 70px; }
+  #s02-enjeux .jja .h2 { font-size: 84px; }
+  #s02-enjeux .brands { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 26px; }
+  #s02-enjeux .brands span { padding: 14px 18px; border-radius: 14px; background: rgba(255,255,255,0.1); font-weight: 700; font-size: 26px; text-align: center; }
+  #s02-enjeux .flow { position: absolute; top: 50%; height: 6px; width: 70px; background: var(--orange); border-radius: 3px; display: block; }
+  #s02-enjeux .flow.l { left: 0; }
+  #s02-enjeux .flow.r { right: 0; }
+  #s02-enjeux .jja-wrap { position: relative; }
+  #s02-enjeux .ribbon { position: absolute; left: 120px; right: 120px; top: 760px; display: flex; gap: 24px; }
+  #s02-enjeux .ribbon .pill { font-size: 28px; padding: 16px 30px; }
+
+  #s02-enjeux .cdc { position: absolute; left: 120px; right: 120px; top: 240px; }
+  #s02-enjeux .cdc-grid { margin-top: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  #s02-enjeux .cdc-item { display: flex; align-items: center; gap: 28px; padding: 30px 34px; }
+  #s02-enjeux .cdc-item .h3 { font-size: 36px; }
+
+  #s02-enjeux .risks { position: absolute; left: 120px; right: 120px; top: 230px; bottom: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  #s02-enjeux .risk { padding: 40px 38px; display: flex; flex-direction: column; gap: 22px; }
+  #s02-enjeux .risk .h3 { font-size: 38px; }
+  #s02-enjeux .risk .lead { font-size: 26px; line-height: 1.4; }
+  #s02-enjeux .ex { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+  #s02-enjeux .ex div { font-size: 24px; font-weight: 700; color: var(--orange-ink); }
+  #s02-enjeux .big { font-weight: 900; font-size: 120px; line-height: 1; letter-spacing: -0.04em; color: var(--white); }
+  #s02-enjeux .split { margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+  #s02-enjeux .split-bar { display: flex; height: 22px; border-radius: 11px; overflow: hidden; }
+  #s02-enjeux .split-bar i { display: block; height: 100%; }
+  #s02-enjeux .split-bar .fr { width: 33.3%; background: var(--orange); }
+  #s02-enjeux .split-bar .int { width: 66.7%; background: #6f8fd0; }
+  #s02-enjeux .split-lbl { display: flex; justify-content: space-between; font-size: 24px; font-weight: 700; color: #dbe3f2; }
+
+  #s02-enjeux .stake { position: absolute; left: 120px; right: 120px; top: 300px; display: flex; flex-direction: column; gap: 40px; }
+  #s02-enjeux .less { display: flex; gap: 64px; align-items: center; }
+  #s02-enjeux .less span { font-weight: 800; font-size: 64px; color: #8f9bb0; position: relative; letter-spacing: -0.02em; }
+  #s02-enjeux .strike { position: absolute; left: -6px; right: -6px; top: 52%; height: 7px; background: var(--orange); border-radius: 4px; display: block; }
+  #s02-enjeux .more { font-weight: 900; font-size: 96px; line-height: 1.05; letter-spacing: -0.035em; max-width: 1500px; }
+  #s02-enjeux .more em { font-style: normal; color: var(--orange-ink); }
+</style>
+
+<div class="hdr"><span class="hdr-num">02</span><span class="hdr-rule"></span><span class="hdr-title">Ce que vous risquez si rien ne change</span></div>
+
+<div class="eco">
+  <div class="card node"><div class="ico" data-icon="globe"></div><div class="h3">Fournisseurs asiatiques</div></div>
+  <div class="jja-wrap">
+    <span class="flow l"></span><span class="flow r"></span>
+    <div class="card navy jja">
+      <div class="h2">JJA</div>
+      <div class="brands"><span>Atmosphera</span><span>Hespéride</span><span>Secret de Gourmet</span><span>5five</span></div>
+    </div>
+  </div>
+  <div class="card node"><div class="ico" data-icon="building"></div><div class="h3">Distributeurs</div><div class="lead">De la grande distribution au e-commerce</div></div>
+</div>
+<div class="ribbon">
+  <span class="pill"><i data-icon="database" style="width:32px;height:32px;display:block"></i>Grand volume d'informations</span>
+  <span class="pill orange"><i data-icon="globe" style="width:32px;height:32px;display:block"></i>Équipes en France et à l'international</span>
+</div>
+
+<div class="cdc">
+  <div class="eyebrow">Votre cahier des charges</div>
+  <div class="cdc-grid">
+    <div class="card cdc-item"><div class="ico" data-icon="search"></div><div class="h3">Retrouver vite les informations clients</div></div>
+    <div class="card cdc-item"><div class="ico" data-icon="history"></div><div class="h3">Conserver un historique fiable</div></div>
+    <div class="card cdc-item"><div class="ico" data-icon="keyboard"></div><div class="h3">Éviter les ressaisies entre outils</div></div>
+    <div class="card cdc-item"><div class="ico" data-icon="tasks"></div><div class="h3">Faciliter le suivi des actions commerciales</div></div>
+  </div>
+</div>
+
+<div class="risks">
+  <div class="card risk">
+    <div class="ico orange" data-icon="database"></div>
+    <div class="h3">Des données dispersées ou difficiles à exploiter</div>
+    <div class="lead">Une base SQL existante, plusieurs marques et des informations à partager dans le monde entier.</div>
+    <div class="ex"><div>Donnée obsolète → échange compliqué</div></div>
+  </div>
+  <div class="card risk">
+    <div class="ico orange" data-icon="bell"></div>
+    <div class="h3">Du temps commercial perdu</div>
+    <div class="lead">Des recherches, des ressaisies et des relances qui risquent de passer entre les mailles du filet.</div>
+    <div class="ex"><div>Relance oubliée → opportunité retardée</div></div>
+  </div>
+  <div class="card navy risk">
+    <div class="big"><b class="n">0</b></div>
+    <div class="h3">utilisateurs à coordonner</div>
+    <div class="split">
+      <div class="split-bar"><i class="fr"></i><i class="int"></i></div>
+      <div class="split-lbl"><span>150 en France</span><span>300 à l'international</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="stake">
+  <div class="eyebrow">L'enjeu</div>
+  <div class="less"><span>Rechercher<i class="strike"></i></span><span>Corriger<i class="strike"></i></span><span>Ressaisir<i class="strike"></i></span></div>
+  <div class="more">Plus de temps pour <em>vos clients</em> et vos partenariats.</div>
+</div>
+
+<div class="chapter"><div class="chapter-num">PARTIE 2 · DIAPOSITIVE 02</div><div class="chapter-title">Le problème de JJA et les enjeux</div><span class="chapter-bar"></span></div>
+<div class="wipe"></div>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <title>Uptoo Digital × JJA — Proposition CRM HubSpot</title>
+    <script src="scripts/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="styles/theme.css">
+    <!-- Minutage généré par tools/timing.mjs (source : timing/cues.json) -->
+    <script src="scripts/cues.js"></script>
+    <!-- Icônes et fonctions d'animation communes (objet global UD) -->
+    <script src="scripts/motion.js"></script>
+    <style>
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #f3f5f9; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); font-family: var(--display); }
+      #root > div[data-composition-src] { position: absolute; inset: 0; z-index: 2; }
+      /* Décor de fond persistant */
+      #bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+      #bg .grid {
+        position: absolute; inset: -80px;
+        background-image: linear-gradient(var(--line) 1.5px, transparent 1.5px), linear-gradient(90deg, var(--line) 1.5px, transparent 1.5px);
+        background-size: 96px 96px; opacity: 0.45;
+      }
+      #bg .glow { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(36, 87, 197, 0.14), transparent 65%); }
+      #bg .glow.a { width: 1400px; height: 1400px; right: -500px; top: -600px; }
+      #bg .glow.b { width: 1100px; height: 1100px; left: -500px; bottom: -600px; background: radial-gradient(circle, rgba(242, 106, 27, 0.10), transparent 65%); }
+      /* Pied de page + progression par chapitre */
+      #foot { position: absolute; left: 120px; right: 120px; bottom: 34px; z-index: 1; display: flex; align-items: center; gap: 40px; }
+      #foot .brand { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--muted); white-space: nowrap; letter-spacing: 0.04em; }
+      #foot .brand b { color: var(--navy); }
+      #foot .bar { flex: 1; display: flex; gap: 10px; }
+      #foot .seg { flex: 1; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+      #foot .seg-fill { display: block; width: 100%; height: 100%; background: var(--orange); transform-origin: left center; transform: scaleX(0); }
+      #foot .note { font-family: var(--mono); font-size: 18px; color: var(--muted); white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-width="1920" data-height="1080" data-duration="480">
+      <div id="bg"><div class="grid"></div><div class="glow a"></div><div class="glow b"></div></div>
+      <div id="foot">
+        <div class="brand"><b>UPTOO DIGITAL</b> × JJA</div>
+        <div class="bar">
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        <div class="seg"><div class="seg-fill"></div></div>
+        </div>
+        <div class="note">Simulation · projet scolaire</div>
+      </div>
+
+      <!-- Les scènes, dans l'ordre de l'oral (assemblées depuis scenes/*.html) -->
+      <section id="s01-uptoo" class="sc clip" data-start="0" data-duration="44.1" data-track-index="1">
+        <style>
+          #s01-uptoo .cover { position: absolute; inset: 0; z-index: 40; background: var(--navy); color: var(--white); padding: 0 160px; display: flex; flex-direction: column; justify-content: center; }
+          #s01-uptoo .cover-top { display: flex; align-items: center; gap: 28px; margin-bottom: 46px; }
+          #s01-uptoo .cover-brand { font-weight: 900; font-size: 54px; letter-spacing: -0.02em; }
+          #s01-uptoo .cover-x { font-weight: 400; font-size: 54px; color: var(--orange); }
+          #s01-uptoo .cover-title { font-weight: 900; font-size: 120px; line-height: 1; letter-spacing: -0.04em; max-width: 1500px; }
+          #s01-uptoo .cover-sub { margin-top: 44px; font-size: 38px; line-height: 1.4; color: #c9d4e8; max-width: 1300px; }
+          #s01-uptoo .cover-rule { display: block; width: 180px; height: 8px; border-radius: 4px; background: var(--orange); margin-top: 52px; }
+          #s01-uptoo .ring-a { width: 760px; height: 760px; right: -220px; top: -200px; border-color: rgba(255,255,255,0.12); border-width: 4px; }
+          #s01-uptoo .ring-b { width: 460px; height: 460px; right: -70px; top: -50px; border-color: rgba(242,106,27,0.45); border-width: 4px; }
+        
+          /* Bloc chiffres */
+          #s01-uptoo .facts { position: absolute; left: 120px; right: 120px; top: 220px; bottom: 170px; display: grid; grid-template-columns: 1.05fr 1fr 1fr; grid-template-rows: 1.15fr 1fr; gap: 36px; }
+          #s01-uptoo .badge { grid-row: span 2; padding: 56px 52px; display: flex; flex-direction: column; justify-content: space-between; }
+          #s01-uptoo .badge .h2 { font-size: 66px; margin-top: 30px; }
+          #s01-uptoo .badge .lbl { font-family: var(--mono); font-size: 22px; letter-spacing: 0.12em; color: #ffb98f; font-weight: 700; }
+          #s01-uptoo .stat { padding: 44px 46px; display: flex; flex-direction: column; justify-content: center; }
+          #s01-uptoo .stat-num { font-weight: 900; font-size: 128px; line-height: 1; letter-spacing: -0.04em; color: var(--navy); }
+          #s01-uptoo .stat-num span { color: var(--orange); }
+          #s01-uptoo .stat-lbl { margin-top: 16px; font-size: 32px; font-weight: 700; }
+          #s01-uptoo .expertise { grid-column: span 2; padding: 38px 46px; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+          #s01-uptoo .chips { display: flex; gap: 18px; flex-wrap: wrap; }
+          #s01-uptoo .chips .pill { font-size: 28px; padding: 14px 28px; }
+          #s01-uptoo .source { position: absolute; left: 120px; bottom: 96px; font-family: var(--mono); font-size: 20px; color: var(--muted); }
+        
+          /* Conviction */
+          #s01-uptoo .quote { position: absolute; left: 120px; right: 120px; top: 230px; display: flex; gap: 60px; align-items: flex-start; }
+          #s01-uptoo .qmark { font-weight: 900; font-size: 300px; line-height: 0.8; color: var(--orange); }
+          #s01-uptoo .qtxt { font-weight: 800; font-size: 82px; line-height: 1.12; letter-spacing: -0.03em; max-width: 1420px; }
+          #s01-uptoo .qtxt em { font-style: normal; color: var(--orange-ink); }
+          #s01-uptoo .qsub { margin-top: 34px; }
+        
+          /* Sommaire */
+          #s01-uptoo .agenda { position: absolute; left: 120px; right: 120px; top: 360px; }
+          #s01-uptoo .agenda-line { position: absolute; left: 60px; right: 60px; top: 60px; height: 6px; border-radius: 3px; background: var(--navy); display: block; }
+          #s01-uptoo .steps { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+          #s01-uptoo .step { display: flex; flex-direction: column; gap: 30px; }
+          #s01-uptoo .step-dot { width: 126px; height: 126px; border-radius: 50%; background: var(--white); border: 6px solid var(--navy); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-weight: 700; font-size: 40px; }
+          #s01-uptoo .step:nth-child(3) .step-dot { background: var(--orange); border-color: var(--orange); color: var(--white); }
+          #s01-uptoo .step .h3 { font-size: 44px; max-width: 480px; }
+          #s01-uptoo .step .lead { font-size: 28px; max-width: 470px; }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">01</span><span class="hdr-rule"></span><span class="hdr-title">Qui est Uptoo Digital ?</span></div>
+        
+        <!-- Paragraphe 2 : chiffres clés -->
+        <div class="facts">
+          <div class="card navy badge">
+            <div>
+              <div class="lbl">PARTENAIRE</div>
+              <div class="h2">HubSpot Elite</div>
+            </div>
+            <div class="ico orange lg" data-icon="check"></div>
+          </div>
+          <div class="card stat"><div class="stat-num"><span>+</span><b class="n" data-to="650">0</b></div><div class="stat-lbl">projets CRM livrés</div></div>
+          <div class="card stat"><div class="stat-num"><span>+</span><b class="n" data-to="350">0</b></div><div class="stat-lbl">entreprises accompagnées</div></div>
+          <div class="card expertise">
+            <div class="eyebrow">Expertise</div>
+            <div class="chips">
+              <span class="pill"><i data-icon="users" style="width:30px;height:30px;display:block"></i>CRM</span>
+              <span class="pill"><i data-icon="database" style="width:30px;height:30px;display:block"></i>Données</span>
+              <span class="pill orange"><i data-icon="link" style="width:30px;height:30px;display:block"></i>Intégrations sur mesure</span>
+            </div>
+          </div>
+        </div>
+        <div class="source">Source : site officiel d'Uptoo Digital</div>
+        
+        <!-- Paragraphe 3 : conviction -->
+        <div class="quote">
+          <div class="qmark">“</div>
+          <div>
+            <div class="qtxt">La technologie doit être <em>au service de la performance</em> des entreprises.</div>
+            <div class="lead qsub">… et faciliter le travail de leurs équipes.</div>
+          </div>
+        </div>
+        
+        <!-- Paragraphe 4 : sommaire -->
+        <div class="agenda">
+          <span class="agenda-line"></span>
+          <div class="steps">
+            <div class="step"><div class="step-dot">01</div><div class="h3">Vos enjeux</div><div class="lead">Notre compréhension de la situation de JJA</div></div>
+            <div class="step"><div class="step-dot">02</div><div class="h3">Notre réponse</div><div class="lead">Point par point, au cahier des charges</div></div>
+            <div class="step"><div class="step-dot">03</div><div class="h3">Organisation</div><div class="lead">Calendrier, équipe et engagements</div></div>
+          </div>
+        </div>
+        
+        <!-- Paragraphes 0-1 : couverture -->
+        <div class="cover">
+          <span class="deco-ring ring-a"></span><span class="deco-ring ring-b"></span>
+          <div class="cover-top"><span class="cover-brand">Uptoo Digital</span><span class="cover-x">×</span><span class="cover-brand">JJA</span></div>
+          <div class="cover-title">Réponse à votre appel d'offres CRM</div>
+          <div class="cover-sub">Accompagner JJA dans l'évolution de ses outils et de ses processus commerciaux</div>
+          <span class="cover-rule"></span>
+        </div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s02-enjeux" class="sc clip" data-start="44.1" data-duration="66.1" data-track-index="1">
+        <style>
+          #s02-enjeux .eco { position: absolute; left: 120px; right: 120px; top: 320px; display: grid; grid-template-columns: 1fr 1.5fr 1fr; gap: 0; align-items: center; }
+          #s02-enjeux .node { padding: 40px 36px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
+          #s02-enjeux .node .h3 { font-size: 38px; }
+          #s02-enjeux .node .lead { font-size: 26px; }
+          #s02-enjeux .jja { padding: 44px 44px; margin: 0 70px; }
+          #s02-enjeux .jja .h2 { font-size: 84px; }
+          #s02-enjeux .brands { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 26px; }
+          #s02-enjeux .brands span { padding: 14px 18px; border-radius: 14px; background: rgba(255,255,255,0.1); font-weight: 700; font-size: 26px; text-align: center; }
+          #s02-enjeux .flow { position: absolute; top: 50%; height: 6px; width: 70px; background: var(--orange); border-radius: 3px; display: block; }
+          #s02-enjeux .flow.l { left: 0; }
+          #s02-enjeux .flow.r { right: 0; }
+          #s02-enjeux .jja-wrap { position: relative; }
+          #s02-enjeux .ribbon { position: absolute; left: 120px; right: 120px; top: 760px; display: flex; gap: 24px; }
+          #s02-enjeux .ribbon .pill { font-size: 28px; padding: 16px 30px; }
+        
+          #s02-enjeux .cdc { position: absolute; left: 120px; right: 120px; top: 240px; }
+          #s02-enjeux .cdc-grid { margin-top: 34px; display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+          #s02-enjeux .cdc-item { display: flex; align-items: center; gap: 28px; padding: 30px 34px; }
+          #s02-enjeux .cdc-item .h3 { font-size: 36px; }
+        
+          #s02-enjeux .risks { position: absolute; left: 120px; right: 120px; top: 230px; bottom: 150px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+          #s02-enjeux .risk { padding: 40px 38px; display: flex; flex-direction: column; gap: 22px; }
+          #s02-enjeux .risk .h3 { font-size: 38px; }
+          #s02-enjeux .risk .lead { font-size: 26px; line-height: 1.4; }
+          #s02-enjeux .ex { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+          #s02-enjeux .ex div { font-size: 24px; font-weight: 700; color: var(--orange-ink); }
+          #s02-enjeux .big { font-weight: 900; font-size: 120px; line-height: 1; letter-spacing: -0.04em; color: var(--white); }
+          #s02-enjeux .split { margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+          #s02-enjeux .split-bar { display: flex; height: 22px; border-radius: 11px; overflow: hidden; }
+          #s02-enjeux .split-bar i { display: block; height: 100%; }
+          #s02-enjeux .split-bar .fr { width: 33.3%; background: var(--orange); }
+          #s02-enjeux .split-bar .int { width: 66.7%; background: #6f8fd0; }
+          #s02-enjeux .split-lbl { display: flex; justify-content: space-between; font-size: 24px; font-weight: 700; color: #dbe3f2; }
+        
+          #s02-enjeux .stake { position: absolute; left: 120px; right: 120px; top: 300px; display: flex; flex-direction: column; gap: 40px; }
+          #s02-enjeux .less { display: flex; gap: 64px; align-items: center; }
+          #s02-enjeux .less span { font-weight: 800; font-size: 64px; color: #8f9bb0; position: relative; letter-spacing: -0.02em; }
+          #s02-enjeux .strike { position: absolute; left: -6px; right: -6px; top: 52%; height: 7px; background: var(--orange); border-radius: 4px; display: block; }
+          #s02-enjeux .more { font-weight: 900; font-size: 96px; line-height: 1.05; letter-spacing: -0.035em; max-width: 1500px; }
+          #s02-enjeux .more em { font-style: normal; color: var(--orange-ink); }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">02</span><span class="hdr-rule"></span><span class="hdr-title">Ce que vous risquez si rien ne change</span></div>
+        
+        <div class="eco">
+          <div class="card node"><div class="ico" data-icon="globe"></div><div class="h3">Fournisseurs asiatiques</div></div>
+          <div class="jja-wrap">
+            <span class="flow l"></span><span class="flow r"></span>
+            <div class="card navy jja">
+              <div class="h2">JJA</div>
+              <div class="brands"><span>Atmosphera</span><span>Hespéride</span><span>Secret de Gourmet</span><span>5five</span></div>
+            </div>
+          </div>
+          <div class="card node"><div class="ico" data-icon="building"></div><div class="h3">Distributeurs</div><div class="lead">De la grande distribution au e-commerce</div></div>
+        </div>
+        <div class="ribbon">
+          <span class="pill"><i data-icon="database" style="width:32px;height:32px;display:block"></i>Grand volume d'informations</span>
+          <span class="pill orange"><i data-icon="globe" style="width:32px;height:32px;display:block"></i>Équipes en France et à l'international</span>
+        </div>
+        
+        <div class="cdc">
+          <div class="eyebrow">Votre cahier des charges</div>
+          <div class="cdc-grid">
+            <div class="card cdc-item"><div class="ico" data-icon="search"></div><div class="h3">Retrouver vite les informations clients</div></div>
+            <div class="card cdc-item"><div class="ico" data-icon="history"></div><div class="h3">Conserver un historique fiable</div></div>
+            <div class="card cdc-item"><div class="ico" data-icon="keyboard"></div><div class="h3">Éviter les ressaisies entre outils</div></div>
+            <div class="card cdc-item"><div class="ico" data-icon="tasks"></div><div class="h3">Faciliter le suivi des actions commerciales</div></div>
+          </div>
+        </div>
+        
+        <div class="risks">
+          <div class="card risk">
+            <div class="ico orange" data-icon="database"></div>
+            <div class="h3">Des données dispersées ou difficiles à exploiter</div>
+            <div class="lead">Une base SQL existante, plusieurs marques et des informations à partager dans le monde entier.</div>
+            <div class="ex"><div>Donnée obsolète → échange compliqué</div></div>
+          </div>
+          <div class="card risk">
+            <div class="ico orange" data-icon="bell"></div>
+            <div class="h3">Du temps commercial perdu</div>
+            <div class="lead">Des recherches, des ressaisies et des relances qui risquent de passer entre les mailles du filet.</div>
+            <div class="ex"><div>Relance oubliée → opportunité retardée</div></div>
+          </div>
+          <div class="card navy risk">
+            <div class="big"><b class="n">0</b></div>
+            <div class="h3">utilisateurs à coordonner</div>
+            <div class="split">
+              <div class="split-bar"><i class="fr"></i><i class="int"></i></div>
+              <div class="split-lbl"><span>150 en France</span><span>300 à l'international</span></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="stake">
+          <div class="eyebrow">L'enjeu</div>
+          <div class="less"><span>Rechercher<i class="strike"></i></span><span>Corriger<i class="strike"></i></span><span>Ressaisir<i class="strike"></i></span></div>
+          <div class="more">Plus de temps pour <em>vos clients</em> et vos partenariats.</div>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">PARTIE 2 · DIAPOSITIVE 02</div><div class="chapter-title">Le problème de JJA et les enjeux</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s03-donnees" class="sc clip" data-start="110.2" data-duration="41.8" data-track-index="1">
+        <style>
+          #s03-donnees .tbl { position: absolute; left: 120px; right: 120px; top: 210px; display: flex; flex-direction: column; gap: 20px; }
+          #s03-donnees .thead { display: grid; grid-template-columns: 560px 90px 1fr; padding: 0 8px; }
+          #s03-donnees .row { display: grid; grid-template-columns: 560px 90px 1fr; align-items: stretch; }
+          #s03-donnees .need { display: flex; align-items: center; gap: 24px; padding: 28px 30px; }
+          #s03-donnees .need .h3 { font-size: 34px; }
+          #s03-donnees .need .ico { width: 72px; height: 72px; }
+          #s03-donnees .need .ico svg { width: 40px; height: 40px; }
+          #s03-donnees .arrow { display: flex; align-items: center; justify-content: center; color: var(--orange); }
+          #s03-donnees .arrow svg { width: 56px; height: 56px; }
+          #s03-donnees .ans { padding: 22px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+          #s03-donnees .ans .pill { font-size: 26px; padding: 12px 24px; background: var(--white); border: 2px solid var(--line); }
+          #s03-donnees .ans .pill.key { background: var(--blue-tint); border-color: var(--blue-tint); }
+          #s03-donnees .benef { position: absolute; left: 120px; right: 120px; top: 880px; display: flex; align-items: center; gap: 22px; }
+          #s03-donnees .benef .pill { font-size: 27px; padding: 16px 28px; }
+          #s03-donnees .benef .eyebrow { margin-right: 10px; }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">03A</span><span class="hdr-rule"></span><span class="hdr-title">Centraliser les données et améliorer le suivi commercial</span></div>
+        
+        <div class="tbl">
+          <div class="thead"><div class="eyebrow">Besoin de JJA</div><div></div><div class="eyebrow">Réponse proposée</div></div>
+          <div class="row">
+            <div class="card navy need"><div class="ico orange" data-icon="database"></div><div class="h3">Reprendre la base SQL</div></div>
+            <div class="arrow" data-icon="arrow"></div>
+            <div class="card ans"><span class="pill key">Migration automatisée</span><span class="pill">Contrôle des données</span><span class="pill">Vérification des doublons</span></div>
+          </div>
+          <div class="row">
+            <div class="card navy need"><div class="ico orange" data-icon="users"></div><div class="h3">Travailler à 450 utilisateurs</div></div>
+            <div class="arrow" data-icon="arrow"></div>
+            <div class="card ans"><span class="pill key">CRM partagé</span><span class="pill">Accès différenciés</span><span class="pill">Saisie simultanée</span></div>
+          </div>
+          <div class="row">
+            <div class="card navy need"><div class="ico orange" data-icon="user"></div><div class="h3">Suivre les clients et prospects</div></div>
+            <div class="arrow" data-icon="arrow"></div>
+            <div class="card ans"><span class="pill key">Fiches contacts et sociétés</span><span class="pill">Historique des échanges</span><span class="pill">Documents</span><span class="pill">Tâches et alertes</span></div>
+          </div>
+        </div>
+        
+        <div class="benef">
+          <span class="eyebrow">Bénéfice attendu</span>
+          <span class="pill"><i data-icon="search" style="width:30px;height:30px;display:block"></i>Moins de temps à rechercher</span>
+          <span class="pill"><i data-icon="calendar" style="width:30px;height:30px;display:block"></i>Un suivi plus régulier</span>
+          <span class="pill orange"><i data-icon="history" style="width:30px;height:30px;display:block"></i>Une relation client continue</span>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">PARTIE 3 · ENJEUX 1, 2 ET 3</div><div class="chapter-title">Centraliser les données et améliorer le suivi</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s04-outils" class="sc clip" data-start="152" data-duration="57.8" data-track-index="1">
+        <style>
+          #s04-outils .sync { position: absolute; left: 120px; right: 120px; top: 250px; display: grid; grid-template-columns: 1fr 760px 1fr; align-items: center; }
+          #s04-outils .sys { padding: 50px 40px; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+          #s04-outils .sys .h2 { font-size: 58px; }
+          #s04-outils .sys .lead { font-size: 26px; }
+          #s04-outils .lanes { position: relative; height: 260px; display: flex; flex-direction: column; justify-content: center; gap: 70px; padding: 0 40px; }
+          #s04-outils .lane { position: relative; height: 8px; border-radius: 4px; background: var(--line); }
+          #s04-outils .lane-fill { display: block; position: absolute; inset: 0; border-radius: 4px; }
+          #s04-outils .lane.a .lane-fill { background: var(--orange); }
+          #s04-outils .lane.b .lane-fill { background: var(--navy-2); }
+          #s04-outils .lane-lbl { position: absolute; left: 0; right: 0; top: -52px; text-align: center; font-family: var(--mono); font-weight: 700; font-size: 22px; color: var(--muted); }
+          #s04-outils .lane.b .lane-lbl { top: 26px; }
+          #s04-outils .pkt { position: absolute; top: -13px; width: 34px; height: 34px; border-radius: 10px; display: block; }
+          #s04-outils .lane.a .pkt { background: var(--orange); }
+          #s04-outils .lane.b .pkt { background: var(--navy-2); }
+          #s04-outils .rules { position: absolute; left: 0; right: 0; bottom: -150px; display: flex; justify-content: center; }
+          #s04-outils .goals { position: absolute; left: 120px; right: 120px; top: 720px; display: flex; justify-content: center; gap: 22px; }
+          #s04-outils .goals .pill { font-size: 28px; padding: 16px 30px; }
+          #s04-outils .edma { position: absolute; left: 50%; top: 820px; width: 1180px; margin-left: -590px; padding: 26px 36px; display: flex; align-items: center; gap: 28px; }
+          #s04-outils .edma .h3 { font-size: 32px; }
+          #s04-outils .edma .lead { font-size: 26px; }
+        
+          #s04-outils .feat { position: absolute; left: 120px; right: 120px; top: 230px; }
+          #s04-outils .feat-grid { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+          #s04-outils .f { padding: 56px 40px; display: flex; align-items: center; gap: 28px; }
+          #s04-outils .f .h3 { font-size: 38px; }
+        
+          #s04-outils .com { position: absolute; left: 120px; right: 120px; top: 230px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+          #s04-outils .c { padding: 40px 42px; display: flex; flex-direction: column; gap: 20px; }
+          #s04-outils .c .h3 { font-size: 40px; }
+          #s04-outils .c .lead { font-size: 28px; }
+          #s04-outils .verdict { display: inline-flex; align-self: flex-start; }
+          #s04-outils .excel { position: absolute; left: 120px; right: 120px; top: 640px; padding: 36px 44px; display: flex; align-items: center; gap: 34px; border-color: var(--orange); border-style: dashed; background: #fff8f3; }
+          #s04-outils .excel .h3 { font-size: 34px; }
+          #s04-outils .excel .lead { font-size: 27px; margin-top: 8px; }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">03B</span><span class="hdr-rule"></span><span class="hdr-title">Connecter les outils et simplifier les tâches</span></div>
+        
+        <div class="sync">
+          <div class="card navy sys"><div class="ico orange lg" data-icon="users"></div><div class="h2">HubSpot</div><div class="lead" style="color:#c9d4e8">CRM</div></div>
+          <div class="lanes">
+            <div class="lane a"><span class="lane-fill"></span><span class="pkt"></span><div class="lane-lbl">HUBSPOT → SAGE X3</div></div>
+            <div class="lane b"><span class="lane-fill"></span><span class="pkt"></span><div class="lane-lbl">SAGE X3 → HUBSPOT</div></div>
+            <div class="rules"><span class="stamp">Selon des règles définies ensemble</span></div>
+          </div>
+          <div class="card sys"><div class="ico navy lg" data-icon="server"></div><div class="h2">Sage X3</div><div class="lead">ERP · version 6</div></div>
+        </div>
+        <div class="goals">
+          <span class="pill"><i data-icon="keyboard" style="width:30px;height:30px;display:block"></i>Pas de ressaisie</span>
+          <span class="pill orange"><i data-icon="shield" style="width:30px;height:30px;display:block"></i>Des informations cohérentes</span>
+        </div>
+        <div class="card edma">
+          <div class="ico orange" data-icon="check"></div>
+          <div><div class="h3">Déjà réalisé par Uptoo Digital : EDMA</div><div class="lead">Contacts, commandes et historiques synchronisés entre les deux outils</div></div>
+        </div>
+        
+        <div class="feat">
+          <div class="eyebrow">Données, recherche et suivi</div>
+          <div class="feat-grid">
+            <div class="card f"><div class="ico" data-icon="layers"></div><div class="h3">Imports en masse</div></div>
+            <div class="card f"><div class="ico" data-icon="sliders"></div><div class="h3">Filtres</div></div>
+            <div class="card f"><div class="ico" data-icon="search"></div><div class="h3">Recherche avancée</div></div>
+            <div class="card f"><div class="ico" data-icon="export"></div><div class="h3">Exports de données</div></div>
+            <div class="card f"><div class="ico" data-icon="clipboard"></div><div class="h3">Documents joints aux fiches</div></div>
+            <div class="card f"><div class="ico orange" data-icon="chart"></div><div class="h3">Tableaux de bord et rapports</div></div>
+          </div>
+        </div>
+        
+        <div class="com">
+          <div class="card c">
+            <div class="ico" data-icon="user"></div>
+            <div class="h3">E-mail individuel</div>
+            <div class="lead">Peut comporter des pièces jointes.</div>
+            <span class="pill verdict">✓ Pièces jointes possibles</span>
+          </div>
+          <div class="card c">
+            <div class="ico" data-icon="megaphone"></div>
+            <div class="h3">Campagne marketing groupée</div>
+            <div class="lead">Une autre méthode est nécessaire pour transmettre des fichiers.</div>
+            <span class="pill orange verdict">→ Méthode adaptée</span>
+          </div>
+        </div>
+        <div class="card excel">
+          <div class="ico orange lg" data-icon="export"></div>
+          <div>
+            <div class="h3">Fichiers Excel à actualiser puis à réimporter</div>
+            <div class="lead">Une réponse adaptée à votre usage, sans promettre une fonctionnalité native qui n'y correspond pas exactement.</div>
+          </div>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">PARTIE 3 · ENJEUX 4 ET 5</div><div class="chapter-title">Connecter les outils et simplifier les tâches</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s05-complements" class="sc clip" data-start="209.8" data-duration="35.8" data-track-index="1">
+        <style>
+          #s05-complements .intro { position: absolute; left: 120px; top: 220px; }
+          #s05-complements .cols { position: absolute; left: 120px; right: 120px; top: 290px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+          #s05-complements .col { padding: 40px 40px 44px; display: flex; flex-direction: column; gap: 22px; }
+          #s05-complements .num { font-family: var(--mono); font-weight: 700; font-size: 26px; color: var(--orange-ink); }
+          #s05-complements .col .h3 { font-size: 38px; }
+          #s05-complements .col .lead { font-size: 26px; line-height: 1.4; }
+          #s05-complements .viz { height: 150px; border-radius: 16px; background: var(--bg); position: relative; overflow: hidden; }
+          /* mini tableau de bord : barres sans valeurs (illustration) */
+          #s05-complements .bars { position: absolute; left: 30px; right: 30px; bottom: 26px; top: 30px; display: flex; align-items: flex-end; gap: 18px; }
+          #s05-complements .bars i { display: block; flex: 1; border-radius: 8px 8px 0 0; background: var(--navy-2); transform-origin: bottom center; }
+          #s05-complements .bars i:nth-child(2n) { background: var(--orange); }
+          /* fiches à contrôler */
+          #s05-complements .recs { position: absolute; inset: 16px 22px; display: flex; flex-direction: column; gap: 9px; }
+          #s05-complements .rec { display: flex; align-items: center; gap: 14px; height: 38px; padding: 0 14px; border-radius: 10px; background: var(--white); border: 2px solid var(--line); font-size: 20px; font-weight: 700; }
+          #s05-complements .rec .bar { display: block; flex: 1; height: 10px; border-radius: 5px; background: var(--line); }
+          #s05-complements .rec .tag { font-family: var(--mono); font-size: 18px; color: var(--orange-ink); }
+          /* téléphone */
+          #s05-complements .phone { position: absolute; left: 50%; top: 14px; width: 96px; height: 170px; margin-left: -55px; border-radius: 22px; border: 6px solid var(--navy); background: var(--white); }
+          #s05-complements .phone i { display: block; margin: 12px 10px 0; height: 12px; border-radius: 7px; background: var(--line); }
+          #s05-complements .phone i:first-child { background: var(--orange); width: 50%; }
+          #s05-complements .foot { position: absolute; left: 120px; right: 120px; top: 915px; display: flex; align-items: center; gap: 24px; }
+          #s05-complements .foot .pill { font-size: 26px; padding: 14px 26px; }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">03C</span><span class="hdr-rule"></span><span class="hdr-title">Les fonctionnalités complémentaires proposées</span></div>
+        <div class="intro eyebrow">Au-delà des fonctionnalités demandées · 3 améliorations</div>
+        
+        <div class="cols">
+          <div class="card col">
+            <div class="num">01</div>
+            <div class="viz"><div class="bars"><i style="height:45%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:85%"></i><i style="height:62%"></i></div></div>
+            <div class="h3">Tableaux de bord par marque et par distributeur</div>
+            <div class="lead">Suivre les échanges, les opportunités et les actions commerciales par segment.</div>
+          </div>
+          <div class="card col">
+            <div class="num">02</div>
+            <div class="viz"><div class="recs">
+              <div class="rec"><span class="bar"></span><span class="tag">INCOMPLÈTE</span></div>
+              <div class="rec"><span class="bar"></span><span class="tag">DOUBLON</span></div>
+              <div class="rec"><span class="bar"></span><span class="tag">À METTRE À JOUR</span></div>
+            </div></div>
+            <div class="h3">Contrôle de la qualité des données</div>
+            <div class="lead">Repérer les fiches incomplètes, les doublons et les données à mettre à jour.</div>
+          </div>
+          <div class="card col">
+            <div class="num">03</div>
+            <div class="viz"><div class="phone"><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="h3">Accès mobile</div>
+            <div class="lead">Les collaborateurs autorisés consultent les informations utiles en déplacement.</div>
+          </div>
+        </div>
+        
+        <div class="foot">
+          <span class="pill"><i data-icon="zap" style="width:30px;height:30px;display:block"></i>Plus utile au quotidien</span>
+          <span class="pill"><i data-icon="target" style="width:30px;height:30px;display:block"></i>De meilleures décisions commerciales</span>
+          <span class="stamp">Périmètre selon les licences et possibilités techniques retenues</span>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">PARTIE 3 · ENJEU 6 ET VALEUR AJOUTÉE</div><div class="chapter-title">Les fonctionnalités complémentaires</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s06-roadmap" class="sc clip" data-start="245.6" data-duration="53.3" data-track-index="1">
+        <style>
+          #s06-roadmap .gantt { position: absolute; left: 120px; right: 120px; top: 220px; }
+          #s06-roadmap .axis { position: relative; margin-left: 520px; height: 60px; border-bottom: 3px solid var(--navy); }
+          #s06-roadmap .month { position: absolute; top: 0; font-family: var(--mono); font-weight: 700; font-size: 24px; color: var(--muted); }
+          #s06-roadmap .tick { position: absolute; bottom: -12px; width: 3px; height: 20px; background: var(--navy); display: block; }
+          #s06-roadmap .rows { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+          #s06-roadmap .row { position: relative; display: flex; align-items: center; height: 92px; }
+          #s06-roadmap .lbl { width: 520px; padding-right: 30px; display: flex; align-items: center; gap: 20px; }
+          #s06-roadmap .lbl .n { width: 54px; height: 54px; flex: none; border-radius: 50%; background: var(--navy); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-weight: 700; font-size: 24px; }
+          #s06-roadmap .lbl .h3 { font-size: 30px; }
+          #s06-roadmap .track { position: relative; flex: 1; height: 100%; }
+          #s06-roadmap .bar { position: absolute; top: 12px; bottom: 12px; border-radius: 14px; background: var(--navy-2); color: var(--white); display: flex; align-items: center; padding: 0 20px; overflow: hidden; }
+          #s06-roadmap .bar .d { font-family: var(--mono); font-weight: 700; font-size: 22px; white-space: nowrap; }
+          #s06-roadmap .row:last-child .bar { background: var(--orange); }
+          #s06-roadmap .desc { position: absolute; left: 0; right: 0; top: 0; }
+          #s06-roadmap .flag { position: absolute; right: -10px; top: -86px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+          #s06-roadmap .flag .pill { font-size: 24px; padding: 10px 20px; }
+          #s06-roadmap .now { position: absolute; top: -10px; bottom: -4px; width: 4px; border-radius: 2px; background: var(--orange); display: block; }
+          #s06-roadmap .detail { position: absolute; left: 120px; right: 120px; top: 830px; padding: 26px 34px; display: flex; align-items: center; gap: 26px; }
+          #s06-roadmap .detail .h3 { font-size: 32px; }
+          #s06-roadmap .detail .lead { font-size: 26px; }
+          #s06-roadmap .keys { position: absolute; left: 120px; right: 120px; top: 830px; display: grid; grid-template-columns: auto 1fr 1fr 1fr; gap: 20px; align-items: stretch; }
+          #s06-roadmap .keys .eyebrow { align-self: center; padding-right: 10px; }
+          #s06-roadmap .key { padding: 22px 26px; display: flex; align-items: center; gap: 18px; font-size: 25px; font-weight: 700; line-height: 1.3; }
+          #s06-roadmap .key .ico { width: 60px; height: 60px; border-radius: 16px; }
+          #s06-roadmap .key .ico svg { width: 34px; height: 34px; }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">04</span><span class="hdr-rule"></span><span class="hdr-title">Roadmap du projet · 2024</span></div>
+        
+        <div class="gantt">
+          <div class="axis">
+            <span class="month" style="left:0%">MAI</span>
+            <span class="month" style="left:15.9%">JUIN</span>
+            <span class="month" style="left:63.5%">JUILLET</span>
+            <span class="tick" style="left:15.9%"></span><span class="tick" style="left:63.5%"></span>
+            <div class="flag"><span class="pill orange"><i data-icon="flag" style="width:28px;height:28px;display:block"></i>Livraison · 24 juillet 2024</span></div>
+          </div>
+          <div class="rows">
+            <div class="row"><div class="lbl"><span class="n">1</span><span class="h3">Cadrage et diagnostic</span></div><div class="track"><div class="bar" style="left:0%;width:15.9%"><span class="d">22–31 mai</span></div></div></div>
+            <div class="row"><div class="lbl"><span class="n">2</span><span class="h3">Conception et paramétrage</span></div><div class="track"><div class="bar" style="left:19%;width:19%"><span class="d">3–14 juin</span></div></div></div>
+            <div class="row"><div class="lbl"><span class="n">3</span><span class="h3">Migration et intégration</span></div><div class="track"><div class="bar" style="left:41.3%;width:19%"><span class="d">17–28 juin</span></div></div></div>
+            <div class="row"><div class="lbl"><span class="n">4</span><span class="h3">Tests et corrections</span></div><div class="track"><div class="bar" style="left:63.5%;width:19%"><span class="d">1er–12 juillet</span></div></div></div>
+            <div class="row"><div class="lbl"><span class="n">5</span><span class="h3">Formation et livraison</span></div><div class="track"><div class="bar" style="left:85.7%;width:14.3%"><span class="d">15–24 juil.</span></div></div></div>
+          </div>
+        </div>
+        
+        <div class="card detail" data-i="0"><div class="ico" data-icon="search"></div><div><div class="h3">Analyse des données SQL, des processus et des besoins des utilisateurs</div></div></div>
+        <div class="card detail" data-i="1"><div class="ico" data-icon="sliders"></div><div><div class="h3">Configuration du CRM, des champs, des profils et des rapports</div></div></div>
+        <div class="card detail" data-i="2"><div class="ico" data-icon="sync"></div><div><div class="h3">Reprise des données et mise en place des échanges avec Sage X3</div></div></div>
+        <div class="card detail" data-i="3"><div class="ico" data-icon="flask"></div><div><div class="h3">Vérification des données, des droits, des imports/exports et des échanges entre outils</div></div></div>
+        <div class="card detail" data-i="4"><div class="ico orange" data-icon="graduation"></div><div><div class="h3">Formation des collaborateurs en France, préparation du lancement et livraison</div></div></div>
+        
+        <div class="keys">
+          <div class="eyebrow">Conditions de réussite</div>
+          <div class="card key"><div class="ico" data-icon="check"></div>Validation rapide des règles de gestion par JJA</div>
+          <div class="card key"><div class="ico" data-icon="lock"></div>Accès aux environnements nécessaires</div>
+          <div class="card key"><div class="ico" data-icon="flask"></div>Validation des tests avant la mise en service</div>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">PARTIE 4 · DIAPOSITIVE 04</div><div class="chapter-title">Le planning du projet</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s07-equipe" class="sc clip" data-start="298.9" data-duration="42.8" data-track-index="1">
+        <style>
+          #s07-equipe .team { position: absolute; left: 120px; right: 120px; top: 220px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
+          #s07-equipe .m { padding: 40px 34px; display: flex; flex-direction: column; gap: 18px; }
+          #s07-equipe .av { width: 116px; height: 116px; border-radius: 50%; background: var(--navy); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 50px; }
+          #s07-equipe .m:first-child .av { background: var(--orange); }
+          #s07-equipe .m .h3 { font-size: 44px; margin-top: 8px; }
+          #s07-equipe .role { font-family: var(--mono); font-weight: 700; font-size: 21px; color: var(--orange-ink); line-height: 1.35; min-height: 58px; }
+          #s07-equipe .m .lead { font-size: 26px; line-height: 1.4; }
+          #s07-equipe .tools { position: absolute; left: 120px; right: 120px; top: 760px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+          #s07-equipe .tool { padding: 26px 30px; display: flex; align-items: center; gap: 22px; }
+          #s07-equipe .tool .h3 { font-size: 32px; }
+          #s07-equipe .tool .lead { font-size: 24px; line-height: 1.3; }
+          #s07-equipe .tool .ico { width: 70px; height: 70px; }
+          #s07-equipe .glob { position: absolute; left: 120px; right: 120px; top: 770px; display: flex; justify-content: center; gap: 24px; }
+          #s07-equipe .glob .pill { font-size: 28px; padding: 16px 30px; }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">05</span><span class="hdr-rule"></span><span class="hdr-title">Une équipe organisée autour de vos besoins</span></div>
+        
+        <div class="team">
+          <div class="card m"><div class="av">Y</div><div class="h3">Yasmine</div><div class="role">Cheffe de projet</div><div class="lead">Coordination, calendrier, suivi du budget et échanges avec JJA.</div></div>
+          <div class="card m"><div class="av">D</div><div class="h3">Dilia</div><div class="role">Consultante CRM</div><div class="lead">Paramétrage de HubSpot, champs, profils et tableaux de bord.</div></div>
+          <div class="card m"><div class="av">H</div><div class="h3">Houda</div><div class="role">Spécialiste données et intégration</div><div class="lead">Migration SQL et échanges entre HubSpot et Sage X3.</div></div>
+          <div class="card m"><div class="av">Y</div><div class="h3">Yacine</div><div class="role">Référent commercial et formation</div><div class="lead">Besoins des utilisateurs, scénarios de test et accompagnement.</div></div>
+        </div>
+        
+        <div class="tools">
+          <div class="card tool"><div class="ico navy" data-icon="users"></div><div><div class="h3">HubSpot</div><div class="lead">Le CRM</div></div></div>
+          <div class="card tool"><div class="ico orange" data-icon="link"></div><div><div class="h3">Uptoo Digital</div><div class="lead">L'expertise d'intégration</div></div></div>
+          <div class="card tool"><div class="ico" data-icon="server"></div><div><div class="h3">Sage X3</div><div class="lead">Votre ERP : les données de gestion</div></div></div>
+        </div>
+        
+        <div class="glob">
+          <span class="pill"><i data-icon="eye" style="width:30px;height:30px;display:block"></i>Vision globale du projet</span>
+          <span class="pill"><i data-icon="wrench" style="width:30px;height:30px;display:block"></i>Suivi des sujets techniques</span>
+          <span class="pill orange"><i data-icon="users" style="width:30px;height:30px;display:block"></i>Besoins des utilisateurs</span>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">PARTIE 5 · DIAPOSITIVE 05</div><div class="chapter-title">L'équipe et les partenaires</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s08-edma" class="sc clip" data-start="341.7" data-duration="41.5" data-track-index="1">
+        <style>
+          #s08-edma .title { position: absolute; left: 120px; top: 220px; display: flex; align-items: baseline; gap: 26px; }
+          #s08-edma .title .h1 { font-size: 104px; }
+          #s08-edma .title .lead { font-size: 34px; font-weight: 700; color: var(--navy); }
+          #s08-edma .src { position: absolute; right: 120px; top: 262px; font-family: var(--mono); font-size: 20px; color: var(--muted); }
+          #s08-edma .duo { position: absolute; left: 120px; right: 120px; top: 400px; display: grid; grid-template-columns: 1fr 640px 1fr; align-items: center; }
+          #s08-edma .box { padding: 40px; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+          #s08-edma .box .h2 { font-size: 54px; }
+          #s08-edma .box .lead { font-size: 26px; }
+          #s08-edma .scatter { position: absolute; inset: 0; }
+          #s08-edma .bit { position: absolute; padding: 8px 16px; border-radius: 10px; background: var(--white); border: 2px solid var(--line); font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--muted); }
+          #s08-edma .mid { position: relative; height: 220px; }
+          #s08-edma .link { position: absolute; left: 30px; right: 30px; top: 50%; height: 10px; margin-top: -5px; border-radius: 5px; background: var(--orange); display: block; }
+          #s08-edma .link-lbl { position: absolute; left: 0; right: 0; top: 140px; display: flex; justify-content: center; }
+          #s08-edma .results { position: absolute; left: 120px; right: 120px; top: 380px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+          #s08-edma .r { padding: 34px 30px; display: flex; flex-direction: column; gap: 20px; }
+          #s08-edma .r .big { font-weight: 900; font-size: 76px; line-height: 1; letter-spacing: -0.03em; color: var(--navy); }
+          #s08-edma .r.navy .big { color: var(--white); }
+          #s08-edma .r .h3 { font-size: 29px; }
+          #s08-edma .quote { position: absolute; left: 120px; right: 120px; top: 760px; padding: 30px 40px; display: flex; gap: 30px; align-items: center; }
+          #s08-edma .quote .qm { font-weight: 900; font-size: 120px; line-height: 0.6; color: var(--orange); padding-top: 30px; }
+          #s08-edma .quote .h3 { font-size: 36px; }
+          #s08-edma .quote .lead { font-size: 22px; font-family: var(--mono); margin-top: 8px; }
+          #s08-edma .fit { position: absolute; left: 120px; right: 120px; top: 760px; padding: 34px 44px; display: flex; align-items: center; gap: 34px; }
+          #s08-edma .fit .h3 { font-size: 40px; }
+          #s08-edma .fit .pills { margin-left: auto; display: flex; gap: 16px; }
+          #s08-edma .fit .pill { font-size: 28px; padding: 14px 26px; background: rgba(255,255,255,0.12); color: var(--white); }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">06</span><span class="hdr-rule"></span><span class="hdr-title">Une référence concrète</span></div>
+        <div class="title"><span class="h1">EDMA</span><span class="lead">HubSpot connecté à Sage X3</span></div>
+        <div class="src">Source : cas client EDMA — Uptoo Digital</div>
+        
+        <div class="duo">
+          <div class="card box"><div class="ico navy lg" data-icon="users"></div><div class="h2">CRM</div><div class="lead">HubSpot</div></div>
+          <div class="mid">
+            <div class="scatter">
+              <span class="bit" style="left:40px;top:10px">contacts</span>
+              <span class="bit" style="left:330px;top:40px">commandes</span>
+              <span class="bit" style="left:120px;top:150px">historiques</span>
+              <span class="bit" style="left:420px;top:160px">devis</span>
+            </div>
+            <span class="link"></span>
+            <div class="link-lbl"><span class="pill orange"><i data-icon="sync" style="width:30px;height:30px;display:block"></i>Bidirectionnelle · temps réel</span></div>
+          </div>
+          <div class="card box"><div class="ico lg" data-icon="server"></div><div class="h2">ERP</div><div class="lead">Sage X3</div></div>
+        </div>
+        
+        <div class="results">
+          <div class="card navy r"><div class="big">100 %</div><div class="h3">Synchronisation bidirectionnelle en temps réel</div></div>
+          <div class="card r"><div class="ico" data-icon="sync"></div><div class="h3">Contacts, commandes et historiques synchronisés</div></div>
+          <div class="card r"><div class="big">360°</div><div class="h3">Vision client</div></div>
+          <div class="card r"><div class="big">0</div><div class="h3">double saisie annoncée dans le cas client</div></div>
+        </div>
+        <div class="card quote">
+          <div class="qm">“</div>
+          <div><div class="h3">Un temps précieux gagné sur les devis, des données unifiées entre les deux systèmes.</div><div class="lead">D'après la direction commerciale d'EDMA (cas client)</div></div>
+        </div>
+        <div class="card navy fit">
+          <div class="ico orange lg" data-icon="target"></div>
+          <div class="h3">Les deux outils au cœur du projet JJA</div>
+          <div class="pills"><span class="pill">HubSpot</span><span class="pill">Sage X3</span></div>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">PARTIE 6 · DIAPOSITIVE 06</div><div class="chapter-title">Preuve de crédibilité</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s09-budget" class="sc clip" data-start="383.2" data-duration="49.2" data-track-index="1">
+        <style>
+          #s09-budget .hero { position: absolute; left: 120px; top: 220px; width: 760px; bottom: 150px; padding: 50px 54px; display: flex; flex-direction: column; gap: 18px; }
+          #s09-budget .amount { font-weight: 900; font-size: 132px; line-height: 1; letter-spacing: -0.045em; color: var(--white); white-space: nowrap; }
+          #s09-budget .amount small { font-size: 60px; color: var(--orange); letter-spacing: -0.02em; }
+          #s09-budget .hero .h3 { font-size: 36px; }
+          #s09-budget .hero .sub { font-size: 28px; color: #c9d4e8; }
+          #s09-budget .hero .stamp { margin-top: auto; align-self: flex-start; font-size: 20px; background: rgba(255,255,255,0.06); color: #ffb98f; border-color: #ffb98f; line-height: 1.4; }
+          #s09-budget .side { position: absolute; left: 920px; right: 120px; top: 220px; bottom: 150px; display: flex; flex-direction: column; gap: 22px; }
+          #s09-budget .incl { padding: 32px 36px; display: flex; flex-direction: column; gap: 20px; }
+          #s09-budget .chips { display: flex; flex-wrap: wrap; gap: 12px; }
+          #s09-budget .chips .pill { font-size: 25px; padding: 12px 22px; }
+          #s09-budget .eng { padding: 26px 32px; display: flex; align-items: center; gap: 22px; }
+          #s09-budget .eng .h3 { font-size: 30px; }
+          #s09-budget .eng .lead { font-size: 23px; }
+          #s09-budget .eng .ico { width: 70px; height: 70px; }
+          #s09-budget .warn { position: absolute; left: 920px; right: 120px; top: 220px; bottom: 150px; padding: 44px 46px; display: flex; flex-direction: column; gap: 22px; border: 3px solid var(--orange); background: #fff8f3; }
+          #s09-budget .warn .h2 { font-size: 50px; }
+          #s09-budget .warn .lead { font-size: 28px; }
+          #s09-budget .todo { display: flex; flex-direction: column; gap: 16px; margin-top: auto; }
+          #s09-budget .todo div { display: flex; gap: 18px; align-items: center; font-size: 28px; font-weight: 700; }
+          #s09-budget .todo .ico { width: 60px; height: 60px; border-radius: 16px; }
+          #s09-budget .todo .ico svg { width: 34px; height: 34px; }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">07</span><span class="hdr-rule"></span><span class="hdr-title">Budget et engagement</span></div>
+        
+        <div class="card navy hero">
+          <div class="eyebrow" style="color:#ffb98f">Enveloppe maximale · sur deux ans</div>
+          <div class="amount"><b class="n">0</b> <small>€ HT</small></div>
+          <div class="h3">Notre engagement commercial proposé</div>
+          <div class="sub">Un coût global ferme sur deux ans</div>
+          <div class="stamp">Simulation réalisée dans le cadre d'un projet scolaire — ce n'est pas un devis officiel d'Uptoo Digital</div>
+        </div>
+        
+        <div class="side">
+          <div class="card incl">
+            <div class="eyebrow">Intégré à l'offre</div>
+            <div class="chips">
+              <span class="pill">Licences</span><span class="pill">Configuration</span><span class="pill">Migration</span><span class="pill">Intégration Sage X3</span><span class="pill">Formation</span><span class="pill">Assistance</span><span class="pill orange">3 types de maintenance</span>
+            </div>
+          </div>
+          <div class="card eng"><div class="ico navy" data-icon="lock"></div><div><div class="h3">Prix ferme</div><div class="lead">pendant toute la durée du contrat</div></div></div>
+          <div class="card eng"><div class="ico navy" data-icon="briefcase"></div><div><div class="h3">Propriété cédée à JJA</div><div class="lead">des développements spécifiques, conformément au cahier des charges</div></div></div>
+        </div>
+        
+        <div class="card warn">
+          <div class="pill orange" style="align-self:flex-start"><i data-icon="bell" style="width:30px;height:30px;display:block"></i>Point de vigilance</div>
+          <div class="h2">Les licences pour 450 utilisateurs</div>
+          <div class="lead">Les tarifs publics actuels de HubSpot ne permettent pas de confirmer que tout le périmètre tient dans l'enveloppe.</div>
+          <div class="todo">
+            <div><span class="ico orange" data-icon="euro"></span>Obtenir une proposition tarifaire adaptée au volume</div>
+            <div><span class="ico orange" data-icon="users"></span>Confirmer les profils de licences nécessaires</div>
+          </div>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">PARTIE 6 · DIAPOSITIVE 07</div><div class="chapter-title">Offre commerciale</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <section id="s10-conclusion" class="sc clip" data-start="432.4" data-duration="47.6" data-track-index="1">
+        <style>
+          #s10-conclusion .tomorrow { position: absolute; left: 120px; right: 120px; top: 230px; display: grid; grid-template-columns: 620px 1fr; gap: 60px; align-items: center; }
+          #s10-conclusion .tomorrow .h1 { font-size: 110px; }
+          #s10-conclusion .tomorrow .lead { margin-top: 20px; }
+          #s10-conclusion .qs { display: flex; flex-direction: column; gap: 22px; }
+          #s10-conclusion .qq { padding: 28px 34px; display: flex; align-items: center; gap: 26px; }
+          #s10-conclusion .qq .h3 { font-size: 40px; }
+          #s10-conclusion .net { position: absolute; left: 120px; right: 120px; top: 230px; }
+          #s10-conclusion .nodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; position: relative; }
+          #s10-conclusion .nd { display: flex; flex-direction: column; align-items: center; gap: 20px; position: relative; z-index: 1; }
+          #s10-conclusion .nd .h3 { font-size: 40px; }
+          #s10-conclusion .nd .ico { width: 150px; height: 150px; border-radius: 50%; }
+          #s10-conclusion .nd .ico svg { width: 70px; height: 70px; }
+          #s10-conclusion .wire { position: absolute; left: 16.6%; right: 16.6%; top: 72px; height: 8px; border-radius: 4px; background: var(--orange); display: block; z-index: 0; }
+          #s10-conclusion .net .more { margin-top: 70px; text-align: center; font-weight: 800; font-size: 54px; line-height: 1.2; letter-spacing: -0.02em; }
+          #s10-conclusion .net .more em { font-style: normal; color: var(--orange-ink); }
+          #s10-conclusion .atelier { position: absolute; left: 120px; right: 120px; top: 220px; bottom: 150px; display: grid; grid-template-columns: 640px 1fr; gap: 40px; }
+          #s10-conclusion .at-l { padding: 50px; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
+          #s10-conclusion .at-l .h2 { font-size: 66px; }
+          #s10-conclusion .at-l .lead { color: #c9d4e8; }
+          #s10-conclusion .at-r { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+          #s10-conclusion .v { padding: 32px 34px; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+          #s10-conclusion .v .h3 { font-size: 34px; }
+          #s10-conclusion .final { position: absolute; left: 120px; right: 120px; top: 250px; }
+          #s10-conclusion .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+          #s10-conclusion .three .card { padding: 46px 40px; display: flex; flex-direction: column; gap: 22px; }
+          #s10-conclusion .three .h2 { font-size: 54px; }
+          #s10-conclusion .final .lead { margin-top: 44px; font-size: 34px; }
+          #s10-conclusion .thanks { position: absolute; inset: 0; z-index: 42; background: var(--navy); color: var(--white); display: flex; flex-direction: column; justify-content: center; padding: 0 180px; }
+          #s10-conclusion .thanks .t { font-weight: 900; font-size: 150px; line-height: 1; letter-spacing: -0.045em; }
+          #s10-conclusion .thanks .t em { font-style: normal; color: var(--orange); }
+          #s10-conclusion .thanks .b { margin-top: 40px; font-size: 40px; color: #c9d4e8; font-weight: 700; }
+          #s10-conclusion .thanks .bar { display: block; width: 180px; height: 8px; border-radius: 4px; background: var(--orange); margin-top: 50px; }
+        </style>
+        
+        <div class="hdr"><span class="hdr-num">08</span><span class="hdr-rule"></span><span class="hdr-title">Conclusion</span></div>
+        
+        <div class="tomorrow">
+          <div><div class="h1">Demain,</div><div class="lead">vos équipes ouvrent le CRM et retrouvent rapidement :</div></div>
+          <div class="qs">
+            <div class="card qq"><div class="ico" data-icon="user"></div><div class="h3">Qui contacter ?</div></div>
+            <div class="card qq"><div class="ico" data-icon="history"></div><div class="h3">Quel est l'historique de la relation ?</div></div>
+            <div class="card qq"><div class="ico orange" data-icon="arrow"></div><div class="h3">Quelle action réaliser ensuite ?</div></div>
+          </div>
+        </div>
+        
+        <div class="net">
+          <div class="nodes">
+            <span class="wire"></span>
+            <div class="nd"><div class="ico navy" data-icon="database"></div><div class="h3">Vos données</div></div>
+            <div class="nd"><div class="ico navy" data-icon="users"></div><div class="h3">Vos équipes</div></div>
+            <div class="nd"><div class="ico navy" data-icon="link"></div><div class="h3">Vos outils</div></div>
+          </div>
+          <div class="more">Moins de tâches répétitives, plus de temps pour <em>vos distributeurs</em> et vos quatre marques.</div>
+        </div>
+        
+        <div class="atelier">
+          <div class="card navy at-l">
+            <div class="eyebrow" style="color:#ffb98f">Prochaine étape</div>
+            <div class="h2">Un atelier de cadrage</div>
+            <div class="lead">Avec vos équipes commerciales et informatiques</div>
+          </div>
+          <div class="at-r">
+            <div class="card v"><div class="ico" data-icon="sync"></div><div class="h3">Les flux HubSpot ⇄ Sage X3</div></div>
+            <div class="card v"><div class="ico" data-icon="users"></div><div class="h3">Les profils des 450 utilisateurs</div></div>
+            <div class="card v"><div class="ico" data-icon="flag"></div><div class="h3">Les fonctionnalités prioritaires</div></div>
+            <div class="card v"><div class="ico orange" data-icon="euro"></div><div class="h3">Le coût réel des licences</div></div>
+          </div>
+        </div>
+        
+        <div class="final">
+          <div class="eyebrow">Ce que nous vous proposons</div>
+          <div class="three">
+            <div class="card"><div class="ico navy lg" data-icon="shield"></div><div class="h2">Une donnée fiable</div></div>
+            <div class="card"><div class="ico navy lg" data-icon="keyboard"></div><div class="h2">Moins de ressaisies</div></div>
+            <div class="card"><div class="ico orange lg" data-icon="trend"></div><div class="h2">Un suivi plus efficace</div></div>
+          </div>
+          <div class="lead">Une proposition techniquement cohérente, adaptée à votre organisation et transparente sur ses coûts.</div>
+        </div>
+        
+        <div class="thanks" data-layout-allow-overlap>
+          <div class="t">Merci pour votre <em>attention</em>.</div>
+          <div class="b">Uptoo Digital × JJA</div>
+          <span class="bar"></span>
+        </div>
+        
+        <div class="chapter"><div class="chapter-num">CONCLUSION · DIAPOSITIVE 08</div><div class="chapter-title">Vers la situation future</div><span class="chapter-bar"></span></div>
+        <div class="wipe"></div>
+      </section>
+
+      <!-- Voix enregistrée (optionnel) : déposer le fichier dans assets/ puis décommenter.
+      <audio id="voix" src="assets/voix.mp3" data-start="0" data-duration="480" data-track-index="10" data-volume="1"></audio>
+      -->
+    </div>
+
+    <script src="scenes/s01-uptoo.js"></script>
+    <script src="scenes/s02-enjeux.js"></script>
+    <script src="scenes/s03-donnees.js"></script>
+    <script src="scenes/s04-outils.js"></script>
+    <script src="scenes/s05-complements.js"></script>
+    <script src="scenes/s06-roadmap.js"></script>
+    <script src="scenes/s07-equipe.js"></script>
+    <script src="scenes/s08-edma.js"></script>
+    <script src="scenes/s09-budget.js"></script>
+    <script src="scenes/s10-conclusion.js"></script>
+    <script>
+      const main = gsap.timeline({ paused: true });
+      // Fond : dérive lente
+      main.fromTo("#bg .grid", { x: 0, y: 0 }, { x: 96, y: 48, duration: window.TOTAL_DURATION, ease: "none" }, 0);
+      main.fromTo("#bg .glow.a", { scale: 1 }, { scale: 1.25, duration: window.TOTAL_DURATION, ease: "none" }, 0);
+      main.fromTo("#bg .glow.b", { x: 0 }, { x: 300, duration: window.TOTAL_DURATION, ease: "none" }, 0);
+      // Barre de progression : un segment par scène
+      const fills = document.querySelectorAll("#foot .seg-fill");
+      window.SCENES.forEach((s, i) => {
+        main.fromTo(fills[i], { scaleX: 0 }, { scaleX: 1, duration: s.duration, ease: "none" }, s.at);
+      });
+      // Animations de chaque scène (scenes/*.js)
+      UD.buildAll(main);
+      window.__timelines["main"] = main;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<style>
+  #s10-conclusion .tomorrow { position: absolute; left: 120px; right: 120px; top: 230px; display: grid; grid-template-columns: 620px 1fr; gap: 60px; align-items: center; }
+  #s10-conclusion .tomorrow .h1 { font-size: 110px; }
+  #s10-conclusion .tomorrow .lead { margin-top: 20px; }
+  #s10-conclusion .qs { display: flex; flex-direction: column; gap: 22px; }
+  #s10-conclusion .qq { padding: 28px 34px; display: flex; align-items: center; gap: 26px; }
+  #s10-conclusion .qq .h3 { font-size: 40px; }
+  #s10-conclusion .net { position: absolute; left: 120px; right: 120px; top: 230px; }
+  #s10-conclusion .nodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; position: relative; }
+  #s10-conclusion .nd { display: flex; flex-direction: column; align-items: center; gap: 20px; position: relative; z-index: 1; }
+  #s10-conclusion .nd .h3 { font-size: 40px; }
+  #s10-conclusion .nd .ico { width: 150px; height: 150px; border-radius: 50%; }
+  #s10-conclusion .nd .ico svg { width: 70px; height: 70px; }
+  #s10-conclusion .wire { position: absolute; left: 16.6%; right: 16.6%; top: 72px; height: 8px; border-radius: 4px; background: var(--orange); display: block; z-index: 0; }
+  #s10-conclusion .net .more { margin-top: 70px; text-align: center; font-weight: 800; font-size: 54px; line-height: 1.2; letter-spacing: -0.02em; }
+  #s10-conclusion .net .more em { font-style: normal; color: var(--orange-ink); }
+  #s10-conclusion .atelier { position: absolute; left: 120px; right: 120px; top: 220px; bottom: 150px; display: grid; grid-template-columns: 640px 1fr; gap: 40px; }
+  #s10-conclusion .at-l { padding: 50px; display: flex; flex-direction: column; gap: 22px; justify-content: center; }
+  #s10-conclusion .at-l .h2 { font-size: 66px; }
+  #s10-conclusion .at-l .lead { color: #c9d4e8; }
+  #s10-conclusion .at-r { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  #s10-conclusion .v { padding: 32px 34px; display: flex; flex-direction: column; justify-content: center; gap: 18px; }
+  #s10-conclusion .v .h3 { font-size: 34px; }
+  #s10-conclusion .final { position: absolute; left: 120px; right: 120px; top: 250px; }
+  #s10-conclusion .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+  #s10-conclusion .three .card { padding: 46px 40px; display: flex; flex-direction: column; gap: 22px; }
+  #s10-conclusion .three .h2 { font-size: 54px; }
+  #s10-conclusion .final .lead { margin-top: 44px; font-size: 34px; }
+  #s10-conclusion .thanks { position: absolute; inset: 0; z-index: 42; background: var(--navy); color: var(--white); display: flex; flex-direction: column; justify-content: center; padding: 0 180px; }
+  #s10-conclusion .thanks .t { font-weight: 900; font-size: 150px; line-height: 1; letter-spacing: -0.045em; }
+  #s10-conclusion .thanks .t em { font-style: normal; color: var(--orange); }
+  #s10-conclusion .thanks .b { margin-top: 40px; font-size: 40px; color: #c9d4e8; font-weight: 700; }
+  #s10-conclusion .thanks .bar { display: block; width: 180px; height: 8px; border-radius: 4px; background: var(--orange); margin-top: 50px; }
+</style>
+
+<div class="hdr"><span class="hdr-num">08</span><span class="hdr-rule"></span><span class="hdr-title">Conclusion</span></div>
+
+<div class="tomorrow">
+  <div><div class="h1">Demain,</div><div class="lead">vos équipes ouvrent le CRM et retrouvent rapidement :</div></div>
+  <div class="qs">
+    <div class="card qq"><div class="ico" data-icon="user"></div><div class="h3">Qui contacter ?</div></div>
+    <div class="card qq"><div class="ico" data-icon="history"></div><div class="h3">Quel est l'historique de la relation ?</div></div>
+    <div class="card qq"><div class="ico orange" data-icon="arrow"></div><div class="h3">Quelle action réaliser ensuite ?</div></div>
+  </div>
+</div>
+
+<div class="net">
+  <div class="nodes">
+    <span class="wire"></span>
+    <div class="nd"><div class="ico navy" data-icon="database"></div><div class="h3">Vos données</div></div>
+    <div class="nd"><div class="ico navy" data-icon="users"></div><div class="h3">Vos équipes</div></div>
+    <div class="nd"><div class="ico navy" data-icon="link"></div><div class="h3">Vos outils</div></div>
+  </div>
+  <div class="more">Moins de tâches répétitives, plus de temps pour <em>vos distributeurs</em> et vos quatre marques.</div>
+</div>
+
+<div class="atelier">
+  <div class="card navy at-l">
+    <div class="eyebrow" style="color:#ffb98f">Prochaine étape</div>
+    <div class="h2">Un atelier de cadrage</div>
+    <div class="lead">Avec vos équipes commerciales et informatiques</div>
+  </div>
+  <div class="at-r">
+    <div class="card v"><div class="ico" data-icon="sync"></div><div class="h3">Les flux HubSpot ⇄ Sage X3</div></div>
+    <div class="card v"><div class="ico" data-icon="users"></div><div class="h3">Les profils des 450 utilisateurs</div></div>
+    <div class="card v"><div class="ico" data-icon="flag"></div><div class="h3">Les fonctionnalités prioritaires</div></div>
+    <div class="card v"><div class="ico orange" data-icon="euro"></div><div class="h3">Le coût réel des licences</div></div>
+  </div>
+</div>
+
+<div class="final">
+  <div class="eyebrow">Ce que nous vous proposons</div>
+  <div class="three">
+    <div class="card"><div class="ico navy lg" data-icon="shield"></div><div class="h2">Une donnée fiable</div></div>
+    <div class="card"><div class="ico navy lg" data-icon="keyboard"></div><div class="h2">Moins de ressaisies</div></div>
+    <div class="card"><div class="ico orange lg" data-icon="trend"></div><div class="h2">Un suivi plus efficace</div></div>
+  </div>
+  <div class="lead">Une proposition techniquement cohérente, adaptée à votre organisation et transparente sur ses coûts.</div>
+</div>
+
+<div class="thanks" data-layout-allow-overlap>
+  <div class="t">Merci pour votre <em>attention</em>.</div>
+  <div class="b">Uptoo Digital × JJA</div>
+  <span class="bar"></span>
+</div>
+
+<div class="chapter"><div class="chapter-num">CONCLUSION · DIAPOSITIVE 08</div><div class="chapter-title">Vers la situation future</div><span class="chapter-bar"></span></div>
+<div class="wipe"></div>

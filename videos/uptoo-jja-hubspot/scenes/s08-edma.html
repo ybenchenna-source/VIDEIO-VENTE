@@ -1,0 +1,66 @@
+<style>
+  #s08-edma .title { position: absolute; left: 120px; top: 220px; display: flex; align-items: baseline; gap: 26px; }
+  #s08-edma .title .h1 { font-size: 104px; }
+  #s08-edma .title .lead { font-size: 34px; font-weight: 700; color: var(--navy); }
+  #s08-edma .src { position: absolute; right: 120px; top: 262px; font-family: var(--mono); font-size: 20px; color: var(--muted); }
+  #s08-edma .duo { position: absolute; left: 120px; right: 120px; top: 400px; display: grid; grid-template-columns: 1fr 640px 1fr; align-items: center; }
+  #s08-edma .box { padding: 40px; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+  #s08-edma .box .h2 { font-size: 54px; }
+  #s08-edma .box .lead { font-size: 26px; }
+  #s08-edma .scatter { position: absolute; inset: 0; }
+  #s08-edma .bit { position: absolute; padding: 8px 16px; border-radius: 10px; background: var(--white); border: 2px solid var(--line); font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--muted); }
+  #s08-edma .mid { position: relative; height: 220px; }
+  #s08-edma .link { position: absolute; left: 30px; right: 30px; top: 50%; height: 10px; margin-top: -5px; border-radius: 5px; background: var(--orange); display: block; }
+  #s08-edma .link-lbl { position: absolute; left: 0; right: 0; top: 140px; display: flex; justify-content: center; }
+  #s08-edma .results { position: absolute; left: 120px; right: 120px; top: 380px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+  #s08-edma .r { padding: 34px 30px; display: flex; flex-direction: column; gap: 20px; }
+  #s08-edma .r .big { font-weight: 900; font-size: 76px; line-height: 1; letter-spacing: -0.03em; color: var(--navy); }
+  #s08-edma .r.navy .big { color: var(--white); }
+  #s08-edma .r .h3 { font-size: 29px; }
+  #s08-edma .quote { position: absolute; left: 120px; right: 120px; top: 760px; padding: 30px 40px; display: flex; gap: 30px; align-items: center; }
+  #s08-edma .quote .qm { font-weight: 900; font-size: 120px; line-height: 0.6; color: var(--orange); padding-top: 30px; }
+  #s08-edma .quote .h3 { font-size: 36px; }
+  #s08-edma .quote .lead { font-size: 22px; font-family: var(--mono); margin-top: 8px; }
+  #s08-edma .fit { position: absolute; left: 120px; right: 120px; top: 760px; padding: 34px 44px; display: flex; align-items: center; gap: 34px; }
+  #s08-edma .fit .h3 { font-size: 40px; }
+  #s08-edma .fit .pills { margin-left: auto; display: flex; gap: 16px; }
+  #s08-edma .fit .pill { font-size: 28px; padding: 14px 26px; background: rgba(255,255,255,0.12); color: var(--white); }
+</style>
+
+<div class="hdr"><span class="hdr-num">06</span><span class="hdr-rule"></span><span class="hdr-title">Une référence concrète</span></div>
+<div class="title"><span class="h1">EDMA</span><span class="lead">HubSpot connecté à Sage X3</span></div>
+<div class="src">Source : cas client EDMA — Uptoo Digital</div>
+
+<div class="duo">
+  <div class="card box"><div class="ico navy lg" data-icon="users"></div><div class="h2">CRM</div><div class="lead">HubSpot</div></div>
+  <div class="mid">
+    <div class="scatter">
+      <span class="bit" style="left:40px;top:10px">contacts</span>
+      <span class="bit" style="left:330px;top:40px">commandes</span>
+      <span class="bit" style="left:120px;top:150px">historiques</span>
+      <span class="bit" style="left:420px;top:160px">devis</span>
+    </div>
+    <span class="link"></span>
+    <div class="link-lbl"><span class="pill orange"><i data-icon="sync" style="width:30px;height:30px;display:block"></i>Bidirectionnelle · temps réel</span></div>
+  </div>
+  <div class="card box"><div class="ico lg" data-icon="server"></div><div class="h2">ERP</div><div class="lead">Sage X3</div></div>
+</div>
+
+<div class="results">
+  <div class="card navy r"><div class="big">100 %</div><div class="h3">Synchronisation bidirectionnelle en temps réel</div></div>
+  <div class="card r"><div class="ico" data-icon="sync"></div><div class="h3">Contacts, commandes et historiques synchronisés</div></div>
+  <div class="card r"><div class="big">360°</div><div class="h3">Vision client</div></div>
+  <div class="card r"><div class="big">0</div><div class="h3">double saisie annoncée dans le cas client</div></div>
+</div>
+<div class="card quote">
+  <div class="qm">“</div>
+  <div><div class="h3">Un temps précieux gagné sur les devis, des données unifiées entre les deux systèmes.</div><div class="lead">D'après la direction commerciale d'EDMA (cas client)</div></div>
+</div>
+<div class="card navy fit">
+  <div class="ico orange lg" data-icon="target"></div>
+  <div class="h3">Les deux outils au cœur du projet JJA</div>
+  <div class="pills"><span class="pill">HubSpot</span><span class="pill">Sage X3</span></div>
+</div>
+
+<div class="chapter"><div class="chapter-num">PARTIE 6 · DIAPOSITIVE 06</div><div class="chapter-title">Preuve de crédibilité</div><span class="chapter-bar"></span></div>
+<div class="wipe"></div>

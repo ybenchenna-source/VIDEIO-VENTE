@@ -1,0 +1,93 @@
+<style>
+  #s04-outils .sync { position: absolute; left: 120px; right: 120px; top: 250px; display: grid; grid-template-columns: 1fr 760px 1fr; align-items: center; }
+  #s04-outils .sys { padding: 50px 40px; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+  #s04-outils .sys .h2 { font-size: 58px; }
+  #s04-outils .sys .lead { font-size: 26px; }
+  #s04-outils .lanes { position: relative; height: 260px; display: flex; flex-direction: column; justify-content: center; gap: 70px; padding: 0 40px; }
+  #s04-outils .lane { position: relative; height: 8px; border-radius: 4px; background: var(--line); }
+  #s04-outils .lane-fill { display: block; position: absolute; inset: 0; border-radius: 4px; }
+  #s04-outils .lane.a .lane-fill { background: var(--orange); }
+  #s04-outils .lane.b .lane-fill { background: var(--navy-2); }
+  #s04-outils .lane-lbl { position: absolute; left: 0; right: 0; top: -52px; text-align: center; font-family: var(--mono); font-weight: 700; font-size: 22px; color: var(--muted); }
+  #s04-outils .lane.b .lane-lbl { top: 26px; }
+  #s04-outils .pkt { position: absolute; top: -13px; width: 34px; height: 34px; border-radius: 10px; display: block; }
+  #s04-outils .lane.a .pkt { background: var(--orange); }
+  #s04-outils .lane.b .pkt { background: var(--navy-2); }
+  #s04-outils .rules { position: absolute; left: 0; right: 0; bottom: -150px; display: flex; justify-content: center; }
+  #s04-outils .goals { position: absolute; left: 120px; right: 120px; top: 720px; display: flex; justify-content: center; gap: 22px; }
+  #s04-outils .goals .pill { font-size: 28px; padding: 16px 30px; }
+  #s04-outils .edma { position: absolute; left: 50%; top: 820px; width: 1180px; margin-left: -590px; padding: 26px 36px; display: flex; align-items: center; gap: 28px; }
+  #s04-outils .edma .h3 { font-size: 32px; }
+  #s04-outils .edma .lead { font-size: 26px; }
+
+  #s04-outils .feat { position: absolute; left: 120px; right: 120px; top: 230px; }
+  #s04-outils .feat-grid { margin-top: 30px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+  #s04-outils .f { padding: 56px 40px; display: flex; align-items: center; gap: 28px; }
+  #s04-outils .f .h3 { font-size: 38px; }
+
+  #s04-outils .com { position: absolute; left: 120px; right: 120px; top: 230px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  #s04-outils .c { padding: 40px 42px; display: flex; flex-direction: column; gap: 20px; }
+  #s04-outils .c .h3 { font-size: 40px; }
+  #s04-outils .c .lead { font-size: 28px; }
+  #s04-outils .verdict { display: inline-flex; align-self: flex-start; }
+  #s04-outils .excel { position: absolute; left: 120px; right: 120px; top: 640px; padding: 36px 44px; display: flex; align-items: center; gap: 34px; border-color: var(--orange); border-style: dashed; background: #fff8f3; }
+  #s04-outils .excel .h3 { font-size: 34px; }
+  #s04-outils .excel .lead { font-size: 27px; margin-top: 8px; }
+</style>
+
+<div class="hdr"><span class="hdr-num">03B</span><span class="hdr-rule"></span><span class="hdr-title">Connecter les outils et simplifier les tâches</span></div>
+
+<div class="sync">
+  <div class="card navy sys"><div class="ico orange lg" data-icon="users"></div><div class="h2">HubSpot</div><div class="lead" style="color:#c9d4e8">CRM</div></div>
+  <div class="lanes">
+    <div class="lane a"><span class="lane-fill"></span><span class="pkt"></span><div class="lane-lbl">HUBSPOT → SAGE X3</div></div>
+    <div class="lane b"><span class="lane-fill"></span><span class="pkt"></span><div class="lane-lbl">SAGE X3 → HUBSPOT</div></div>
+    <div class="rules"><span class="stamp">Selon des règles définies ensemble</span></div>
+  </div>
+  <div class="card sys"><div class="ico navy lg" data-icon="server"></div><div class="h2">Sage X3</div><div class="lead">ERP · version 6</div></div>
+</div>
+<div class="goals">
+  <span class="pill"><i data-icon="keyboard" style="width:30px;height:30px;display:block"></i>Pas de ressaisie</span>
+  <span class="pill orange"><i data-icon="shield" style="width:30px;height:30px;display:block"></i>Des informations cohérentes</span>
+</div>
+<div class="card edma">
+  <div class="ico orange" data-icon="check"></div>
+  <div><div class="h3">Déjà réalisé par Uptoo Digital : EDMA</div><div class="lead">Contacts, commandes et historiques synchronisés entre les deux outils</div></div>
+</div>
+
+<div class="feat">
+  <div class="eyebrow">Données, recherche et suivi</div>
+  <div class="feat-grid">
+    <div class="card f"><div class="ico" data-icon="layers"></div><div class="h3">Imports en masse</div></div>
+    <div class="card f"><div class="ico" data-icon="sliders"></div><div class="h3">Filtres</div></div>
+    <div class="card f"><div class="ico" data-icon="search"></div><div class="h3">Recherche avancée</div></div>
+    <div class="card f"><div class="ico" data-icon="export"></div><div class="h3">Exports de données</div></div>
+    <div class="card f"><div class="ico" data-icon="clipboard"></div><div class="h3">Documents joints aux fiches</div></div>
+    <div class="card f"><div class="ico orange" data-icon="chart"></div><div class="h3">Tableaux de bord et rapports</div></div>
+  </div>
+</div>
+
+<div class="com">
+  <div class="card c">
+    <div class="ico" data-icon="user"></div>
+    <div class="h3">E-mail individuel</div>
+    <div class="lead">Peut comporter des pièces jointes.</div>
+    <span class="pill verdict">✓ Pièces jointes possibles</span>
+  </div>
+  <div class="card c">
+    <div class="ico" data-icon="megaphone"></div>
+    <div class="h3">Campagne marketing groupée</div>
+    <div class="lead">Une autre méthode est nécessaire pour transmettre des fichiers.</div>
+    <span class="pill orange verdict">→ Méthode adaptée</span>
+  </div>
+</div>
+<div class="card excel">
+  <div class="ico orange lg" data-icon="export"></div>
+  <div>
+    <div class="h3">Fichiers Excel à actualiser puis à réimporter</div>
+    <div class="lead">Une réponse adaptée à votre usage, sans promettre une fonctionnalité native qui n'y correspond pas exactement.</div>
+  </div>
+</div>
+
+<div class="chapter"><div class="chapter-num">PARTIE 3 · ENJEUX 4 ET 5</div><div class="chapter-title">Connecter les outils et simplifier les tâches</div><span class="chapter-bar"></span></div>
+<div class="wipe"></div>

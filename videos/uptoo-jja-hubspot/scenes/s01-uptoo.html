@@ -1,0 +1,95 @@
+<style>
+  #s01-uptoo .cover { position: absolute; inset: 0; z-index: 40; background: var(--navy); color: var(--white); padding: 0 160px; display: flex; flex-direction: column; justify-content: center; }
+  #s01-uptoo .cover-top { display: flex; align-items: center; gap: 28px; margin-bottom: 46px; }
+  #s01-uptoo .cover-brand { font-weight: 900; font-size: 54px; letter-spacing: -0.02em; }
+  #s01-uptoo .cover-x { font-weight: 400; font-size: 54px; color: var(--orange); }
+  #s01-uptoo .cover-title { font-weight: 900; font-size: 120px; line-height: 1; letter-spacing: -0.04em; max-width: 1500px; }
+  #s01-uptoo .cover-sub { margin-top: 44px; font-size: 38px; line-height: 1.4; color: #c9d4e8; max-width: 1300px; }
+  #s01-uptoo .cover-rule { display: block; width: 180px; height: 8px; border-radius: 4px; background: var(--orange); margin-top: 52px; }
+  #s01-uptoo .ring-a { width: 760px; height: 760px; right: -220px; top: -200px; border-color: rgba(255,255,255,0.12); border-width: 4px; }
+  #s01-uptoo .ring-b { width: 460px; height: 460px; right: -70px; top: -50px; border-color: rgba(242,106,27,0.45); border-width: 4px; }
+
+  /* Bloc chiffres */
+  #s01-uptoo .facts { position: absolute; left: 120px; right: 120px; top: 220px; bottom: 170px; display: grid; grid-template-columns: 1.05fr 1fr 1fr; grid-template-rows: 1.15fr 1fr; gap: 36px; }
+  #s01-uptoo .badge { grid-row: span 2; padding: 56px 52px; display: flex; flex-direction: column; justify-content: space-between; }
+  #s01-uptoo .badge .h2 { font-size: 66px; margin-top: 30px; }
+  #s01-uptoo .badge .lbl { font-family: var(--mono); font-size: 22px; letter-spacing: 0.12em; color: #ffb98f; font-weight: 700; }
+  #s01-uptoo .stat { padding: 44px 46px; display: flex; flex-direction: column; justify-content: center; }
+  #s01-uptoo .stat-num { font-weight: 900; font-size: 128px; line-height: 1; letter-spacing: -0.04em; color: var(--navy); }
+  #s01-uptoo .stat-num span { color: var(--orange); }
+  #s01-uptoo .stat-lbl { margin-top: 16px; font-size: 32px; font-weight: 700; }
+  #s01-uptoo .expertise { grid-column: span 2; padding: 38px 46px; display: flex; flex-direction: column; justify-content: center; gap: 26px; }
+  #s01-uptoo .chips { display: flex; gap: 18px; flex-wrap: wrap; }
+  #s01-uptoo .chips .pill { font-size: 28px; padding: 14px 28px; }
+  #s01-uptoo .source { position: absolute; left: 120px; bottom: 96px; font-family: var(--mono); font-size: 20px; color: var(--muted); }
+
+  /* Conviction */
+  #s01-uptoo .quote { position: absolute; left: 120px; right: 120px; top: 230px; display: flex; gap: 60px; align-items: flex-start; }
+  #s01-uptoo .qmark { font-weight: 900; font-size: 300px; line-height: 0.8; color: var(--orange); }
+  #s01-uptoo .qtxt { font-weight: 800; font-size: 82px; line-height: 1.12; letter-spacing: -0.03em; max-width: 1420px; }
+  #s01-uptoo .qtxt em { font-style: normal; color: var(--orange-ink); }
+  #s01-uptoo .qsub { margin-top: 34px; }
+
+  /* Sommaire */
+  #s01-uptoo .agenda { position: absolute; left: 120px; right: 120px; top: 360px; }
+  #s01-uptoo .agenda-line { position: absolute; left: 60px; right: 60px; top: 60px; height: 6px; border-radius: 3px; background: var(--navy); display: block; }
+  #s01-uptoo .steps { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  #s01-uptoo .step { display: flex; flex-direction: column; gap: 30px; }
+  #s01-uptoo .step-dot { width: 126px; height: 126px; border-radius: 50%; background: var(--white); border: 6px solid var(--navy); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-weight: 700; font-size: 40px; }
+  #s01-uptoo .step:nth-child(3) .step-dot { background: var(--orange); border-color: var(--orange); color: var(--white); }
+  #s01-uptoo .step .h3 { font-size: 44px; max-width: 480px; }
+  #s01-uptoo .step .lead { font-size: 28px; max-width: 470px; }
+</style>
+
+<div class="hdr"><span class="hdr-num">01</span><span class="hdr-rule"></span><span class="hdr-title">Qui est Uptoo Digital ?</span></div>
+
+<!-- Paragraphe 2 : chiffres clés -->
+<div class="facts">
+  <div class="card navy badge">
+    <div>
+      <div class="lbl">PARTENAIRE</div>
+      <div class="h2">HubSpot Elite</div>
+    </div>
+    <div class="ico orange lg" data-icon="check"></div>
+  </div>
+  <div class="card stat"><div class="stat-num"><span>+</span><b class="n" data-to="650">0</b></div><div class="stat-lbl">projets CRM livrés</div></div>
+  <div class="card stat"><div class="stat-num"><span>+</span><b class="n" data-to="350">0</b></div><div class="stat-lbl">entreprises accompagnées</div></div>
+  <div class="card expertise">
+    <div class="eyebrow">Expertise</div>
+    <div class="chips">
+      <span class="pill"><i data-icon="users" style="width:30px;height:30px;display:block"></i>CRM</span>
+      <span class="pill"><i data-icon="database" style="width:30px;height:30px;display:block"></i>Données</span>
+      <span class="pill orange"><i data-icon="link" style="width:30px;height:30px;display:block"></i>Intégrations sur mesure</span>
+    </div>
+  </div>
+</div>
+<div class="source">Source : site officiel d'Uptoo Digital</div>
+
+<!-- Paragraphe 3 : conviction -->
+<div class="quote">
+  <div class="qmark">“</div>
+  <div>
+    <div class="qtxt">La technologie doit être <em>au service de la performance</em> des entreprises.</div>
+    <div class="lead qsub">… et faciliter le travail de leurs équipes.</div>
+  </div>
+</div>
+
+<!-- Paragraphe 4 : sommaire -->
+<div class="agenda">
+  <span class="agenda-line"></span>
+  <div class="steps">
+    <div class="step"><div class="step-dot">01</div><div class="h3">Vos enjeux</div><div class="lead">Notre compréhension de la situation de JJA</div></div>
+    <div class="step"><div class="step-dot">02</div><div class="h3">Notre réponse</div><div class="lead">Point par point, au cahier des charges</div></div>
+    <div class="step"><div class="step-dot">03</div><div class="h3">Organisation</div><div class="lead">Calendrier, équipe et engagements</div></div>
+  </div>
+</div>
+
+<!-- Paragraphes 0-1 : couverture -->
+<div class="cover">
+  <span class="deco-ring ring-a"></span><span class="deco-ring ring-b"></span>
+  <div class="cover-top"><span class="cover-brand">Uptoo Digital</span><span class="cover-x">×</span><span class="cover-brand">JJA</span></div>
+  <div class="cover-title">Réponse à votre appel d'offres CRM</div>
+  <div class="cover-sub">Accompagner JJA dans l'évolution de ses outils et de ses processus commerciaux</div>
+  <span class="cover-rule"></span>
+</div>
+<div class="wipe"></div>

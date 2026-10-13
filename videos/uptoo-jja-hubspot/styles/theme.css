@@ -1,0 +1,153 @@
+/* Thème partagé — Uptoo Digital × JJA
+   Toutes les couleurs et tailles de la vidéo partent d'ici. */
+:root {
+  --navy: #0b1e3f;        /* bleu foncé principal */
+  --navy-2: #163463;      /* bleu foncé secondaire (schémas) */
+  --blue-tint: #e6ecf6;   /* fond de cartes teinté bleu */
+  --bg: #f3f5f9;          /* gris très clair (fond général) */
+  --white: #ffffff;
+  --line: #d3dbe8;        /* gris clair : filets, bordures */
+  --muted: #55647d;       /* texte secondaire */
+  --orange: #f26a1b;      /* touche d'orange (formes, grands chiffres) */
+  --orange-ink: #b84a08;  /* orange lisible pour petits textes sur fond clair */
+  --display: "Montserrat", sans-serif;
+  --mono: "IBM Plex Mono", monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ---------- Base d'une scène ---------- */
+.sc {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--display);
+  color: var(--navy);
+}
+.sc .stage {
+  position: absolute;
+  inset: 0;
+  padding: 196px 120px 120px;
+}
+
+/* En-tête de scène : numéro + titre */
+.sc .hdr {
+  position: absolute;
+  top: 64px;
+  left: 120px;
+  right: 120px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.sc .hdr-num {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--orange-ink);
+  letter-spacing: 0.06em;
+}
+.sc .hdr-rule { display: block; width: 56px; height: 4px; border-radius: 2px; background: var(--orange); }
+.sc .hdr-title { font-weight: 800; font-size: 44px; letter-spacing: -0.02em; }
+
+/* Étiquette d'intervenant·e */
+.sc .speaker {
+  position: absolute;
+  right: 120px;
+  top: 58px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 26px 10px 10px;
+  border-radius: 100px;
+  background: var(--white);
+  border: 2px solid var(--line);
+}
+.sc .speaker-dot {
+  display: flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--navy); color: var(--white);
+  font-weight: 800; font-size: 20px;
+}
+.sc .speaker-txt { font-size: 22px; font-weight: 700; }
+.sc .speaker-txt span { font-weight: 400; color: var(--muted); }
+
+/* Panneau de chapitre (ouverture / fermeture de scène) */
+.sc .chapter {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  background: var(--navy);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 180px;
+}
+.sc .chapter-num {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 34px;
+  color: var(--orange);
+  letter-spacing: 0.1em;
+  margin-bottom: 28px;
+}
+.sc .chapter-title { font-weight: 900; font-size: 112px; line-height: 1.02; letter-spacing: -0.035em; max-width: 1500px; }
+.sc .chapter-bar { display: block; width: 160px; height: 8px; border-radius: 4px; background: var(--orange); margin-top: 48px; }
+.sc .wipe { position: absolute; inset: 0; z-index: 45; background: var(--navy); }
+
+/* Typographie */
+.sc .eyebrow {
+  font-family: var(--mono); font-weight: 700; font-size: 22px;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange-ink);
+}
+.sc .h1 { font-weight: 900; font-size: 96px; line-height: 1.04; letter-spacing: -0.035em; }
+.sc .h2 { font-weight: 800; font-size: 60px; line-height: 1.1; letter-spacing: -0.025em; }
+.sc .h3 { font-weight: 700; font-size: 36px; line-height: 1.2; letter-spacing: -0.015em; }
+.sc .lead { font-weight: 400; font-size: 32px; line-height: 1.45; color: var(--muted); }
+.sc .mono { font-family: var(--mono); }
+.sc .accent { color: var(--orange-ink); }
+
+/* Composants */
+.sc .card {
+  background: var(--white);
+  border: 2px solid var(--line);
+  border-radius: 22px;
+}
+.sc .card.navy { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.sc .pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 22px; border-radius: 100px;
+  font-weight: 700; font-size: 22px;
+  background: var(--blue-tint); color: var(--navy);
+}
+.sc .pill.orange { background: #fde6d7; color: var(--orange-ink); }
+.sc .ico {
+  display: flex; align-items: center; justify-content: center;
+  width: 84px; height: 84px; border-radius: 22px;
+  background: var(--blue-tint); color: var(--navy);
+  flex: none;
+}
+.sc .ico svg { width: 46px; height: 46px; }
+.sc .ico.orange { background: var(--orange); color: var(--white); }
+.sc .ico.navy { background: var(--navy); color: var(--white); }
+.sc .ico.lg { width: 120px; height: 120px; border-radius: 30px; }
+.sc .ico.lg svg { width: 64px; height: 64px; }
+.sc .stamp {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 12px 24px; border-radius: 12px;
+  border: 2px dashed var(--orange); color: var(--orange-ink);
+  font-family: var(--mono); font-weight: 700; font-size: 22px;
+  background: #fff8f3;
+}
+
+/* Décor de fond commun */
+.sc .deco-ring {
+  position: absolute; border-radius: 50%;
+  border: 3px solid var(--line);
+}
+.sc .deco-dots {
+  position: absolute; width: 220px; height: 220px;
+  background-image: radial-gradient(var(--navy) 2.5px, transparent 2.5px);
+  background-size: 28px 28px; opacity: 0.16;
+}

@@ -1,0 +1,61 @@
+<style>
+  #s05-complements .intro { position: absolute; left: 120px; top: 220px; }
+  #s05-complements .cols { position: absolute; left: 120px; right: 120px; top: 290px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  #s05-complements .col { padding: 40px 40px 44px; display: flex; flex-direction: column; gap: 22px; }
+  #s05-complements .num { font-family: var(--mono); font-weight: 700; font-size: 26px; color: var(--orange-ink); }
+  #s05-complements .col .h3 { font-size: 38px; }
+  #s05-complements .col .lead { font-size: 26px; line-height: 1.4; }
+  #s05-complements .viz { height: 150px; border-radius: 16px; background: var(--bg); position: relative; overflow: hidden; }
+  /* mini tableau de bord : barres sans valeurs (illustration) */
+  #s05-complements .bars { position: absolute; left: 30px; right: 30px; bottom: 26px; top: 30px; display: flex; align-items: flex-end; gap: 18px; }
+  #s05-complements .bars i { display: block; flex: 1; border-radius: 8px 8px 0 0; background: var(--navy-2); transform-origin: bottom center; }
+  #s05-complements .bars i:nth-child(2n) { background: var(--orange); }
+  /* fiches à contrôler */
+  #s05-complements .recs { position: absolute; inset: 16px 22px; display: flex; flex-direction: column; gap: 9px; }
+  #s05-complements .rec { display: flex; align-items: center; gap: 14px; height: 38px; padding: 0 14px; border-radius: 10px; background: var(--white); border: 2px solid var(--line); font-size: 20px; font-weight: 700; }
+  #s05-complements .rec .bar { display: block; flex: 1; height: 10px; border-radius: 5px; background: var(--line); }
+  #s05-complements .rec .tag { font-family: var(--mono); font-size: 18px; color: var(--orange-ink); }
+  /* téléphone */
+  #s05-complements .phone { position: absolute; left: 50%; top: 14px; width: 96px; height: 170px; margin-left: -55px; border-radius: 22px; border: 6px solid var(--navy); background: var(--white); }
+  #s05-complements .phone i { display: block; margin: 12px 10px 0; height: 12px; border-radius: 7px; background: var(--line); }
+  #s05-complements .phone i:first-child { background: var(--orange); width: 50%; }
+  #s05-complements .foot { position: absolute; left: 120px; right: 120px; top: 915px; display: flex; align-items: center; gap: 24px; }
+  #s05-complements .foot .pill { font-size: 26px; padding: 14px 26px; }
+</style>
+
+<div class="hdr"><span class="hdr-num">03C</span><span class="hdr-rule"></span><span class="hdr-title">Les fonctionnalités complémentaires proposées</span></div>
+<div class="intro eyebrow">Au-delà des fonctionnalités demandées · 3 améliorations</div>
+
+<div class="cols">
+  <div class="card col">
+    <div class="num">01</div>
+    <div class="viz"><div class="bars"><i style="height:45%"></i><i style="height:70%"></i><i style="height:55%"></i><i style="height:85%"></i><i style="height:62%"></i></div></div>
+    <div class="h3">Tableaux de bord par marque et par distributeur</div>
+    <div class="lead">Suivre les échanges, les opportunités et les actions commerciales par segment.</div>
+  </div>
+  <div class="card col">
+    <div class="num">02</div>
+    <div class="viz"><div class="recs">
+      <div class="rec"><span class="bar"></span><span class="tag">INCOMPLÈTE</span></div>
+      <div class="rec"><span class="bar"></span><span class="tag">DOUBLON</span></div>
+      <div class="rec"><span class="bar"></span><span class="tag">À METTRE À JOUR</span></div>
+    </div></div>
+    <div class="h3">Contrôle de la qualité des données</div>
+    <div class="lead">Repérer les fiches incomplètes, les doublons et les données à mettre à jour.</div>
+  </div>
+  <div class="card col">
+    <div class="num">03</div>
+    <div class="viz"><div class="phone"><i></i><i></i><i></i><i></i><i></i></div></div>
+    <div class="h3">Accès mobile</div>
+    <div class="lead">Les collaborateurs autorisés consultent les informations utiles en déplacement.</div>
+  </div>
+</div>
+
+<div class="foot">
+  <span class="pill"><i data-icon="zap" style="width:30px;height:30px;display:block"></i>Plus utile au quotidien</span>
+  <span class="pill"><i data-icon="target" style="width:30px;height:30px;display:block"></i>De meilleures décisions commerciales</span>
+  <span class="stamp">Périmètre selon les licences et possibilités techniques retenues</span>
+</div>
+
+<div class="chapter"><div class="chapter-num">PARTIE 3 · ENJEU 6 ET VALEUR AJOUTÉE</div><div class="chapter-title">Les fonctionnalités complémentaires</div><span class="chapter-bar"></span></div>
+<div class="wipe"></div>

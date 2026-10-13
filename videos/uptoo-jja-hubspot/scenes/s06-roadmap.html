@@ -1,0 +1,62 @@
+<style>
+  #s06-roadmap .gantt { position: absolute; left: 120px; right: 120px; top: 220px; }
+  #s06-roadmap .axis { position: relative; margin-left: 520px; height: 60px; border-bottom: 3px solid var(--navy); }
+  #s06-roadmap .month { position: absolute; top: 0; font-family: var(--mono); font-weight: 700; font-size: 24px; color: var(--muted); }
+  #s06-roadmap .tick { position: absolute; bottom: -12px; width: 3px; height: 20px; background: var(--navy); display: block; }
+  #s06-roadmap .rows { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+  #s06-roadmap .row { position: relative; display: flex; align-items: center; height: 92px; }
+  #s06-roadmap .lbl { width: 520px; padding-right: 30px; display: flex; align-items: center; gap: 20px; }
+  #s06-roadmap .lbl .n { width: 54px; height: 54px; flex: none; border-radius: 50%; background: var(--navy); color: var(--white); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-weight: 700; font-size: 24px; }
+  #s06-roadmap .lbl .h3 { font-size: 30px; }
+  #s06-roadmap .track { position: relative; flex: 1; height: 100%; }
+  #s06-roadmap .bar { position: absolute; top: 12px; bottom: 12px; border-radius: 14px; background: var(--navy-2); color: var(--white); display: flex; align-items: center; padding: 0 20px; overflow: hidden; }
+  #s06-roadmap .bar .d { font-family: var(--mono); font-weight: 700; font-size: 22px; white-space: nowrap; }
+  #s06-roadmap .row:last-child .bar { background: var(--orange); }
+  #s06-roadmap .desc { position: absolute; left: 0; right: 0; top: 0; }
+  #s06-roadmap .flag { position: absolute; right: -10px; top: -86px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  #s06-roadmap .flag .pill { font-size: 24px; padding: 10px 20px; }
+  #s06-roadmap .now { position: absolute; top: -10px; bottom: -4px; width: 4px; border-radius: 2px; background: var(--orange); display: block; }
+  #s06-roadmap .detail { position: absolute; left: 120px; right: 120px; top: 830px; padding: 26px 34px; display: flex; align-items: center; gap: 26px; }
+  #s06-roadmap .detail .h3 { font-size: 32px; }
+  #s06-roadmap .detail .lead { font-size: 26px; }
+  #s06-roadmap .keys { position: absolute; left: 120px; right: 120px; top: 830px; display: grid; grid-template-columns: auto 1fr 1fr 1fr; gap: 20px; align-items: stretch; }
+  #s06-roadmap .keys .eyebrow { align-self: center; padding-right: 10px; }
+  #s06-roadmap .key { padding: 22px 26px; display: flex; align-items: center; gap: 18px; font-size: 25px; font-weight: 700; line-height: 1.3; }
+  #s06-roadmap .key .ico { width: 60px; height: 60px; border-radius: 16px; }
+  #s06-roadmap .key .ico svg { width: 34px; height: 34px; }
+</style>
+
+<div class="hdr"><span class="hdr-num">04</span><span class="hdr-rule"></span><span class="hdr-title">Roadmap du projet · 2024</span></div>
+
+<div class="gantt">
+  <div class="axis">
+    <span class="month" style="left:0%">MAI</span>
+    <span class="month" style="left:15.9%">JUIN</span>
+    <span class="month" style="left:63.5%">JUILLET</span>
+    <span class="tick" style="left:15.9%"></span><span class="tick" style="left:63.5%"></span>
+    <div class="flag"><span class="pill orange"><i data-icon="flag" style="width:28px;height:28px;display:block"></i>Livraison · 24 juillet 2024</span></div>
+  </div>
+  <div class="rows">
+    <div class="row"><div class="lbl"><span class="n">1</span><span class="h3">Cadrage et diagnostic</span></div><div class="track"><div class="bar" style="left:0%;width:15.9%"><span class="d">22–31 mai</span></div></div></div>
+    <div class="row"><div class="lbl"><span class="n">2</span><span class="h3">Conception et paramétrage</span></div><div class="track"><div class="bar" style="left:19%;width:19%"><span class="d">3–14 juin</span></div></div></div>
+    <div class="row"><div class="lbl"><span class="n">3</span><span class="h3">Migration et intégration</span></div><div class="track"><div class="bar" style="left:41.3%;width:19%"><span class="d">17–28 juin</span></div></div></div>
+    <div class="row"><div class="lbl"><span class="n">4</span><span class="h3">Tests et corrections</span></div><div class="track"><div class="bar" style="left:63.5%;width:19%"><span class="d">1er–12 juillet</span></div></div></div>
+    <div class="row"><div class="lbl"><span class="n">5</span><span class="h3">Formation et livraison</span></div><div class="track"><div class="bar" style="left:85.7%;width:14.3%"><span class="d">15–24 juil.</span></div></div></div>
+  </div>
+</div>
+
+<div class="card detail" data-i="0"><div class="ico" data-icon="search"></div><div><div class="h3">Analyse des données SQL, des processus et des besoins des utilisateurs</div></div></div>
+<div class="card detail" data-i="1"><div class="ico" data-icon="sliders"></div><div><div class="h3">Configuration du CRM, des champs, des profils et des rapports</div></div></div>
+<div class="card detail" data-i="2"><div class="ico" data-icon="sync"></div><div><div class="h3">Reprise des données et mise en place des échanges avec Sage X3</div></div></div>
+<div class="card detail" data-i="3"><div class="ico" data-icon="flask"></div><div><div class="h3">Vérification des données, des droits, des imports/exports et des échanges entre outils</div></div></div>
+<div class="card detail" data-i="4"><div class="ico orange" data-icon="graduation"></div><div><div class="h3">Formation des collaborateurs en France, préparation du lancement et livraison</div></div></div>
+
+<div class="keys">
+  <div class="eyebrow">Conditions de réussite</div>
+  <div class="card key"><div class="ico" data-icon="check"></div>Validation rapide des règles de gestion par JJA</div>
+  <div class="card key"><div class="ico" data-icon="lock"></div>Accès aux environnements nécessaires</div>
+  <div class="card key"><div class="ico" data-icon="flask"></div>Validation des tests avant la mise en service</div>
+</div>
+
+<div class="chapter"><div class="chapter-num">PARTIE 4 · DIAPOSITIVE 04</div><div class="chapter-title">Le planning du projet</div><span class="chapter-bar"></span></div>
+<div class="wipe"></div>
