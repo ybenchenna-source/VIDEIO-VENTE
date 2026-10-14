@@ -41,16 +41,7 @@
       <div id="foot">
         <div class="brand"><b>UPTOO DIGITAL</b> × JJA</div>
         <div class="bar">
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
-        <div class="seg"><div class="seg-fill"></div></div>
+{{SEGMENTS}}
         </div>
         <div class="note">Simulation · projet scolaire</div>
       </div>
@@ -58,9 +49,8 @@
       <!-- Les scènes, dans l'ordre de l'oral (assemblées depuis scenes/*.html) -->
 {{SCENES}}
 
-      <!-- Voix enregistrée (optionnel) : déposer le fichier dans assets/ puis décommenter.
+      <!-- Voix enregistrée (assemblée par tools/caler_voix.py) -->
       <audio id="voix" src="assets/voix.mp3" data-start="0" data-duration="{{TOTAL}}" data-track-index="10" data-volume="1"></audio>
-      -->
     </div>
 
 {{SCRIPTS}}

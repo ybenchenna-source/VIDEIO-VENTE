@@ -25,7 +25,7 @@ const SCENE_TAIL = 1.0; // marge après la dernière phrase (passage de parole)
 const TARGET_TOTAL = 480; // durée visée (s) : 8 min. Les temps estimés sont mis à l'échelle. Mettre null pour garder le débit naturel.
 
 const IDS = ["s01-uptoo", "s02-enjeux", "s03-donnees", "s04-outils", "s05-complements",
-  "s06-roadmap", "s07-equipe", "s08-edma", "s09-budget", "s10-conclusion"];
+  "s06-roadmap", "s07-equipe", "s08-edma", "s10-conclusion"];
 
 const round = (n) => Math.round(n * 10) / 10;
 
@@ -87,14 +87,15 @@ function apply() {
     + `window.TOTAL_DURATION = ${total};\n`;
   fs.writeFileSync(path.join(ROOT, "scripts/cues.js"), cuesJs);
 
-  // 2. index.html — assemblé depuis tools/index.template.html + scenes/<id>.html + scenes/<id>.js
-  const tpl = fs.readFileSync(path.join(ROOT, "tools/index.template.html"), "utf8").replace(/^<!--.*?-->\n/, "");
+  // 2. index.html — assemblé depuis tools/index.template.tpl + scenes/<id>.html + scenes/<id>.js
+  const tpl = fs.readFileSync(path.join(ROOT, "tools/index.template.tpl"), "utf8").replace(/^<!--.*?-->\n/, "");
   const sections = layout.map((s) => {
     const frag = fs.readFileSync(path.join(ROOT, `scenes/${s.id}.html`), "utf8").trim().replace(/^/gm, "        ");
     return `      <section id="${s.id}" class="sc clip" data-start="${s.at}" data-duration="${s.duration}" data-track-index="1">\n${frag}\n      </section>`;
   }).join("\n\n");
   const scripts = layout.map((s) => `    <script src="scenes/${s.id}.js"></script>`).join("\n");
-  const html = tpl.replaceAll("{{TOTAL}}", String(total)).replace("{{SCENES}}", sections).replace("{{SCRIPTS}}", scripts);
+  const html = tpl.replaceAll("{{TOTAL}}", String(total)).replace("{{SCENES}}", sections).replace("{{SCRIPTS}}", scripts)
+    .replace("{{SEGMENTS}}", layout.map(() => '        <div class="seg"><div class="seg-fill"></div></div>').join("\n"));
   fs.writeFileSync(path.join(ROOT, "index.html"), html);
 
   // 3. TIMING.md — feuille de repères

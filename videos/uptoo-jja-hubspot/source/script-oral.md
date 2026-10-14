@@ -44,7 +44,7 @@ Le deuxième point essentiel est la connexion avec Sage X3.
 
 Une intégration bidirectionnelle signifie que certaines données peuvent remonter de Sage X3 vers HubSpot, tandis que d'autres peuvent repartir de HubSpot vers Sage X3, selon des règles définies ensemble. L'objectif est d'éviter les ressaisies et de conserver des informations cohérentes.
 
-Uptoo Digital présente déjà une réalisation de ce type avec EDMA, où les contacts, commandes et historiques sont synchronisés entre les deux outils.
+Uptoo Digital présente déjà une réalisation de ce type avec l'entreprise EDMA, où les contacts, commandes et historiques sont synchronisés entre les deux outils.
 
 Nous prévoyons également les imports en masse, les filtres, la recherche avancée et les exports de données. Les équipes pourront joindre des documents aux fiches clients, planifier leurs actions et suivre leurs résultats à l'aide de rapports.
 
@@ -102,17 +102,7 @@ Le cas client mentionne une vision client à 360 degrés, zéro double saisie et
 
 Cette référence est particulièrement pertinente pour JJA, car elle porte sur les deux outils au cœur de votre projet.
 
-## SCÈNE 9 — Budget et engagement
-
-Concernant le budget, nous avons bien pris en compte votre enveloppe maximale de 50 000 euros hors taxes sur deux ans.
-
-Notre offre doit intégrer l'ensemble des coûts prévus dans votre cahier des charges : les licences, la configuration, la migration, l'intégration avec Sage X3, la formation, l'assistance et les trois types de maintenance.
-
-Nous prévoyons également un prix ferme pendant la durée du contrat, ainsi que la cession à JJA de la propriété des développements spécifiques réalisés dans le cadre du projet, conformément à votre cahier des charges.
-
-Le point de vigilance concerne le coût des licences pour 450 utilisateurs. Les tarifs publics actuels de HubSpot ne permettent pas de confirmer que l'ensemble du périmètre peut tenir dans votre enveloppe. Pour présenter une offre ferme et crédible, il faut donc obtenir une proposition tarifaire adaptée au volume d'utilisateurs et confirmer les profils de licences nécessaires.
-
-## SCÈNE 10 — Conclusion
+## SCÈNE 9 — Conclusion
 
 Demain, vos équipes doivent pouvoir ouvrir le CRM et retrouver rapidement les informations dont elles ont besoin : qui contacter, quel est l'historique de la relation et quelle action réaliser ensuite.
 

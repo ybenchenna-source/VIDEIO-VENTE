@@ -1,0 +1,12 @@
+{
+  "_note": "Enregistrement utilisé pour chaque scène, dans l'ordre de la vidéo (vérifié par transcription). Ensuite : python3 tools/caler_voix.py && node tools/timing.mjs apply",
+  "s01-uptoo": "assets/voix/01-dilia.mp4",
+  "s02-enjeux": "assets/voix/02-dilia.mp4",
+  "s03-donnees": "assets/voix/03a-yasmine.mpeg",
+  "s04-outils": "assets/voix/03b-yasmine.mpeg",
+  "s05-complements": "assets/voix/03c-yasmine.mpeg",
+  "s06-roadmap": "assets/voix/04-yasmine.mpeg",
+  "s07-equipe": "assets/voix/05-houda-equipe.mp4",
+  "s08-edma": "assets/voix/06-houda-edma.mp4",
+  "s10-conclusion": "assets/voix/08-yacine-conclusion.mp4"
+}

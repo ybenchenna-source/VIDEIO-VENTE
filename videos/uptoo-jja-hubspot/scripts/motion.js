@@ -65,6 +65,8 @@
       dur: meta.duration,
       t: (x) => meta.at + x, // temps relatif à la scène → temps absolu
       cue: (i, offset = 0) => meta.at + (cues[i] ?? 0) + offset, // début du paragraphe i (+ décalage)
+      span: (i) => (cues[i + 1] ?? meta.duration - 0.9) - (cues[i] ?? 0), // durée du paragraphe i
+      within: (i, f) => meta.at + (cues[i] ?? 0) + f * ((cues[i + 1] ?? meta.duration - 0.9) - (cues[i] ?? 0)), // à f (0→1) du paragraphe i
       q: (sel) => root.querySelectorAll(sel),
       one: (sel) => root.querySelector(sel),
     };
