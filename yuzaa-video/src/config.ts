@@ -1,0 +1,104 @@
+/**
+ * ─────────────────────────────────────────────────────────────
+ *  RÉGLAGES DE LA VIDÉO YUZAA : textes, prix, couleurs, timing
+ * ─────────────────────────────────────────────────────────────
+ *  Tout ce qui s'affiche à l'écran se change ici.
+ *
+ *  Mise en couleur : entoure un mot de [crochets] pour l'afficher
+ *  dans la couleur d'accent de la ligne (champ `accent`).
+ *  Avant € et %, garde une espace insécable (Alt+Maj+Espace sur Mac,
+ *  ou tape \u00A0) pour que le symbole ne passe pas seul à la ligne.
+ */
+
+export const COLORS = {
+  // Vert de la marque (fond)
+  green900: "#0F3320",
+  green700: "#1B5A31",
+  green500: "#2A8046",
+  green300: "#7FC594",
+  // Éveil / ambre
+  amber500: "#F5BC75",
+  amber700: "#A3600F",
+  // Rush / rouge
+  red500: "#D93A2B",
+  red300: "#F28A7C",
+  // Sable
+  sand50: "#FAF7EF",
+  sand900: "#1B1A16",
+} as const;
+
+export const FPS = 30;
+export const DURATION_IN_FRAMES = 20 * FPS; // 20 s = 600 images
+
+/** Début et fin de chaque scène, en secondes. */
+export const SCENES = {
+  hook: { from: 0, to: 2.5 },
+  money: { from: 2.5, to: 6 },
+  plants: { from: 6, to: 10 },
+  range: { from: 10, to: 15 },
+  cup: { from: 15, to: 18 },
+  end: { from: 18, to: 20 },
+} as const;
+
+export const TEXTS = {
+  // Scène 1 — accroche
+  hook: {
+    title: "Tes [2 canettes] par jour ?",
+    accent: COLORS.red300,
+  },
+
+  // Scène 2 — le coût
+  money: {
+    amount: 69, // le compteur monte de 0 à ce nombre
+    unit: " €",
+    perMonth: "par mois",
+    sugar: "+ du [sucre] à chaque canette",
+    accent: COLORS.red300,
+  },
+
+  // Scène 3 — les plantes
+  plants: {
+    title: "Infusions énergisantes [100 % plantes], {zéro sucre ajouté}",
+    accent: COLORS.green300, // couleur des [crochets]
+    accent2: COLORS.amber500, // couleur des {accolades}
+  },
+
+  // Scène 4 — la gamme
+  range: {
+    products: [
+      { name: "Éveil", dose: "40 mg", color: COLORS.green300 },
+      { name: "Focus", dose: "60 mg", color: COLORS.amber500 },
+      { name: "Rush", dose: "80 mg", color: COLORS.red300 },
+    ],
+    subtitle: "de caféine par tasse, [affichée sur chaque recette]",
+    accent: COLORS.green300,
+  },
+
+  // Scène 5 — canette contre tasse
+  cup: {
+    canPrice: "1,50 €",
+    canLabel: "la canette",
+    cupPrice: "0,30 €",
+    cupLabel: "la tasse",
+    monthly: "14 €",
+    monthlyLabel: "par mois",
+  },
+
+  // Scène 6 — plan final
+  end: {
+    brand: "yuzaa",
+    offerName: "Coffret Découverte",
+    offerPrice: "19,90 €",
+    promoText: "-10 % sur ta 1re commande :",
+    promoCode: "BIENVENUE10",
+    url: "yuzaa.vercel.app",
+  },
+} as const;
+
+/**
+ * Musique : dépose un fichier libre de droits dans public/music/
+ * puis indique son nom ici, par exemple "music/ma-musique.mp3".
+ * Laisse `null` pour la version sans son.
+ */
+export const MUSIC_FILE: string | null = null;
+export const MUSIC_VOLUME = 0.8;
