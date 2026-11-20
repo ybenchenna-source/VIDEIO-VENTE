@@ -4,6 +4,7 @@ import { COLORS, MUSIC_FILE, MUSIC_VOLUME } from "./config";
 import "./fonts";
 import { Overlay } from "./overlay/Overlay";
 import { Scene3D } from "./three/Scene3D";
+import { ClipsLayer, TextScrim, clipAt } from "./Clips";
 
 /** Fond vert foncé de la marque, avec un halo doux au centre. */
 const Background: React.FC = () => (
@@ -33,10 +34,18 @@ const Grain: React.FC = () => {
   );
 };
 
+/** La 3D n'est calculée que là où aucun clip vidéo ne couvre l'image. */
+const Scene3DWhenNeeded: React.FC = () => {
+  const frame = useCurrentFrame();
+  return clipAt(frame) ? null : <Scene3D />;
+};
+
 export const Yuzaa: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: COLORS.green900 }}>
     <Background />
-    <Scene3D />
+    <Scene3DWhenNeeded />
+    <ClipsLayer />
+    <TextScrim />
     <Grain />
     <Overlay />
     {/* Emplacement musique : voir MUSIC_FILE dans src/config.ts */}

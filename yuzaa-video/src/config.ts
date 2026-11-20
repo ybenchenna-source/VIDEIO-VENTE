@@ -102,3 +102,16 @@ export const TEXTS = {
  */
 export const MUSIC_FILE: string | null = null;
 export const MUSIC_VOLUME = 0.8;
+
+/**
+ * Clips vidéo (générés avec Veo dans Gemini) à placer dans public/clips/.
+ * from / to : images de début et de fin dans la pub (30 images = 1 s).
+ * trimStart : secondes à couper au début du clip. rate : vitesse de lecture.
+ * Là où aucun clip n'est prévu, la vidéo affiche les scènes 3D.
+ * Pour ajouter un clip (ex. tasse.mp4 de 15 s à 18 s) :
+ *   { file: "clips/tasse.mp4", from: 450, to: 540, trimStart: 0.5, rate: 1.2 },
+ */
+export const CLIPS: { file: string; from: number; to: number; trimStart: number; rate: number }[] = [
+  { file: "clips/canette.mp4", from: 0, to: 183, trimStart: 0.6, rate: 1.57 },
+  { file: "clips/feuilles.mp4", from: 183, to: 303, trimStart: 0.8, rate: 1.4 },
+];

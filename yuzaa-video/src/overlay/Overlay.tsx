@@ -57,7 +57,7 @@ const Bottom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 /* ───────────── Scène 1 ───────────── */
 const Hook: React.FC<{ k: number }> = ({ k }) => (
   <Top offset={20}>
-    <Reveal inAt={6} outAt={80}>
+    <Reveal inAt={6} outAt={100}>
       <h1 style={{ ...headline, fontSize: 124 * k }}>
         <Rich text={TEXTS.hook.title} accent={TEXTS.hook.accent} />
       </h1>
@@ -69,12 +69,12 @@ const Hook: React.FC<{ k: number }> = ({ k }) => (
 const Money: React.FC<{ k: number }> = ({ k }) => {
   const frame = useCurrentFrame();
   const n = Math.round(
-    interpolate(frame, [84, 114], [0, TEXTS.money.amount], { ...clamp, easing: Easing.out(Easing.cubic) }),
+    interpolate(frame, [106, 120], [0, TEXTS.money.amount], { ...clamp, easing: Easing.out(Easing.cubic) }),
   );
   return (
     <>
       <Top>
-        <Reveal inAt={80} outAt={188}>
+        <Reveal inAt={104} outAt={186}>
           <div style={{ ...headline, fontSize: 300 * k, color: TEXTS.money.accent, fontVariantNumeric: "tabular-nums", lineHeight: 0.9 }}>
             {n}
             {TEXTS.money.unit}
@@ -83,7 +83,7 @@ const Money: React.FC<{ k: number }> = ({ k }) => {
         </Reveal>
       </Top>
       <Bottom>
-        <Reveal inAt={98} outAt={188}>
+        <Reveal inAt={124} outAt={186}>
           <div style={{ ...body, fontWeight: 600, fontSize: 58 * k }}>
             <Rich text={TEXTS.money.sugar} accent={TEXTS.money.accent} />
           </div>
