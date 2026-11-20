@@ -19,6 +19,12 @@
       "skillPath": "skills/brand-intake/SKILL.md",
       "computedHash": "a4ab9773c4e82b9c7453aed3ca68442bdc705944f1a4e7c2ff89c9a0d394a848"
     },
+    "elevenlabs": {
+      "source": "digitalsamba/claude-code-video-toolkit",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/elevenlabs/SKILL.md",
+      "computedHash": "540f6ae3ad668172ee7dca020910028ab2e6d70f77c44e4274448775fe07f3dc"
+    },
     "embedded-captions": {
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
