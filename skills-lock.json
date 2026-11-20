@@ -1,6 +1,24 @@
 {
   "version": 1,
   "skills": {
+    "animated-chart": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/animated-chart/SKILL.md",
+      "computedHash": "bf7f8644e66c3f9101d582642fb21b4c409011144741784323e7fb946c25a077"
+    },
+    "apple-launch-film": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/apple-launch-film/SKILL.md",
+      "computedHash": "9d6c49377921c1607fadf188a28d7e863f64ad83ac06962b058b076795f5f90b"
+    },
+    "brand-intake": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/brand-intake/SKILL.md",
+      "computedHash": "a4ab9773c4e82b9c7453aed3ca68442bdc705944f1a4e7c2ff89c9a0d394a848"
+    },
     "embedded-captions": {
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
@@ -30,6 +48,36 @@
       "sourceType": "github",
       "skillPath": "skills/general-video/SKILL.md",
       "computedHash": "0e2a3befc2af6fa8a2b4f561de299ac53774a45ce405a7ec6266551d8b397b13"
+    },
+    "gsap-core": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gsap-core/SKILL.md",
+      "computedHash": "dfc8ba849fa8b81c8cc60964ee2a5fa8db4b2a2611801cf549a5b267b8284fa5"
+    },
+    "gsap-performance": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gsap-performance/SKILL.md",
+      "computedHash": "4dd4382cad329927a248fbe55c426901f2bf4f5c598db6ef5ec38c19861b829f"
+    },
+    "gsap-plugins": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gsap-plugins/SKILL.md",
+      "computedHash": "328b52a98e9704c0349ba2cee23a6a92376c06b6b1fd3e60e5c20395b55e25e8"
+    },
+    "gsap-timeline": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gsap-timeline/SKILL.md",
+      "computedHash": "622140f48b7aa6bcf2f4d4c050b8fa20effa533688a1650854f5ffc1be169a0b"
+    },
+    "gsap-utils": {
+      "source": "greensock/gsap-skills",
+      "sourceType": "github",
+      "skillPath": "skills/gsap-utils/SKILL.md",
+      "computedHash": "d05b56284eea0118d481b8c673aff27cae66199282995bfe78315785f561002d"
     },
     "hyperframes": {
       "source": "heygen-com/hyperframes",
@@ -85,11 +133,47 @@
       "skillPath": "skills/hyperframes-studio/SKILL.md",
       "computedHash": "3ac6b0019626b0cfa0d067c52ae3e46b5d98722784b1ef103ac301a1815dfd7a"
     },
+    "launch-video": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/launch-video/SKILL.md",
+      "computedHash": "0122a7e03c22a51693ac2c59269d3a4337dbb4ee2f6bdc9625cb6b1087c2a12e"
+    },
+    "loop-cover": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/loop-cover/SKILL.md",
+      "computedHash": "2fcd6dc8dd4f8efa63bd2b068ba0d31b311c30ef2fa8b4caa09ca95d6b5ef384"
+    },
     "media-use": {
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
       "skillPath": "skills/media-use/SKILL.md",
       "computedHash": "1498b6c6a86c2c3b3b7046888035413dea6b7717ff941f14f115092433bb2a8c"
+    },
+    "milestone-reveal": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/milestone-reveal/SKILL.md",
+      "computedHash": "99f107102ac218f40c294015c437ac68524416c8b6d962c9dba9dda4d9bf98a9"
+    },
+    "model-showdown": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/model-showdown/SKILL.md",
+      "computedHash": "c4c32be9c9816dff005c203dfa95c423df2aae70188800b4e6cfa1ee8dd6add4"
+    },
+    "motion-brief-writer": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/motion-brief-writer/SKILL.md",
+      "computedHash": "b2e846aaa2624bf95202ee290ba8a07eafadc4438911f382ce0f48d018236c13"
+    },
+    "motion-effects": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/motion-effects/SKILL.md",
+      "computedHash": "665f2911af78d794d32cd18c2c775b76ff12699fbbb05d7954eb21bb4f2b2b33"
     },
     "motion-graphics": {
       "source": "heygen-com/hyperframes",
@@ -97,11 +181,29 @@
       "skillPath": "skills/motion-graphics/SKILL.md",
       "computedHash": "f2ecbb79ac73f817c38fc002f5bde99be4a020e8cc544f71d3817df994f26986"
     },
+    "motion-prompt-writer": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/motion-prompt-writer/SKILL.md",
+      "computedHash": "a984c4625eea48c3b3ec779b8418f3b1f72b60b912474c5e6b93948d6217b306"
+    },
+    "motionmaxxing": {
+      "source": "Tejashmakwana/motionmaxxing",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "7b72654564c77dc2c0faee415835589529bc38aa6ae0d9e1100a51fed2c26d3e"
+    },
     "music-to-video": {
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
       "skillPath": "skills/music-to-video/SKILL.md",
       "computedHash": "66793a5bc8dfb9ce03b7721fe42f4a685d8a95bc727602e6d661ec1f4aa9711d"
+    },
+    "newsletter-promo": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/newsletter-promo/SKILL.md",
+      "computedHash": "ab4f48303759b75528b0fbd09ba021bc01843b00561b1d5a75d2d69f6a0e0e19"
     },
     "pr-to-video": {
       "source": "heygen-com/hyperframes",
@@ -114,6 +216,18 @@
       "sourceType": "github",
       "skillPath": "skills/product-launch-video/SKILL.md",
       "computedHash": "9df1efcda7a3e02b0e372a77262bc30333b61686a48bd553efe97c4737e1f5d6"
+    },
+    "reel-export": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/reel-export/SKILL.md",
+      "computedHash": "b1dc112e84eefb44000a2661ddb9d63b96ef0b6d26d0f3d6cc8e4c83de2d425d"
+    },
+    "reference-to-motion": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/reference-to-motion/SKILL.md",
+      "computedHash": "e090335adae1b0233d00fe2e341c19b0a02a18579af7b61765164655de45934f"
     },
     "remotion-to-hyperframes": {
       "source": "heygen-com/hyperframes",
@@ -132,6 +246,18 @@
       "sourceType": "github",
       "skillPath": "skills/talking-head-recut/SKILL.md",
       "computedHash": "83df91f488236abbc53d3c817f31b4554de8e772c2e8a17a15c0a72664da9eca"
+    },
+    "title-sequence-3d": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/title-sequence-3d/SKILL.md",
+      "computedHash": "c22dae16fed38d03886e1e060f26fa5e70b0b33d318477a9394f9a63d090ec2a"
+    },
+    "vox-explainer": {
+      "source": "charlie947/motion-graphics-skills",
+      "sourceType": "github",
+      "skillPath": "skills/vox-explainer/SKILL.md",
+      "computedHash": "9f7033b698ad90313818325583b9bdf6db824fe1f385210d4a1b73db7c704676"
     }
   }
 }
