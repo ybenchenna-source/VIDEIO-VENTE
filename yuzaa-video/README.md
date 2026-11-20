@@ -78,3 +78,19 @@ Si le téléchargement du navigateur de Remotion est bloqué, indique un Chrome 
 ```bash
 export REMOTION_BROWSER=/chemin/vers/chrome-headless-shell
 ```
+
+## Jingle de fin
+
+Compositions `Jingle-9x16` et `Jingle-4x5` (`src/jingle/Jingle.tsx`, 4 s) : le logo yuzaa jaillit au milieu
+d'un tourbillon de feuilles, la voix off dit « yuzaa ! Infusez votre journée ! ». Sons dans `public/jingle/`
+(signature musicale, voix, whoosh, scintillement, générés avec ElevenLabs).
+
+| Fichier | Contenu |
+|---|---|
+| `out/jingle-yuzaa.mp4` / `-4x5` | le jingle seul (4 s) |
+| `out/video_voixoff.mp4` / `-4x5` | la pub avec voix off et effets sonores (20 s) |
+| `out/video_voixoff_jingle.mp4` / `-4x5` | la pub + le jingle en fondu enchaîné (23,7 s) |
+
+```bash
+npx remotion render Jingle-9x16 out/jingle-yuzaa.mp4
+```
