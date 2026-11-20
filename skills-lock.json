@@ -217,6 +217,12 @@
       "skillPath": "skills/product-launch-video/SKILL.md",
       "computedHash": "9df1efcda7a3e02b0e372a77262bc30333b61686a48bd553efe97c4737e1f5d6"
     },
+    "r3f-best-practices": {
+      "source": "emalorenzo/three-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/r3f-best-practices/SKILL.md",
+      "computedHash": "891bc6edbf035bf778849226f5d36863254f1f197868fc60e386c5801f684d26"
+    },
     "reel-export": {
       "source": "charlie947/motion-graphics-skills",
       "sourceType": "github",
@@ -228,6 +234,36 @@
       "sourceType": "github",
       "skillPath": "skills/reference-to-motion/SKILL.md",
       "computedHash": "e090335adae1b0233d00fe2e341c19b0a02a18579af7b61765164655de45934f"
+    },
+    "remotion-best-practices": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-best-practices/SKILL.md",
+      "computedHash": "3a00c916c1a0ee0ccb64b27b08049508d712d65c04ee1bd84d96709854c488e4"
+    },
+    "remotion-create": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-create/SKILL.md",
+      "computedHash": "9402d545b7881ff9485f922cb44fca4b518ef6b735a4ea1842f46b4e11d991be"
+    },
+    "remotion-markup": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-markup/SKILL.md",
+      "computedHash": "d2d9c6abc7596a196a3a3026aeebd9720650d6fb80365219b849605f27a30a5f"
+    },
+    "remotion-render": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-render/SKILL.md",
+      "computedHash": "c2c5b613675efce3196a12b6323686ba493212f12de317cc2876ffe2e1eb8061"
+    },
+    "remotion-studio": {
+      "source": "remotion-dev/skills",
+      "sourceType": "github",
+      "skillPath": "skills/remotion-studio/SKILL.md",
+      "computedHash": "fd7645d47c6f5935ec5dc9486d5391bd0bab90ca7de810a4c9f6621f4b963cc9"
     },
     "remotion-to-hyperframes": {
       "source": "heygen-com/hyperframes",
@@ -246,6 +282,12 @@
       "sourceType": "github",
       "skillPath": "skills/talking-head-recut/SKILL.md",
       "computedHash": "83df91f488236abbc53d3c817f31b4554de8e772c2e8a17a15c0a72664da9eca"
+    },
+    "three-best-practices": {
+      "source": "emalorenzo/three-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/three-best-practices/SKILL.md",
+      "computedHash": "01abee3b74806e3fbd01bf0df352af8cea353809b349dfcadc2b846205242874"
     },
     "title-sequence-3d": {
       "source": "charlie947/motion-graphics-skills",
