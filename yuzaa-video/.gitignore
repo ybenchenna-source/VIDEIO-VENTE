@@ -11,3 +11,4 @@ blender/tex/
 __pycache__/
 out/trans/
 out/dbg*
+out/*-master.mp4

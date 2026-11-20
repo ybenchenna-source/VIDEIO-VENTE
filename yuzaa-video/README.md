@@ -20,6 +20,11 @@ npm run dev           # aperçu interactif dans Remotion Studio
 ```
 
 Les MP4 sont en H.264, avec une piste audio silencieuse (acceptée partout).
+Le grain de film rend les fichiers bruts lourds (environ 100 Mo) ; pour les publier, réencode-les :
+
+```bash
+ffmpeg -i out/yuzaa-canette-vs-tasse.mp4 -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p -movflags +faststart -c:a aac out/yuzaa-final.mp4
+```
 
 ## Changer les textes, les prix, les couleurs
 

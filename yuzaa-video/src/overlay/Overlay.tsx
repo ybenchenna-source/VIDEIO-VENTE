@@ -4,7 +4,7 @@ import { COLORS, TEXTS } from "../config";
 import { getLayout, projectToScreen } from "../layout";
 import { boxTop } from "../three/choreo";
 import { clipAt, isLight, videoPoint } from "../Clips";
-import { BODY, DISPLAY, Reveal, Rich } from "./Text";
+import { BODY, DISPLAY, Kinetic, Reveal, Rich } from "./Text";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
@@ -76,9 +76,9 @@ const Bottom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 /* ───────────── Scène 1 ───────────── */
 const Hook: React.FC<{ k: number }> = ({ k }) => (
   <Top offset={20}>
-    <Reveal inAt={6} outAt={100}>
+    <Reveal inAt={6} outAt={100} enter={false}>
       <h1 style={{ ...headline, fontSize: 124 * k }}>
-        <Rich text={TEXTS.hook.title} accent={TEXTS.hook.accent} />
+        <Kinetic text={TEXTS.hook.title} accent={TEXTS.hook.accent} inAt={6} />
       </h1>
     </Reveal>
   </Top>
@@ -90,11 +90,23 @@ const Money: React.FC<{ k: number }> = ({ k }) => {
   const n = Math.round(
     interpolate(frame, [106, 120], [0, TEXTS.money.amount], { ...clamp, easing: Easing.out(Easing.cubic) }),
   );
+  const hit = frame >= 120 ? Math.exp(-(frame - 120) / 4) : 0;
   return (
     <>
       <Top>
-        <Reveal inAt={104} outAt={186}>
-          <div style={{ ...headline, fontSize: 300 * k, color: TEXTS.money.accent, fontVariantNumeric: "tabular-nums", lineHeight: 0.9 }}>
+        <Reveal inAt={104} outAt={186} pop>
+          <div
+            style={{
+              ...headline,
+              fontSize: 300 * k,
+              color: TEXTS.money.accent,
+              fontVariantNumeric: "tabular-nums",
+              lineHeight: 0.9,
+              scale: String(1 + 0.2 * hit),
+              rotate: `${-4 * hit}deg`,
+              transformOrigin: "left center",
+            }}
+          >
             {n}
             {TEXTS.money.unit}
           </div>
@@ -102,9 +114,9 @@ const Money: React.FC<{ k: number }> = ({ k }) => {
         </Reveal>
       </Top>
       <Bottom>
-        <Reveal inAt={124} outAt={186}>
+        <Reveal inAt={124} outAt={186} enter={false}>
           <div style={{ ...body, fontWeight: 600, fontSize: 58 * k }}>
-            <Rich text={TEXTS.money.sugar} accent={TEXTS.money.accent} />
+            <Kinetic text={TEXTS.money.sugar} accent={TEXTS.money.accent} inAt={124} />
           </div>
         </Reveal>
       </Bottom>
@@ -115,9 +127,9 @@ const Money: React.FC<{ k: number }> = ({ k }) => {
 /* ───────────── Scène 3 ───────────── */
 const Plants: React.FC<{ k: number }> = ({ k }) => (
   <Top>
-    <Reveal inAt={194} outAt={262}>
+    <Reveal inAt={190} outAt={262} enter={false}>
       <h1 style={{ ...headline, fontSize: 98 * k }}>
-        <Rich text={TEXTS.plants.title} accent={TEXTS.plants.accent} accent2={TEXTS.plants.accent2} />
+        <Kinetic text={TEXTS.plants.title} accent={TEXTS.plants.accent} accent2={TEXTS.plants.accent2} inAt={190} stagger={1.8} />
       </h1>
     </Reveal>
   </Top>
@@ -156,7 +168,7 @@ const Range: React.FC<{ k: number }> = ({ k }) => {
             key={p.name}
             style={{ position: "absolute", left: cx - labelW / 2, top: bottom - 160 * k, width: labelW, textAlign: "center" }}
           >
-            <Reveal inAt={318 + i * 8} outAt={452} dy={30} style={light ? { ...card(k), padding: `${10 * k}px ${8 * k}px` } : undefined}>
+            <Reveal inAt={326 + i * 6} outAt={452} dy={60} pop style={light ? { ...card(k), padding: `${10 * k}px ${8 * k}px` } : undefined}>
               <div style={{ ...body, fontWeight: 600, fontSize: 42 * k, opacity: 0.9, ...(light ? { color: ON_LIGHT.text, textShadow: ON_LIGHT.shadow } : {}) }}>
                 {p.name}
               </div>
@@ -177,9 +189,9 @@ const Range: React.FC<{ k: number }> = ({ k }) => {
       })}
       {onClip ? (
         <Top>
-          <Reveal inAt={312} outAt={452} style={{ ...card(k), display: "inline-block" }}>
+          <Reveal inAt={312} outAt={452} pop style={{ ...card(k), display: "inline-block" }}>
             <div style={{ ...headline, fontSize: 60 * k, lineHeight: 1.05, color: ON_LIGHT.text, textShadow: "none" }}>
-              <Rich text={TEXTS.range.subtitle} accent={ON_LIGHT.green} />
+              <Kinetic text={TEXTS.range.subtitle} accent={ON_LIGHT.green} inAt={316} stagger={1.6} />
             </div>
           </Reveal>
         </Top>
@@ -231,7 +243,7 @@ const Compare: React.FC<{ k: number }> = ({ k }) => {
           <span style={{ ...body, fontWeight: 600, fontSize: 54 * k, opacity: 0.9, ...ink }}>{TEXTS.cup.cupLabel}</span>
         </div>
       </Reveal>
-      <Reveal inAt={490} outAt={542}>
+      <Reveal inAt={490} outAt={542} pop dy={40} style={{ rotate: "-3deg", transformOrigin: "left center" }}>
         <div
           style={{
             display: "inline-flex",
@@ -264,7 +276,7 @@ const End: React.FC<{ k: number }> = ({ k }) => {
   return (
     <>
       <Top offset={-10 * k}>
-        <Reveal inAt={540} outAt={99999} dy={60}>
+        <Reveal inAt={540} outAt={99999} dy={40} pop>
           <div style={{ display: "flex", alignItems: "center", gap: 18 * k }}>
             <Logo size={176 * k} />
             <div style={{ ...headline, fontSize: 236 * k, letterSpacing: "-0.05em", lineHeight: 0.85 }}>{E.brand}</div>

@@ -5,6 +5,7 @@ import "./fonts";
 import { Overlay } from "./overlay/Overlay";
 import { Scene3D } from "./three/Scene3D";
 import { ClipsLayer, TextScrim, clipAt } from "./Clips";
+import { MotionBlurDefs } from "./motion";
 
 /** Fond vert foncé de la marque, avec un halo doux au centre. */
 const Background: React.FC = () => (
@@ -42,6 +43,7 @@ const Scene3DWhenNeeded: React.FC = () => {
 
 export const Yuzaa: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: COLORS.green900 }}>
+    <MotionBlurDefs />
     <Background />
     <Scene3DWhenNeeded />
     <ClipsLayer />

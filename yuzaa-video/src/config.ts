@@ -123,16 +123,20 @@ export type ClipSpec = {
   dim?: boolean;
   /** Largeur / hauteur réelle du fichier (9/16 par défaut). */
   ratio?: number;
+  /** Transition d'entrée : panoramique éclair vertical / horizontal, ou zoom traversant. */
+  enter?: "whipUp" | "whipLeft" | "zoom";
+  /** Images (dans la pub) où l'action frappe : coup de zoom + secousse. */
+  beats?: number[];
 };
 
 /** Les clips passés par WhatsApp font 480 × 848 (un peu plus larges que 9:16). */
 const WA = 480 / 848;
 
 export const CLIPS: ClipSpec[] = [
-  { file: "clips/canette.mp4", from: 0, to: 183, trimStart: 0.6, rate: 1.57 },
-  { file: "clips/feuilles.mp4", from: 183, to: 255, trimStart: 0.8, rate: 1.4 },
-  { file: "clips/eveil.mp4", from: 255, to: 303, trimStart: 2.4, rate: 1.3, light: true, ratio: WA },
-  { file: "clips/gamme.mp4", from: 303, to: 450, trimStart: 0.3, rate: 1, light: true, ratio: WA },
-  { file: "clips/tasse.mp4", from: 450, to: 540, trimStart: 1.0, rate: 1, light: true, ratio: WA },
-  { file: "clips/gamme.mp4", from: 540, to: 600, trimStart: 5.5, rate: 1, dim: true, ratio: WA },
+  { file: "clips/canette.mp4", from: 0, to: 183, trimStart: 0.6, rate: 1.57, beats: [15, 94, 115] },
+  { file: "clips/feuilles.mp4", from: 183, to: 255, trimStart: 0.8, rate: 1.4, enter: "whipUp" },
+  { file: "clips/eveil.mp4", from: 255, to: 303, trimStart: 2.4, rate: 1.3, light: true, ratio: WA, enter: "zoom" },
+  { file: "clips/gamme.mp4", from: 303, to: 450, trimStart: 0.3, rate: 1, light: true, ratio: WA, enter: "whipLeft" },
+  { file: "clips/tasse.mp4", from: 450, to: 540, trimStart: 1.0, rate: 1, light: true, ratio: WA, enter: "whipUp" },
+  { file: "clips/gamme.mp4", from: 540, to: 600, trimStart: 5.5, rate: 1, dim: true, ratio: WA, enter: "zoom" },
 ];
