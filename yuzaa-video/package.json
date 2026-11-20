@@ -35,7 +35,11 @@
     "dev": "remotion studio",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
-    "lint": "eslint src && tsc"
+    "lint": "eslint src && tsc",
+    "render": "remotion render Yuzaa-9x16 out/yuzaa-canette-vs-tasse.mp4 --enforce-audio-track",
+    "render:4x5": "remotion render Yuzaa-4x5 out/yuzaa-canette-vs-tasse-4x5.mp4 --enforce-audio-track",
+    "apercus": "remotion render Yuzaa-9x16 out/keyframes --frames=30,120,240,360,480,570 --image-format=png",
+    "modeles-3d": "python blender/build_assets.py"
   },
   "allowScripts": {
     "esbuild": false

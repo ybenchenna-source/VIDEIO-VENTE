@@ -111,7 +111,28 @@ export const MUSIC_VOLUME = 0.8;
  * Pour ajouter un clip (ex. tasse.mp4 de 15 s à 18 s) :
  *   { file: "clips/tasse.mp4", from: 450, to: 540, trimStart: 0.5, rate: 1.2 },
  */
-export const CLIPS: { file: string; from: number; to: number; trimStart: number; rate: number }[] = [
+export type ClipSpec = {
+  file: string;
+  from: number;
+  to: number;
+  trimStart: number;
+  rate: number;
+  /** Plan clair : les textes passent en vert foncé et le voile sombre est retiré. */
+  light?: boolean;
+  /** Fond flouté et assombri (plan final, sous les textes). */
+  dim?: boolean;
+  /** Largeur / hauteur réelle du fichier (9/16 par défaut). */
+  ratio?: number;
+};
+
+/** Les clips passés par WhatsApp font 480 × 848 (un peu plus larges que 9:16). */
+const WA = 480 / 848;
+
+export const CLIPS: ClipSpec[] = [
   { file: "clips/canette.mp4", from: 0, to: 183, trimStart: 0.6, rate: 1.57 },
-  { file: "clips/feuilles.mp4", from: 183, to: 303, trimStart: 0.8, rate: 1.4 },
+  { file: "clips/feuilles.mp4", from: 183, to: 255, trimStart: 0.8, rate: 1.4 },
+  { file: "clips/eveil.mp4", from: 255, to: 303, trimStart: 2.4, rate: 1.3, light: true, ratio: WA },
+  { file: "clips/gamme.mp4", from: 303, to: 450, trimStart: 0.3, rate: 1, light: true, ratio: WA },
+  { file: "clips/tasse.mp4", from: 450, to: 540, trimStart: 1.0, rate: 1, light: true, ratio: WA },
+  { file: "clips/gamme.mp4", from: 540, to: 600, trimStart: 5.5, rate: 1, dim: true, ratio: WA },
 ];

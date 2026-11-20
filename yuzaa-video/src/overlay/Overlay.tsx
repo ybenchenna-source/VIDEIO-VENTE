@@ -3,6 +3,7 @@ import { AbsoluteFill, Easing, interpolate, useCurrentFrame, useVideoConfig } fr
 import { COLORS, TEXTS } from "../config";
 import { getLayout, projectToScreen } from "../layout";
 import { boxTop } from "../three/choreo";
+import { clipAt, isLight, videoPoint } from "../Clips";
 import { BODY, DISPLAY, Reveal, Rich } from "./Text";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -24,6 +25,24 @@ const body: React.CSSProperties = {
   color: COLORS.sand50,
   lineHeight: 1.2,
 };
+
+/** Couleurs des textes posés sur un plan clair (mur blanc, fenêtre). */
+const ON_LIGHT = {
+  text: COLORS.green900,
+  green: COLORS.green500,
+  amber: COLORS.amber700,
+  red: COLORS.red500,
+  shadow: "0 2px 18px rgba(255, 252, 240, 0.7)",
+};
+
+/** Étiquette crème translucide qui détache un texte d'un fond chargé. */
+const card = (k: number): React.CSSProperties => ({
+  background: "rgba(250, 247, 239, 0.78)",
+  backdropFilter: "blur(8px)",
+  borderRadius: 24 * k,
+  padding: `${14 * k}px ${22 * k}px`,
+  boxShadow: "0 10px 30px rgba(15, 51, 32, 0.18)",
+});
 
 /** Bloc de texte collé en haut de la zone de sécurité. */
 const Top: React.FC<{ children: React.ReactNode; offset?: number }> = ({ children, offset = 0 }) => {
@@ -96,7 +115,7 @@ const Money: React.FC<{ k: number }> = ({ k }) => {
 /* ───────────── Scène 3 ───────────── */
 const Plants: React.FC<{ k: number }> = ({ k }) => (
   <Top>
-    <Reveal inAt={196} outAt={302}>
+    <Reveal inAt={194} outAt={262}>
       <h1 style={{ ...headline, fontSize: 98 * k }}>
         <Rich text={TEXTS.plants.title} accent={TEXTS.plants.accent} accent2={TEXTS.plants.accent2} />
       </h1>
@@ -105,35 +124,74 @@ const Plants: React.FC<{ k: number }> = ({ k }) => (
 );
 
 /* ───────────── Scène 4 ───────────── */
+const DOSE_COLORS_ON_LIGHT = [COLORS.green500, COLORS.amber700, COLORS.red500];
+/** Centre horizontal de chaque boîte sur le clip gamme.mp4 (repère 1080 × 1920). */
+const GAMME_BOX_X = [165, 465, 780];
+const GAMME_LABEL_BOTTOM = 770;
+
 const Range: React.FC<{ k: number }> = ({ k }) => {
   const frame = useCurrentFrame();
   const { width, height, fps } = useVideoConfig();
   const L = getLayout(width, height);
-  const labelW = 230 * k;
+  const labelW = 246 * k;
+  const onClip = clipAt(375);
+  const light = isLight(375);
   return (
     <>
       {TEXTS.range.products.map((p, i) => {
-        const at = projectToScreen(frame, width, height, boxTop(i as 0 | 1 | 2, frame, fps));
-        const cx = Math.min(Math.max(at.x, L.left * 0.6 + labelW / 2), width - L.right - labelW / 2);
+        let cx: number;
+        let bottom: number;
+        if (onClip) {
+          const pt = videoPoint(GAMME_BOX_X[i], GAMME_LABEL_BOTTOM, width, height);
+          cx = pt.x;
+          bottom = pt.y;
+        } else {
+          const at = projectToScreen(frame, width, height, boxTop(i as 0 | 1 | 2, frame, fps));
+          cx = at.x;
+          bottom = at.y - 30 * k;
+        }
+        cx = Math.min(Math.max(cx, L.left * 0.6 + labelW / 2), width - L.right - labelW / 2);
         return (
           <div
             key={p.name}
-            style={{ position: "absolute", left: cx - labelW / 2, top: at.y - 190 * k, width: labelW, textAlign: "center" }}
+            style={{ position: "absolute", left: cx - labelW / 2, top: bottom - 160 * k, width: labelW, textAlign: "center" }}
           >
-            <Reveal inAt={324 + i * 8} outAt={452} dy={30}>
-              <div style={{ ...body, fontWeight: 600, fontSize: 42 * k, opacity: 0.85 }}>{p.name}</div>
-              <div style={{ ...headline, fontSize: 84 * k, color: p.color, whiteSpace: "nowrap" }}>{p.dose}</div>
+            <Reveal inAt={318 + i * 8} outAt={452} dy={30} style={light ? { ...card(k), padding: `${10 * k}px ${8 * k}px` } : undefined}>
+              <div style={{ ...body, fontWeight: 600, fontSize: 42 * k, opacity: 0.9, ...(light ? { color: ON_LIGHT.text, textShadow: ON_LIGHT.shadow } : {}) }}>
+                {p.name}
+              </div>
+              <div
+                style={{
+                  ...headline,
+                  fontSize: 74 * k,
+                  color: light ? DOSE_COLORS_ON_LIGHT[i] : p.color,
+                  whiteSpace: "nowrap",
+                  ...(light ? { textShadow: ON_LIGHT.shadow } : {}),
+                }}
+              >
+                {p.dose}
+              </div>
             </Reveal>
           </div>
         );
       })}
-      <Bottom>
-        <Reveal inAt={340} outAt={452}>
-          <div style={{ ...headline, fontSize: 64 * k, lineHeight: 1.05 }}>
-            <Rich text={TEXTS.range.subtitle} accent={TEXTS.range.accent} />
-          </div>
-        </Reveal>
-      </Bottom>
+      {onClip ? (
+        <Top>
+          <Reveal inAt={312} outAt={452} style={{ ...card(k), display: "inline-block" }}>
+            <div style={{ ...headline, fontSize: 60 * k, lineHeight: 1.05, color: ON_LIGHT.text, textShadow: "none" }}>
+              <Rich text={TEXTS.range.subtitle} accent={ON_LIGHT.green} />
+            </div>
+          </Reveal>
+        </Top>
+      ) : (
+        <Bottom>
+          <Reveal inAt={340} outAt={452}>
+            <div style={{ ...headline, fontSize: 64 * k, lineHeight: 1.05 }}>
+              <Rich text={TEXTS.range.subtitle} accent={TEXTS.range.accent} />
+            </div>
+          </Reveal>
+        </Bottom>
+      )}
     </>
   );
 };
@@ -142,12 +200,14 @@ const Range: React.FC<{ k: number }> = ({ k }) => {
 const Compare: React.FC<{ k: number }> = ({ k }) => {
   const frame = useCurrentFrame();
   const strike = interpolate(frame, [480, 494], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const light = isLight(495);
+  const ink = light ? { color: ON_LIGHT.text, textShadow: ON_LIGHT.shadow } : {};
   const row: React.CSSProperties = { display: "flex", alignItems: "baseline", gap: 22 * k };
   return (
     <Top>
       <Reveal inAt={456} outAt={540}>
         <div style={row}>
-          <span style={{ ...headline, fontSize: 118 * k, color: COLORS.red300, position: "relative" }}>
+          <span style={{ ...headline, fontSize: 118 * k, color: light ? ON_LIGHT.red : COLORS.red300, position: "relative", ...(light ? { textShadow: ON_LIGHT.shadow } : {}) }}>
             {TEXTS.cup.canPrice}
             <span
               style={{
@@ -156,19 +216,19 @@ const Compare: React.FC<{ k: number }> = ({ k }) => {
                 top: "52%",
                 height: 10 * k,
                 width: `${strike * 104}%`,
-                background: COLORS.sand50,
+                background: light ? ON_LIGHT.text : COLORS.sand50,
                 borderRadius: 6,
                 rotate: "-6deg",
               }}
             />
           </span>
-          <span style={{ ...body, fontWeight: 600, fontSize: 54 * k, opacity: 0.85 }}>{TEXTS.cup.canLabel}</span>
+          <span style={{ ...body, fontWeight: 600, fontSize: 54 * k, opacity: 0.9, ...ink }}>{TEXTS.cup.canLabel}</span>
         </div>
       </Reveal>
       <Reveal inAt={468} outAt={540}>
         <div style={{ ...row, marginTop: 10 * k }}>
-          <span style={{ ...headline, fontSize: 118 * k, color: COLORS.green300 }}>{TEXTS.cup.cupPrice}</span>
-          <span style={{ ...body, fontWeight: 600, fontSize: 54 * k, opacity: 0.85 }}>{TEXTS.cup.cupLabel}</span>
+          <span style={{ ...headline, fontSize: 118 * k, color: light ? ON_LIGHT.green : COLORS.green300, ...(light ? { textShadow: ON_LIGHT.shadow } : {}) }}>{TEXTS.cup.cupPrice}</span>
+          <span style={{ ...body, fontWeight: 600, fontSize: 54 * k, opacity: 0.9, ...ink }}>{TEXTS.cup.cupLabel}</span>
         </div>
       </Reveal>
       <Reveal inAt={490} outAt={542}>
