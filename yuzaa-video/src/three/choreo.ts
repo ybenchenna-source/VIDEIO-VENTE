@@ -8,6 +8,37 @@ import { Easing, interpolate, random, spring } from "remotion";
 export const FLOOR = -1.3;
 export const BOX = { w: 0.9, h: 1.36, d: 0.5 };
 export const CAN_H = 1.24;
+/** La canette d'accroche se pose directement sur le bureau (plateau à FLOOR + 0.004). */
+export const CAN_PODIUM_H = 0.004;
+
+/* ───────────── Changement de décor (bureau → studio botanique) ───────────── */
+
+/** Image du changement de décor : une feuille géante masque alors tout l'écran. */
+export const SET_SWAP = 205;
+export const deskDrop = (_frame: number) => 0;
+export const deskVisible = (frame: number) => frame < SET_SWAP;
+
+/** Le décor botanique monte en place juste après. */
+export const botanicalRise = (frame: number) =>
+  interpolate(frame, [SET_SWAP, SET_SWAP + 26], [0, 1], { ...clamp, easing: out });
+export const botanicalVisible = (frame: number) => frame >= SET_SWAP;
+
+/** Grandes feuilles qui balaient l'écran au premier plan (transition). */
+export const WIPE_COUNT = 12;
+export const wipeLeaf = (i: number, frame: number) => {
+  const start = 188 + i * 1.7;
+  const p = interpolate(frame, [start, start + 18], [0, 1], { ...clamp, easing: Easing.inOut(Easing.quad) });
+  const z = 5.2 + random(`w-z-${i}`) * 2.2;
+  const spread = (10.4 - z) * 0.45; // plus la feuille est proche, moins elle doit voyager
+  const lane = (random(`w-l-${i}`) - 0.5) * 2.2;
+  return {
+    pos: [lerp(-spread * 1.6, spread * 1.6, p), lerp(-spread * 2.4, spread * 2.4, p) + lane * spread * 0.6, z] as Vec3,
+    rot: [0.9 + p * 2.2, random(`w-r-${i}`) * 6, -0.8 + p * 1.6] as Vec3,
+    scale: 1.6 + random(`w-s-${i}`) * 1.2,
+    kind: (i % 3 === 0 ? "mate" : "guayusa") as "mate" | "guayusa",
+    visible: p > 0 && p < 1,
+  };
+};
 
 type Vec3 = [number, number, number];
 
@@ -21,7 +52,7 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 export const heroCan = (frame: number) => {
   // Chute avec rebonds (0 → 30)
-  const y = interpolate(frame, [0, 30], [4.6, FLOOR], { ...clamp, easing: Easing.bounce });
+  const y = interpolate(frame, [0, 30], [4.6, FLOOR + CAN_PODIUM_H], { ...clamp, easing: Easing.bounce });
   const rotY = interpolate(frame, [0, 70], [-4.2, 0.35], { ...clamp, easing: out }) + frame * 0.004;
   const landing = Math.max(0, frame - 30);
   const tiltZ =
@@ -41,16 +72,28 @@ export const heroCan = (frame: number) => {
   };
 };
 
-/** Petite canette de comparaison dans la scène 5. */
-export const compareCan = (frame: number) => {
-  const enter = interpolate(frame, [452, 478], [0, 1], { ...clamp, easing: out });
+/** Socle de la canette d'accroche : présent dès le début, s'enfonce quand les plantes arrivent. */
+export const canPodium = (frame: number) => {
+  const sink = interpolate(frame, [186, 214], [0, 1], { ...clamp, easing: inn });
+  return { pos: [0, FLOOR - sink * (CAN_PODIUM_H + 0.05), 0] as Vec3, visible: sink < 1 };
+};
+
+/** Petite canette de comparaison dans la scène 5, sur son socle. */
+export const COMPARE_PODIUM_H = 0.42;
+export const compareCan = (frame: number, fps: number) => {
+  const rise = spring({ frame: frame - 452, fps, config: { damping: 16, stiffness: 80 } });
   const exit = interpolate(frame, [532, 552], [0, 1], { ...clamp, easing: inn });
-  const s = 0.9;
+  const off = lerp(-(COMPARE_PODIUM_H + 1.3), 0, rise) - exit * (COMPARE_PODIUM_H + 1.3);
+  const s = 0.85;
+  const base: Vec3 = [-1.05, FLOOR + off, -0.8];
   return {
-    pos: [-1.05, lerp(FLOOR - 3.2, FLOOR, enter) - exit * 3.5, -0.8] as Vec3,
-    rot: [0, 0.5 + frame * 0.006, 0] as Vec3,
-    scale: [s, s, s] as Vec3,
-    visible: enter > 0 && exit < 1,
+    podium: { pos: base, visible: rise > 0.001 && exit < 1 },
+    can: {
+      pos: [base[0], base[1] + COMPARE_PODIUM_H, base[2]] as Vec3,
+      rot: [0, 0.5 + frame * 0.006, 0] as Vec3,
+      scale: [s, s, s] as Vec3,
+      visible: rise > 0.001 && exit < 1,
+    },
   };
 };
 
@@ -69,7 +112,7 @@ const coinOrbit = (i: number, frame: number): Vec3 => {
 
 export const coin = (i: number, frame: number, fps: number) => {
   const burst = spring({ frame: frame - 90 - (i % 4), fps, config: { damping: 15, stiffness: 70 } });
-  const start: Vec3 = [0, FLOOR + 0.35, 0];
+  const start: Vec3 = [0, FLOOR + CAN_PODIUM_H + 0.35, 0];
   const target = coinOrbit(i, frame);
   const lift = Math.sin(Math.min(1, burst) * Math.PI) * 0.9;
   const pos: Vec3 = [
@@ -97,7 +140,7 @@ export type LeafKind = "guayusa" | "mate" | "guarana";
 export const leafKind = (i: number): LeafKind =>
   i % 9 === 4 || i % 9 === 8 ? "guarana" : i % 2 === 0 ? "guayusa" : "mate";
 
-const HERO_BOX_Y = FLOOR + BOX.h / 2;
+const HERO_BOX_Y = FLOOR + 0.95 + BOX.h / 2; // centre de la boîte qui se forme en l'air
 
 export const leaf = (i: number, frame: number) => {
   const born = 184 + (i % 12) * 0.8;
@@ -127,51 +170,75 @@ export const leaf = (i: number, frame: number) => {
   };
 };
 
-/* ───────────── Boîtes ───────────── */
+/* ───────────── Boîtes sur socles ───────────── */
+
+/** Hauteur des socles : plus la dose de caféine est forte, plus le socle est haut. */
+export const PODIUM_H = [0.22, 0.44, 0.66] as const;
+export const PODIUM_COLORS = ["#1B5A31", "#A3600F", "#9E2318"] as const;
+const ROW_X = [-1.12, -0.12, 0.88];
+const END_X = [-0.78, -0.12, 0.54];
+const ROW_S = 0.86;
+const END_S = 0.6;
+const HERO_AIR_Y = FLOOR + 0.95;
+
+/** Socle d'une boîte : sort du sol (scène 4), y retourne, puis revient en petit (plan final). */
+export const boxPodium = (index: 0 | 1 | 2, frame: number, fps: number) => {
+  if (frame >= 536) {
+    const rise = spring({ frame: frame - 540 - index * 4, fps, config: { damping: 15, stiffness: 90 } });
+    const h = PODIUM_H[index] * END_S;
+    const off = lerp(-(h + BOX.h * END_S + 0.3), 0, rise);
+    return { pos: [END_X[index], FLOOR + off, 0.4] as Vec3, scale: END_S, top: FLOOR + off + h, visible: rise > 0.001 };
+  }
+  const rise = spring({ frame: frame - 300 - index * 8, fps, config: { damping: 15, stiffness: 80 } });
+  const exit = interpolate(frame, [446 + index * 4, 470 + index * 4], [0, 1], { ...clamp, easing: inn });
+  const h = PODIUM_H[index] * ROW_S;
+  const depth = h + BOX.h * ROW_S + 0.4;
+  const off = lerp(-depth, 0, rise) - exit * depth;
+  return {
+    pos: [ROW_X[index], FLOOR + off, 0] as Vec3,
+    scale: ROW_S,
+    top: FLOOR + off + h,
+    visible: rise > 0.001 && exit < 1,
+  };
+};
 
 /** 0 = Éveil, 1 = Focus, 2 = Rush */
 export const box = (index: 0 | 1 | 2, frame: number, fps: number) => {
-  const restY = (scale: number) => FLOOR + (BOX.h * scale) / 2;
+  const pod = boxPodium(index, frame, fps);
+  const rotRow = [0.24, 0, -0.24][index] + Math.sin(frame * 0.025 + index) * 0.03;
 
-  // Plan final : les trois boîtes reviennent, plus petites, sous le texte
   if (frame >= 536) {
-    const s = 0.6;
-    const rise = spring({ frame: frame - 540 - index * 4, fps, config: { damping: 14, stiffness: 90 } });
-    const xs = [-0.78, -0.12, 0.54];
     return {
-      pos: [xs[index], lerp(FLOOR - 3.5, restY(s), rise), 0.4] as Vec3,
+      pos: [pod.pos[0], pod.top + (BOX.h * END_S) / 2, pod.pos[2]] as Vec3,
       rot: [0, [0.28, 0, -0.28][index] + Math.sin(frame * 0.03) * 0.03, 0] as Vec3,
-      scale: s,
-      visible: rise > 0.001,
+      scale: END_S,
+      visible: pod.visible,
     };
   }
 
-  const s4 = 0.86;
-  const xs = [-1.12, -0.12, 0.88];
-  // Sortie vers le bas avant la scène de la tasse
-  const exit = interpolate(frame, [448 + index * 4, 472 + index * 4], [0, 1], { ...clamp, easing: inn });
-
   if (index === 0) {
-    // Éveil : se forme au centre (scène 3), puis glisse à gauche (scène 4)
+    // Éveil : se forme en l'air au centre (scène 3), puis se pose sur son socle à gauche
     const form = spring({ frame: frame - 236, fps, config: { damping: 13, stiffness: 80 } });
-    const toRow = interpolate(frame, [300, 332], [0, 1], { ...clamp, easing: io });
-    const scale = lerp(form, s4, toRow);
+    const toRow = interpolate(frame, [304, 338], [0, 1], { ...clamp, easing: io });
+    const scale = lerp(form, ROW_S, toRow);
     const spinIn = interpolate(frame, [236, 292], [-Math.PI * 2 - 0.5, -0.12], { ...clamp, easing: out });
-    const hover = interpolate(frame, [236, 290], [0.35, 0], { ...clamp, easing: io });
+    const bob = Math.sin(frame * 0.06) * 0.04 * (1 - toRow);
+    const airY = HERO_AIR_Y + (BOX.h * scale) / 2 + bob;
+    const seatY = pod.top + (BOX.h * ROW_S) / 2;
+    const exit = interpolate(frame, [446, 470], [0, 1], clamp);
     return {
-      pos: [lerp(0, xs[0], toRow), restY(scale) + hover - exit * 4.5, 0] as Vec3,
-      rot: [0, lerp(spinIn, 0.24, toRow) + Math.sin(frame * 0.025) * 0.03, 0] as Vec3,
+      pos: [lerp(0, pod.pos[0], toRow), lerp(airY, seatY, toRow), 0] as Vec3,
+      rot: [0, lerp(spinIn, rotRow, toRow), 0] as Vec3,
       scale,
       visible: form > 0.001 && exit < 1,
     };
   }
 
-  const rise = spring({ frame: frame - 304 - index * 8, fps, config: { damping: 14, stiffness: 75 } });
   return {
-    pos: [xs[index], lerp(FLOOR - 4.2, restY(s4), rise) - exit * 4.5, 0] as Vec3,
-    rot: [0, (index === 1 ? 0 : -0.24) + Math.sin(frame * 0.025 + index) * 0.03, 0] as Vec3,
-    scale: s4,
-    visible: rise > 0.001 && exit < 1,
+    pos: [pod.pos[0], pod.top + (BOX.h * ROW_S) / 2, pod.pos[2]] as Vec3,
+    rot: [0, rotRow, 0] as Vec3,
+    scale: ROW_S,
+    visible: pod.visible,
   };
 };
 
@@ -181,17 +248,24 @@ export const boxTop = (index: 0 | 1 | 2, frame: number, fps: number): Vec3 => {
   return [b.pos[0], b.pos[1] + (BOX.h * b.scale) / 2, b.pos[2]];
 };
 
-/* ───────────── Tasse ───────────── */
+/* ───────────── Tasse en verre sur son socle ───────────── */
 
+export const CUP_PODIUM_H = 0.2;
 export const cup = (frame: number, fps: number) => {
-  const rise = spring({ frame: frame - 456, fps, config: { damping: 15, stiffness: 70 } });
-  const exit = interpolate(frame, [532, 556], [0, 1], { ...clamp, easing: inn });
+  const rise = spring({ frame: frame - 456, fps, config: { damping: 16, stiffness: 70 } });
+  const exit = interpolate(frame, [530, 554], [0, 1], { ...clamp, easing: inn });
+  const depth = CUP_PODIUM_H + 1.6;
+  const off = lerp(-depth, 0, rise) - exit * depth;
+  const base: Vec3 = [0.42, FLOOR + off, 2.0];
   const s = 1.25;
   return {
-    pos: [0.42, lerp(FLOOR - 4, FLOOR, rise) - exit * 4.5, 2.0] as Vec3,
-    rot: [0, -0.5 + frame * 0.002, 0] as Vec3,
-    scale: s,
-    visible: rise > 0.001 && exit < 1,
-    steam: interpolate(frame, [470, 490, 528, 540], [0, 1, 1, 0], clamp),
+    podium: { pos: base, visible: rise > 0.001 && exit < 1 },
+    cup: {
+      pos: [base[0], base[1] + CUP_PODIUM_H, base[2]] as Vec3,
+      rot: [0, -0.5 + frame * 0.002, 0] as Vec3,
+      scale: s,
+      visible: rise > 0.001 && exit < 1,
+      steam: interpolate(frame, [470, 490, 526, 538], [0, 1, 1, 0], clamp),
+    },
   };
 };

@@ -8,6 +8,7 @@ import { BODY, DISPLAY, Reveal, Rich } from "./Text";
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 
 const headline: React.CSSProperties = {
+  textShadow: "0 4px 28px rgba(6, 26, 14, 0.45)",
   fontFamily: DISPLAY,
   fontWeight: 800,
   color: COLORS.sand50,
@@ -17,6 +18,7 @@ const headline: React.CSSProperties = {
 };
 
 const body: React.CSSProperties = {
+  textShadow: "0 3px 20px rgba(6, 26, 14, 0.5)",
   fontFamily: BODY,
   fontWeight: 500,
   color: COLORS.sand50,

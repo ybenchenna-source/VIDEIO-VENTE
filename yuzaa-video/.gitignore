@@ -5,3 +5,9 @@ dist
 
 # Ignore the output video from Git but not videos you import into src/.
 out/keyframes*/
+
+# Textures intermédiaires régénérées par blender/build_assets.py
+blender/tex/
+__pycache__/
+out/trans/
+out/dbg*
