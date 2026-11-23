@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+  <head><meta charset="UTF-8" /><title>Ouverture</title></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Bodoni Moda"; font-style: italic; font-weight: 400 700; src: url("assets/fonts/bodoni-italic.woff2") format("woff2"); }
+        @font-face { font-family: "Albert Sans"; font-style: normal; font-weight: 300 600; src: url("assets/fonts/albert-var.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: #f3ecdc; }
+        #open-title { font: italic 400 150px/0.98 "Bodoni Moda", serif; letter-spacing: -0.025em; margin: 0; }
+        #open-title .ln { display: block; overflow: hidden; padding: 0 .08em .08em; }
+        #open-title .ln span { display: inline-block; }
+        #open-kicker { font: 400 28px "Albert Sans", sans-serif; letter-spacing: .38em; text-transform: uppercase; color: #e6b064; margin: 0 0 40px; }
+        #open-kicker span { display: inline-block; }
+      </style>
+
+      <div id="root" data-composition-id="opening" data-width="1920" data-height="1080">
+        <div>
+          <p id="open-kicker"><span>Vespérale · infusions de la nuit</span></p>
+          <h1 id="open-title">
+            <span class="ln"><span id="open-l1">La nuit se boit</span></span>
+            <span class="ln"><span id="open-l2">lentement.</span></span>
+          </h1>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          tl.from("#open-kicker span", { y: 26, opacity: 0, duration: 0.8, ease: "expo.out" }, 0.35);
+          tl.from("#open-l1", { yPercent: 110, duration: 1.1, ease: "expo.out" }, 0.5);
+          tl.from("#open-l2", { yPercent: 110, duration: 1.1, ease: "expo.out" }, 0.66);
+          tl.to(["#open-l1", "#open-l2"], { yPercent: -110, duration: 0.6, ease: "power3.in", stagger: 0.06 }, 2.55);
+          tl.to("#open-kicker span", { y: -20, opacity: 0, duration: 0.45, ease: "power2.in" }, 2.55);
+          window.__timelines["opening"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

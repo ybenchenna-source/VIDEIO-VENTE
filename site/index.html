@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d1c">
+<meta name="description" content="Vespérale compose des infusions de plantes entières, sans théine, pour chaque heure de la soirée. Boutique en ligne, abonnement à chaque nouvelle lune.">
+<title>Vespérale, infusions de la nuit</title>
+<script>try{if(!sessionStorage.getItem('vsp:intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&(!location.hash||location.hash==='#accueil')){document.documentElement.classList.add('intro');sessionStorage.setItem('vsp:intro','1');}}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300..600&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&display=swap" rel="stylesheet">
+<style>
+/* Plan : un seul monde visuel, la nuit, défilé en douceur avec Lenis et animé avec GSAP (ScrollTrigger, SplitText).
+   Moment signature : une section collante où le défilement fait avancer la soirée de 20 h à 2 h ;
+   le ciel s'assombrit, une petite lune traverse l'arc, et la tasse vue d'en haut, une petite lune elle aussi,
+   prend la couleur de l'infusion de l'heure. Second moment : le film de la nuit, rendu avec HyperFrames.
+   Le reste apparaît au défilement, une seule fois, sans jamais cacher le contenu si les scripts ne chargent pas. */
+:root {
+  color-scheme: dark;
+  --night: #080d1c;      /* ciel de pleine nuit */
+  --ink: #10172e;        /* surfaces, panneaux */
+  --dusk: #27305e;       /* ciel de 20 h */
+  --moon: #f3ecdc;       /* texte, lune, porcelaine */
+  --mist: #a3acc9;       /* texte secondaire */
+  --amber: #e6b064;      /* la tasse, l'action */
+  --soft: #c3cae0;
+  --line: rgba(243, 236, 220, .14);
+  --ring: 0 0 0 1px rgba(243, 236, 220, .12);
+  --field: rgba(243, 236, 220, .045);
+  --bad: #f0907a;
+  --display: "Bodoni Moda", "Didot", "Bodoni MT", Georgia, serif;
+  --body: "Albert Sans", "Helvetica Neue", Arial, sans-serif;
+  --wrap: 1180px;
+  /* Courbes d'Emil Kowalski */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Lenis, feuille recommandée */
+html.lenis, html.lenis body { height: auto; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.lenis [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; scrollbar-color: rgba(243, 236, 220, .22) var(--night); }
+::selection { background: rgba(230, 176, 100, .35); color: var(--moon); }
+input, textarea { caret-color: var(--amber); }
+body { margin: 0; background: var(--night); color: var(--moon); font: 300 1.0625rem/1.65 var(--body); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, p, ol, ul, dl, dd, figure, fieldset { margin: 0; }
+ol, ul { padding: 0; list-style: none; }
+fieldset { border: 0; padding: 0; min-width: 0; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; line-height: 1.05; letter-spacing: -.01em; }
+a { color: inherit; text-underline-offset: .2em; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button, a, [role="button"], summary { touch-action: manipulation; }
+button { -webkit-user-select: none; user-select: none; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 4px; }
+.wrap { width: min(var(--wrap), 100% - 40px); margin-inline: auto; }
+.lede { color: var(--mist); max-width: 56ch; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- Boutons : retour à la pression ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .6em; cursor: pointer; text-decoration: none; padding: .82em 1.55em; border-radius: 999px; border: 0; background: var(--amber); color: var(--night); font-weight: 500; font-size: .95rem; box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 6px 20px -8px rgba(230, 176, 100, .55);
+  transition: transform 160ms var(--ease-out), background-color 150ms ease, box-shadow 150ms ease; }
+.btn.ghost { background: transparent; color: var(--moon); box-shadow: 0 0 0 1px rgba(243, 236, 220, .28) inset; }
+.btn.danger { background: transparent; color: var(--bad); box-shadow: 0 0 0 1px var(--bad) inset; }
+.btn:active:not(:disabled) { transform: scale(.97); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.link { background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: .2em; color: inherit; }
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { background: var(--moon); }
+  .btn.ghost:hover, .btn.danger:hover { background: rgba(243, 236, 220, .06); }
+  .pill:hover { box-shadow: 0 0 0 1px rgba(243, 236, 220, .5) inset; }
+  .nav-links a:hover, .foot-grid a:hover, .foot-grid .link:hover { color: var(--moon); }
+  .carte > li:hover { background: rgba(243, 236, 220, .025); }
+  .stations button:hover { color: var(--moon); }
+}
+.moon-dark { fill: rgba(243, 236, 220, .1); }
+.moon-lit { fill: var(--c, var(--moon)); }
+
+/* ---------- Bandeau de démonstration et navigation ---------- */
+.top { position: sticky; top: 0; z-index: 30; transition: background-color 200ms ease, box-shadow 200ms ease; }
+.top[data-scrolled] { background: rgba(8, 13, 28, .94); box-shadow: 0 1px 0 var(--line); }
+nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; height: 68px; }
+.logo { font-family: var(--display); font-size: 1.65rem; font-style: italic; text-decoration: none; }
+.nav-links { display: flex; gap: 30px; font-size: .92rem; }
+.nav-links a { text-decoration: none; color: var(--mist); transition: color 150ms ease; }
+.nav-tools { display: flex; gap: 10px; align-items: center; }
+.pill { background: none; border: 0; box-shadow: 0 0 0 1px var(--line) inset; color: var(--moon); border-radius: 999px; padding: .5em 1.1em; cursor: pointer; font-size: .9rem; display: inline-flex; gap: .55em; align-items: center; text-decoration: none; white-space: nowrap; transition: box-shadow 150ms ease, transform 160ms var(--ease-out); }
+.pill:active { transform: scale(.97); }
+.pill b { font-weight: 500; color: var(--amber); font-variant-numeric: tabular-nums; }
+
+/* ---------- Hero : une seule entrance orchestrée ---------- */
+.hero { position: relative; overflow: clip; background: linear-gradient(180deg, var(--night) 0%, #0f1836 58%, #1a2148 100%); margin-top: -68px; padding-top: 68px; }
+.sky-wrap { position: absolute; inset: 0 0 -20% 0; will-change: transform; }
+#sky { width: 100%; height: 100%; display: block; animation: fade 1200ms ease both; }
+.moon-wrap { position: absolute; top: 60px; right: -6vw; width: min(56vw, 680px); will-change: transform; }
+.big-moon { display: block; width: 100%; height: auto; filter: drop-shadow(0 0 70px rgba(243, 236, 220, .2)); animation: moonRise 1600ms var(--ease-out) both; }
+.hills { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 140px; display: block; }
+.hero-body { position: relative; padding: clamp(80px, 12vw, 170px) 0 clamp(190px, 20vw, 260px); }
+.hero h1 { font-size: clamp(3.4rem, 10.6vw, 9.4rem); font-style: italic; letter-spacing: -.025em; line-height: .94; mix-blend-mode: difference; margin-bottom: clamp(28px, 4vw, 46px); }
+.hero h1 .ln { display: block; overflow: visible clip; padding-bottom: .06em; }
+.hero h1 .ln > span { display: inline-block; animation: lineUp 1000ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+.hero .lede { font-size: 1.15rem; max-width: 40ch; margin-bottom: 14px; color: var(--soft); }
+.tonight { font: italic 400 1.2rem var(--display); color: var(--amber); margin-bottom: 34px; }
+.hero-in { animation: riseIn 700ms var(--ease-out) both; animation-delay: var(--d, 0ms); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; }
+@keyframes lineUp { from { transform: translateY(108%); } }
+@keyframes moonRise { from { transform: translateY(70px); opacity: 0; } }
+@keyframes riseIn { from { transform: translateY(10px); opacity: 0; } }
+@keyframes fade { from { opacity: 0; } }
+
+section.band { padding: clamp(72px, 10vw, 136px) 0; }
+.sec-head { display: grid; gap: 16px; margin-bottom: clamp(32px, 5vw, 60px); }
+.sec-head h2 { font-size: clamp(2.3rem, 5vw, 4rem); font-style: italic; }
+
+/* ---------- La nuit, heure par heure : section collante ---------- */
+.journey { position: relative; height: calc(100svh + 6 * 70svh); }
+.journey-sticky { position: sticky; top: 0; height: 100svh; overflow: clip; background: var(--dusk); display: grid; align-items: center; padding-top: 68px; isolation: isolate; }
+.journey-night { position: absolute; inset: 0; background: var(--night); opacity: 0; z-index: -1; will-change: opacity; pointer-events: none; }
+.journey-arc { position: absolute; left: 6%; right: 6%; top: 92px; height: 70px; pointer-events: none; }
+.journey-arc svg { width: 100%; height: 100%; overflow: visible; display: block; }
+.journey-arc path { fill: none; stroke: rgba(243, 236, 220, .28); stroke-width: 1; stroke-dasharray: 2 7; vector-effect: non-scaling-stroke; }
+.journey-moon { position: absolute; left: -11px; top: 59px; width: 22px; height: 22px; border-radius: 50%; background: var(--moon); box-shadow: 0 0 24px rgba(243, 236, 220, .6); will-change: transform; }
+.journey-grid { display: grid; grid-template-columns: 1fr auto 1.1fr; gap: clamp(28px, 4vw, 64px); align-items: center; }
+.journey-time h2 { font-size: clamp(1.9rem, 3.4vw, 2.8rem); font-style: italic; margin-bottom: 18px; }
+.journey-clock { font: 400 clamp(4rem, 9vw, 7.4rem)/1 var(--display); font-variant-numeric: tabular-nums; letter-spacing: -.03em; margin-bottom: 28px; }
+.journey-clock small { font-size: .36em; font-style: italic; color: var(--mist); margin: 0 .12em; }
+.stations { display: grid; gap: 2px; }
+.stations button { background: none; border: 0; padding: 6px 0; cursor: pointer; display: grid; grid-template-columns: 58px 1fr; gap: 12px; text-align: left; color: var(--mist); font-size: .92rem; font-variant-numeric: tabular-nums; transition: color 150ms ease; }
+.stations button span:last-child { position: relative; padding-left: 16px; }
+.stations button span:last-child::before { content: ""; position: absolute; left: 0; top: .62em; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .4; transition: opacity 150ms ease, background-color 150ms ease; }
+.stations button[aria-current] { color: var(--moon); }
+.stations button[aria-current] span:last-child::before { background: var(--amber); opacity: 1; }
+.cup-wrap { width: clamp(180px, 22vw, 300px); }
+.cup { display: block; width: 100%; height: auto; overflow: visible; }
+.cup .liquid { transition: fill 500ms ease; }
+.journey-teas { position: relative; min-height: 340px; }
+.jt { position: absolute; inset: 0 0 auto 0; display: grid; gap: 14px; align-content: start; opacity: 0; transform: translateY(8px); filter: blur(4px); visibility: hidden;
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out), filter 200ms var(--ease-out), visibility 0s linear 200ms; }
+.jt[data-active] { opacity: 1; transform: none; filter: none; visibility: visible;
+  transition: opacity 380ms var(--ease-out) 60ms, transform 380ms var(--ease-out) 60ms, filter 380ms var(--ease-out) 60ms, visibility 0s; }
+.jt h3 { font-size: clamp(2.3rem, 4.4vw, 3.6rem); font-style: italic; }
+.jt .plants { color: var(--c); font-size: .95rem; }
+.jt .dial { color: var(--soft); max-width: 42ch; }
+.jt .actions { margin-top: 8px; }
+.journey-hint { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); font-size: .82rem; color: var(--mist); transition: opacity 300ms ease; white-space: nowrap; }
+.journey-hint[data-gone] { opacity: 0; }
+
+/* ---------- Carte ---------- */
+.carte > li { display: grid; grid-template-columns: 130px 1fr auto; gap: 8px 32px; align-items: start; padding: 32px 12px; box-shadow: 0 -1px 0 var(--line); transition: background-color 150ms ease; }
+.carte > li:last-child { box-shadow: 0 -1px 0 var(--line), 0 1px 0 var(--line); }
+.carte > li.lit { background: rgba(230, 176, 100, .07); transition: background-color 600ms ease; }
+.hour { display: flex; align-items: center; gap: 12px; font: 400 1.4rem var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; padding-top: 6px; }
+.carte h3 { font-size: clamp(1.8rem, 3.2vw, 2.5rem); font-style: italic; margin-bottom: 6px; }
+.carte .plants { color: var(--c, var(--amber)); font-size: .95rem; }
+.carte .note { color: var(--mist); max-width: 54ch; margin-top: 6px; }
+.carte details { margin-top: 12px; font-size: .9rem; color: var(--mist); }
+.carte summary { cursor: pointer; color: var(--moon); width: fit-content; }
+.carte details dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 20px; margin-top: 12px; max-width: 60ch; }
+.carte details dt { color: var(--moon); }
+.buy { display: grid; gap: 12px; justify-items: end; }
+.price { font: 400 1.6rem var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.price small { display: block; font: 300 .75rem var(--body); color: var(--mist); text-align: right; }
+.carte-foot { margin-top: 22px; font-size: .85rem; color: var(--mist); max-width: 80ch; }
+
+/* ---------- Rituel ---------- */
+.rituel { background: var(--ink); }
+.rituel-grid { display: grid; grid-template-columns: 1fr 300px; gap: clamp(32px, 6vw, 80px); align-items: center; }
+.steps { display: grid; gap: 34px; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 64px 1fr; gap: 18px; counter-increment: s; }
+.steps li::before { content: counter(s); font: italic 400 3.4rem/.9 var(--display); color: var(--amber); }
+.steps h3 { font-size: 1.65rem; margin-bottom: 6px; }
+.steps p { color: var(--mist); max-width: 50ch; }
+.timer { display: grid; justify-items: center; gap: 18px; text-align: center; }
+.ring { position: relative; width: 220px; height: 220px; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 2; }
+.ring .bg { stroke: var(--line); }
+.ring .fg { stroke: var(--amber); stroke-linecap: round; stroke-dasharray: 339.3; stroke-dashoffset: 339.3; transition: stroke-dashoffset 250ms linear; }
+.ring output { position: absolute; inset: 0; display: grid; place-items: center; font: 400 3.2rem var(--display); font-variant-numeric: tabular-nums; }
+.timer p { font-size: .85rem; color: var(--mist); min-height: 1.6em; }
+
+/* ---------- Maison ---------- */
+.maison-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(32px, 6vw, 90px); }
+.maison .text p { max-width: 58ch; color: var(--mist); }
+.maison .text p + p { margin-top: 1.1em; }
+.maison .text p:first-of-type { color: var(--moon); font-size: 1.2rem; }
+.facts { display: grid; align-content: start; }
+.facts div { display: grid; grid-template-columns: 110px 1fr; gap: 18px; align-items: baseline; padding: 18px 0; box-shadow: 0 -1px 0 var(--line); }
+.facts div:last-child { box-shadow: 0 -1px 0 var(--line), 0 1px 0 var(--line); }
+.facts dt { font: 400 1.9rem var(--display); color: var(--amber); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.facts dd { color: var(--mist); font-size: .95rem; }
+
+/* ---------- Lunaison ---------- */
+.lunaison { background: var(--ink); }
+.lunaison-grid { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: end; }
+.phases { display: flex; gap: clamp(8px, 2vw, 22px); margin-bottom: 34px; }
+.phases svg { width: clamp(24px, 4.6vw, 42px); height: auto; }
+.lunaison h2 { font-size: clamp(3rem, 8vw, 6.4rem); font-style: italic; margin-bottom: 18px; }
+.lunaison .next { color: var(--amber); font: italic 400 1.15rem var(--display); margin-top: 12px; }
+.lunaison .offer { display: grid; gap: 12px; justify-items: start; }
+.lunaison .terms { font-size: .85rem; color: var(--mist); max-width: 34ch; }
+
+/* ---------- Lettre ---------- */
+.lettre-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end; }
+.lettre h2 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); font-style: italic; margin-bottom: 12px; }
+
+/* ---------- Formulaires ---------- */
+.form { display: grid; gap: 16px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.row3 { display: grid; grid-template-columns: 130px 1fr; gap: 16px; }
+.field { display: grid; gap: 6px; }
+.field label, legend { font-size: .86rem; color: var(--mist); padding: 0; }
+.field input, .field select, .field textarea { width: 100%; font-size: 16px; background: var(--field); border: 0; box-shadow: 0 0 0 1px var(--line) inset; border-radius: 10px; padding: .75em .9em; transition: box-shadow 150ms ease; }
+.field input:focus, .field textarea:focus { outline: none; box-shadow: 0 0 0 1px var(--amber) inset, 0 0 0 4px rgba(230, 176, 100, .15); }
+.field input[readonly] { color: var(--mist); }
+.field small { font-size: .78rem; color: var(--mist); }
+.check { display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start; font-size: .9rem; color: var(--soft); }
+.check input { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--amber); }
+.msg { font-size: .9rem; min-height: 1.5em; color: var(--amber); }
+.msg.bad { color: var(--bad); }
+.inline-form { display: flex; gap: 10px; flex-wrap: wrap; }
+.inline-form .field { flex: 1 1 220px; }
+
+/* ---------- Pages (compte, commande, légales) ---------- */
+.page { padding: clamp(44px, 6vw, 80px) 0 clamp(72px, 9vw, 120px); min-height: 70vh; }
+.page h1 { font-size: clamp(2.5rem, 5.6vw, 4.2rem); font-style: italic; margin-bottom: 14px; }
+.page .intro { color: var(--mist); max-width: 62ch; margin-bottom: 40px; }
+.back { display: inline-block; font-size: .88rem; color: var(--mist); margin-bottom: 26px; }
+.panel { background: var(--ink); box-shadow: var(--ring), 0 24px 60px -30px rgba(0, 0, 0, .6); border-radius: 18px; padding: clamp(22px, 3.4vw, 36px); }
+.panel h2 { font-size: 1.75rem; font-style: italic; margin-bottom: 18px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.stack { display: grid; gap: 24px; }
+.account-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 36px; }
+.account-head h1 { margin: 0; }
+.order { padding: 18px 0; box-shadow: 0 -1px 0 var(--line); display: grid; gap: 6px; }
+.order:first-of-type { box-shadow: none; padding-top: 0; }
+.order-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; }
+.order-top b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.order p { font-size: .9rem; color: var(--mist); }
+.tag { display: inline-block; font-size: .78rem; padding: .15em .8em; border-radius: 999px; box-shadow: 0 0 0 1px var(--amber) inset; color: var(--amber); }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.checkout { display: grid; grid-template-columns: 1.25fr .75fr; gap: 28px; align-items: start; }
+.summary { position: sticky; top: 96px; }
+.sum-line { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; font-size: .95rem; font-variant-numeric: tabular-nums; }
+.sum-line span:first-child { color: var(--soft); }
+.sum-total { box-shadow: 0 -1px 0 var(--line); margin-top: 10px; padding-top: 16px; align-items: baseline; }
+.sum-total b { font: 400 1.9rem var(--display); }
+.radio { display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; padding: 14px 16px; box-shadow: 0 0 0 1px var(--line) inset; border-radius: 12px; cursor: pointer; align-items: center; transition: box-shadow 150ms ease; }
+.radio:has(input:checked) { box-shadow: 0 0 0 1px var(--amber) inset; }
+.radio input { accent-color: var(--amber); width: 18px; height: 18px; margin: 0; }
+textarea.data { width: 100%; min-height: 220px; font: .8rem/1.5 ui-monospace, Menlo, Consolas, monospace; background: var(--night); border: 0; box-shadow: 0 0 0 1px var(--line) inset; border-radius: 10px; padding: 14px; }
+.prose { max-width: 72ch; }
+.prose h2 { font-size: 1.6rem; margin: 2.2em 0 .6em; }
+.prose h3 { font: 500 1rem var(--body); margin: 1.6em 0 .4em; }
+.prose p, .prose li { color: var(--soft); }
+.prose p + p { margin-top: .9em; }
+.prose ul { list-style: disc; padding-left: 1.2em; display: grid; gap: .4em; margin: .6em 0; }
+.prose .box { box-shadow: 0 0 0 1px var(--line) inset; border-radius: 12px; padding: 18px 20px; margin: 1em 0; }
+.prose .table { overflow-x: auto; margin: 1em 0; }
+.prose table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: .9rem; }
+.prose th, .prose td { text-align: left; vertical-align: top; padding: 10px 14px 10px 0; border-bottom: 1px solid var(--line); color: var(--soft); }
+.prose th { color: var(--moon); font-weight: 500; }
+mark.todo { background: rgba(230, 176, 100, .16); color: var(--amber); outline: 1px dashed var(--amber); border-radius: 4px; padding: 0 .4em; }
+.notice { outline: 1px dashed var(--amber); border-radius: 12px; padding: 14px 18px; font-size: .9rem; color: var(--amber); margin-bottom: 32px; max-width: 72ch; }
+
+/* ---------- Pied ---------- */
+footer.site { box-shadow: 0 -1px 0 var(--line); padding: 56px 0 40px; font-size: .9rem; color: var(--mist); }
+.foot-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 32px; }
+.foot-grid h4 { font: 500 .9rem var(--body); color: var(--moon); margin-bottom: 12px; }
+.foot-grid ul { display: grid; gap: 8px; }
+.foot-grid a, .foot-grid .link { text-decoration: none; transition: color 150ms ease; }
+.foot-grid .link { text-align: left; }
+.foot-base { margin-top: 40px; padding-top: 20px; box-shadow: 0 -1px 0 var(--line); font-size: .82rem; }
+
+/* ---------- Dialogues : tiroir du panier et préférences cookies ---------- */
+dialog { border: 0; background: var(--ink); color: var(--moon); padding: 0; max-width: 100%; }
+dialog::backdrop { background: rgba(4, 7, 16, .72); }
+#cart { margin: 0 0 0 auto; height: 100%; max-height: none; width: min(440px, 100%); box-shadow: -1px 0 0 var(--line), -30px 0 80px rgba(0, 0, 0, .45);
+  transform: translateX(100%); transition: transform 300ms var(--ease-out), overlay 300ms allow-discrete, display 300ms allow-discrete; }
+#cart[open] { transform: none; transition: transform 500ms var(--ease-drawer), overlay 500ms allow-discrete, display 500ms allow-discrete; }
+@starting-style { #cart[open] { transform: translateX(100%); } }
+#cart::backdrop, #cookie-prefs::backdrop { opacity: 0; transition: opacity 250ms ease, overlay 250ms allow-discrete, display 250ms allow-discrete; }
+#cart[open]::backdrop, #cookie-prefs[open]::backdrop { opacity: 1; }
+@starting-style { #cart[open]::backdrop, #cookie-prefs[open]::backdrop { opacity: 0; } }
+.cart { display: grid; grid-template-rows: auto 1fr auto; height: 100%; }
+.cart header { display: flex; justify-content: space-between; align-items: center; padding: 24px; box-shadow: 0 1px 0 var(--line); }
+.cart header h2 { font-size: 1.8rem; font-style: italic; }
+.x { background: none; border: 0; cursor: pointer; font-size: 1.6rem; line-height: 1; padding: 4px 8px; color: var(--mist); border-radius: 8px; transition: color 150ms ease, transform 160ms var(--ease-out); }
+.x:active { transform: scale(.94); }
+.cart-list { overflow-y: auto; padding: 8px 24px; }
+.cart-list li { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; padding: 18px 0; box-shadow: 0 1px 0 var(--line); }
+.cart-list h3 { font-size: 1.3rem; font-style: italic; }
+.cart-list .sub { font-size: .82rem; color: var(--mist); }
+.qty { display: inline-flex; align-items: center; gap: 12px; font-variant-numeric: tabular-nums; }
+.qty button { width: 32px; height: 32px; border-radius: 50%; border: 0; box-shadow: 0 0 0 1px var(--line) inset; background: none; cursor: pointer; line-height: 1; transition: transform 160ms var(--ease-out); }
+.qty button:active { transform: scale(.92); }
+.empty { color: var(--mist); padding: 40px 0; text-align: center; display: block !important; box-shadow: none !important; }
+.cart footer { padding: 22px 24px 28px; box-shadow: 0 -1px 0 var(--line); display: grid; gap: 12px; }
+.cart .ship { font-size: .85rem; color: var(--mist); }
+.total { display: flex; justify-content: space-between; align-items: baseline; }
+.total b { font: 400 1.7rem var(--display); font-variant-numeric: tabular-nums; }
+#cookie-prefs { border-radius: 18px; width: min(560px, 100% - 32px); padding: 28px; box-shadow: var(--ring), 0 30px 80px rgba(0, 0, 0, .5);
+  opacity: 0; transform: scale(.96); transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out), overlay 200ms allow-discrete, display 200ms allow-discrete; }
+#cookie-prefs[open] { opacity: 1; transform: none; transition-duration: 250ms; }
+@starting-style { #cookie-prefs[open] { opacity: 0; transform: scale(.96); } }
+#cookie-prefs h2 { font-size: 1.8rem; font-style: italic; margin-bottom: 8px; }
+.toggle { display: grid; grid-template-columns: 1fr auto; gap: 6px 20px; padding: 16px 0; box-shadow: 0 -1px 0 var(--line); }
+.toggle b { font-weight: 500; }
+.toggle p { grid-column: 1; font-size: .86rem; color: var(--mist); }
+.toggle input { width: 20px; height: 20px; accent-color: var(--amber); grid-row: 1; grid-column: 2; }
+
+/* ---------- Bandeau cookies : entre une fois, part vite ---------- */
+.cookie-bar { position: fixed; z-index: 40; right: 16px; bottom: 16px; width: min(460px, 100% - 32px); grid-template-columns: 1fr !important; background: var(--ink); border-radius: 18px; padding: 22px 24px; display: grid; grid-template-columns: 1fr auto; gap: 18px 28px; align-items: center;
+  box-shadow: 0 0 0 1px rgba(243, 236, 220, .2), 0 24px 70px rgba(0, 0, 0, .55);
+  transition: transform 400ms var(--ease-out), opacity 400ms var(--ease-out); }
+@starting-style { .cookie-bar { transform: translateY(calc(100% + 16px)); opacity: 0; } }
+.cookie-bar[data-leaving] { transform: translateY(calc(100% + 16px)); opacity: 0; transition-duration: 200ms; }
+.cookie-bar h2 { font-size: 1.4rem; font-style: italic; margin-bottom: 6px; }
+.cookie-bar p { font-size: .9rem; color: var(--soft); }
+.cookie-bar .actions .btn { padding: .7em 1.2em; flex: 1 1 auto; }
+
+/* ---------- Notification d'ajout au panier, sous le bouton Panier ---------- */
+.toast { position: fixed; z-index: 35; top: 80px; right: max(20px, calc((100vw - var(--wrap)) / 2)); width: min(360px, calc(100vw - 40px)); background: var(--ink); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: .92rem;
+  box-shadow: 0 0 0 1px rgba(243, 236, 220, .18), 0 18px 50px rgba(0, 0, 0, .5); transform-origin: top right;
+  opacity: 0; transform: translateY(-8px) scale(.97); visibility: hidden;
+  transition: opacity 200ms ease, transform 200ms ease, visibility 0s linear 200ms; }
+.toast[data-show] { opacity: 1; transform: none; visibility: visible; transition: opacity 400ms ease, transform 400ms ease, visibility 0s; }
+.toast .btn { padding: .55em 1em; font-size: .85rem; white-space: nowrap; }
+
+/* =====================================================================
+   COUCHE D'ANIMATION
+   Tout ce qui suit s'ajoute au site sans rien cacher par défaut : les états de départ
+   sont posés en JavaScript par GSAP. Si un script ne charge pas, la page reste lisible.
+   ===================================================================== */
+
+/* ---------- Rideau d'ouverture : la lune croît, puis le rideau se lève (CSS seul, une fois par visite) ---------- */
+.curtain { display: none; }
+html.intro .curtain { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: var(--night); pointer-events: none;
+  clip-path: inset(0 0 0 0); animation: curtainUp 1000ms var(--ease-in-out) 1250ms forwards; }
+.curtain-inner { display: grid; justify-items: center; gap: 22px; }
+.curtain-moon { position: relative; width: 58px; height: 58px; border-radius: 50%; overflow: hidden; background: var(--moon); box-shadow: 0 0 60px rgba(243, 236, 220, .35); animation: fade 500ms ease both; }
+.curtain-moon::after { content: ""; position: absolute; inset: -1px; border-radius: 50%; background: var(--night); animation: phaseWipe 1100ms var(--ease-in-out) 150ms both; }
+.curtain-word { font: italic 400 1.9rem var(--display); letter-spacing: .01em; animation: riseIn 800ms var(--ease-out) 420ms both; }
+@keyframes curtainUp { to { clip-path: inset(0 0 100% 0); visibility: hidden; } }
+@keyframes phaseWipe { from { transform: translateX(0); } to { transform: translateX(105%); } }
+html.intro #sky, html.intro .big-moon, html.intro .hero h1 .ln > span, html.intro .hero-in { animation-delay: calc(var(--d, 0ms) + 1500ms); }
+
+/* ---------- Barre de progression de lecture ---------- */
+.progress { position: absolute; left: 0; top: 0; height: 2px; width: 100%; background: linear-gradient(90deg, var(--amber), #f3d9a8); transform-origin: 0 50%; transform: scaleX(0); z-index: 2; pointer-events: none; }
+
+/* ---------- Lanterne : un halo chaud suit le pointeur (souris uniquement) ---------- */
+.lantern { position: fixed; left: 0; top: 0; z-index: 25; width: 520px; height: 520px; margin: -260px 0 0 -260px; border-radius: 50%; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, rgba(230, 176, 100, .10) 0%, rgba(230, 176, 100, .04) 35%, rgba(230, 176, 100, 0) 68%); mix-blend-mode: screen; transition: opacity 400ms ease; will-change: transform; }
+.lantern[data-on] { opacity: 1; }
+
+/* ---------- Hero vivant ---------- */
+#twinkle { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.moon-par { will-change: transform; }
+.scroll-cue { position: absolute; left: 50%; bottom: 34px; z-index: 2; display: grid; justify-items: center; gap: 10px; transform: translateX(-50%); color: var(--mist); text-decoration: none; font-size: .74rem; letter-spacing: .3em; text-transform: uppercase; }
+.scroll-cue i { position: relative; display: block; width: 1px; height: 46px; overflow: hidden; background: rgba(243, 236, 220, .16); }
+.scroll-cue i::after { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 46px; background: var(--amber); transform: translateY(-100%); animation: cue 2200ms var(--ease-in-out) infinite; }
+@keyframes cue { 0% { transform: translateY(-100%); } 55% { transform: translateY(0); } 100% { transform: translateY(100%); } }
+
+/* ---------- Titres révélés ligne par ligne (SplitText) ---------- */
+.split-ready { text-wrap: wrap; }
+.split-line { padding-bottom: .08em; margin-bottom: -.08em; }
+
+/* ---------- Tasse : vapeur et remous ---------- */
+.cup-wrap { position: relative; }
+.steam { position: absolute; left: 18%; right: 18%; top: -10%; height: 60%; pointer-events: none; }
+.steam span { position: absolute; bottom: 30%; width: 34%; aspect-ratio: 1; border-radius: 50%; filter: blur(18px); opacity: 0;
+  background: radial-gradient(circle, rgba(243, 236, 220, .5), rgba(243, 236, 220, 0) 70%); animation: steam 4.2s ease-in-out infinite; }
+.steam span:nth-child(1) { left: 8%; }
+.steam span:nth-child(2) { left: 36%; animation-delay: 1.4s; }
+.steam span:nth-child(3) { left: 60%; animation-delay: 2.8s; }
+@keyframes steam { 0% { transform: translate3d(0, 40%, 0) scale(.6); opacity: 0; } 35% { opacity: .75; } 100% { transform: translate3d(12%, -120%, 0) scale(1.35); opacity: 0; } }
+.cup { transform-origin: 50% 50%; }
+
+/* ---------- La carte : filet qui se dessine et lavis de couleur au survol ---------- */
+.carte > li { position: relative; isolation: isolate; }
+.carte > li::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c) 14%, transparent), transparent 70%); transform: scaleX(.6); transform-origin: 0 50%;
+  transition: opacity 400ms var(--ease-out), transform 600ms var(--ease-out); }
+.carte .hour svg { transition: transform 600ms var(--ease-out), filter 400ms ease; }
+@media (hover: hover) and (pointer: fine) {
+  .carte > li:hover::after { opacity: 1; transform: none; }
+  .carte > li:hover .hour svg { transform: rotate(-24deg) scale(1.12); filter: drop-shadow(0 0 10px var(--c)); }
+  .carte > li:hover h3 { color: var(--c); }
+}
+.carte h3 { transition: color 300ms ease; }
+
+/* ---------- Bandeau de plantes qui défile ---------- */
+.marquee { overflow: hidden; padding: clamp(18px, 3vw, 34px) 0; box-shadow: 0 -1px 0 var(--line), 0 1px 0 var(--line); background: var(--night); }
+.marquee-track { display: flex; width: max-content; will-change: transform; }
+.marquee-track > div { display: flex; align-items: center; flex-shrink: 0; animation: marquee 48s linear infinite; }
+.marquee span { font: italic 400 clamp(1.8rem, 4.4vw, 3.6rem)/1.1 var(--display); padding: 0 .55em; white-space: nowrap; color: transparent; -webkit-text-stroke: 1px rgba(243, 236, 220, .45); }
+.marquee span:nth-of-type(3n+1) { color: var(--moon); -webkit-text-stroke: 0; }
+.marquee i { font-style: normal; color: var(--amber); font-size: 1.1rem; }
+@keyframes marquee { to { transform: translateX(-100%); } }
+
+/* ---------- Minuteur : la bague respire pendant l'infusion ---------- */
+.ring.running svg { animation: breathe 3.2s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { filter: drop-shadow(0 0 0 rgba(230, 176, 100, 0)); } 50% { filter: drop-shadow(0 0 14px rgba(230, 176, 100, .55)); } }
+
+/* ---------- Le film ---------- */
+.film { padding-bottom: clamp(72px, 10vw, 136px); }
+.film-wrap { width: min(1400px, 100% - 40px); }
+.film-frame { position: relative; overflow: hidden; border-radius: 22px; background: #060a17; aspect-ratio: 16 / 9; box-shadow: var(--ring), 0 40px 120px -40px rgba(0, 0, 0, .8); will-change: clip-path; }
+.film-frame video { display: block; width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+.film-toggle { position: absolute; left: 20px; bottom: 20px; display: inline-flex; align-items: center; gap: .6em; padding: .6em 1.1em; border: 0; border-radius: 999px; cursor: pointer; font-size: .85rem;
+  background: rgba(8, 13, 28, .6); color: var(--moon); box-shadow: 0 0 0 1px rgba(243, 236, 220, .25) inset; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: background-color 150ms ease, transform 160ms var(--ease-out); }
+.film-toggle:active { transform: scale(.96); }
+.film-toggle .ico { width: 10px; height: 12px; background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.film-toggle[aria-pressed="true"] .ico { clip-path: polygon(0 0, 35% 0, 35% 100%, 0 100%, 0 0, 65% 0, 100% 0, 100% 100%, 65% 100%, 65% 0); }
+@media (hover: hover) and (pointer: fine) { .film-toggle:hover { background: rgba(8, 13, 28, .85); } }
+
+/* ---------- Phases de lune : elles flottent doucement ---------- */
+.phases svg { animation: float 6s ease-in-out infinite; animation-delay: calc(var(--i, 0) * -0.7s); }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* ---------- Panier : la petite lune qui vole et le compteur qui rebondit ---------- */
+.pill b { display: inline-block; }
+.fly { position: fixed; left: 0; top: 0; z-index: 60; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; pointer-events: none; background: var(--c, var(--amber)); box-shadow: 0 0 18px var(--c, var(--amber)), 0 0 40px rgba(230, 176, 100, .35); }
+.btn.magnetic { transition: background-color 150ms ease, box-shadow 150ms ease; }
+
+/* ---------- Grande signature du pied de page ---------- */
+.foot-mark { margin-top: 36px; font: italic 400 clamp(4.5rem, 19vw, 17rem)/.86 var(--display); letter-spacing: -.035em; text-align: center; white-space: nowrap; overflow: hidden;
+  color: rgba(243, 236, 220, .07); -webkit-text-stroke: 1px rgba(243, 236, 220, .2); user-select: none; padding-bottom: .06em; }
+.foot-mark .char { display: inline-block; }
+
+@media (max-width: 960px) {
+  .nav-links { display: none; }
+  .rituel-grid, .maison-grid, .lettre-grid, .two, .checkout, .lunaison-grid { grid-template-columns: 1fr; }
+  .moon-wrap { width: 78vw; right: -22vw; top: 70px; }
+  .journey-grid { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "time cup" "teas teas"; row-gap: 22px; column-gap: 16px; }
+  .journey-time { grid-area: time; } .cup-wrap { grid-area: cup; width: clamp(92px, 26vw, 200px); } .journey-teas { grid-area: teas; min-height: 300px; }
+  .journey-clock { margin-bottom: 16px; }
+  .stations { grid-auto-flow: column; justify-content: start; gap: 4px 14px; }
+  .stations button { grid-template-columns: auto; padding: 6px 0; white-space: nowrap; }
+  .stations button span:last-child { display: none; }
+  .stations button[aria-current] { color: var(--amber); }
+  .carte > li { grid-template-columns: 1fr auto; padding: 26px 4px; }
+  .carte .hour { grid-column: 1 / -1; padding: 0; }
+  .timer { justify-items: start; text-align: left; }
+  .summary { position: static; }
+  .foot-grid { grid-template-columns: 1fr 1fr; }
+  .cookie-bar { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .journey-arc { top: 82px; }
+  .scroll-cue { display: none; }
+  .film-frame { border-radius: 14px; }
+  .film-toggle { left: 12px; bottom: 12px; }
+  .journey-time h2 { font-size: 1.5rem; margin-bottom: 8px; }
+  .jt h3 { font-size: 2.1rem; }
+  .carte > li { grid-template-columns: 1fr; }
+  .buy { justify-items: start; grid-auto-flow: column; align-items: center; justify-content: space-between; }
+  .price small { text-align: left; }
+  .row2, .row3 { grid-template-columns: 1fr; }
+  .facts div { grid-template-columns: 90px 1fr; }
+  .pill span.lbl { display: none; }
+  .cookie-bar .actions .btn { flex: 1 1 100%; }
+  .toast { top: 76px; }
+}
+@media (max-height: 720px) and (max-width: 960px) { .jt .dial { display: none; } .journey-teas { min-height: 220px; } }
+
+/* Mouvement réduit : moins et plus doux, pas zéro. On garde l'opacité, on retire les déplacements. */
+@media (prefers-reduced-motion: reduce) {
+  .hero h1 .ln > span, .hero-in, .big-moon { animation-name: fade; }
+  .jt, .jt[data-active] { transform: none; filter: none; }
+  #cart, #cart[open] { transform: none; }
+  #cart { opacity: 0; transition: opacity 200ms ease, overlay 200ms allow-discrete, display 200ms allow-discrete; }
+  #cart[open] { opacity: 1; transition: opacity 250ms ease, overlay 250ms allow-discrete, display 250ms allow-discrete; }
+  #cookie-prefs, #cookie-prefs[open] { transform: none; }
+  .cookie-bar[data-leaving] { transform: none; }
+  .toast { transform: none; }
+  .steam span, .scroll-cue i::after, .phases svg, .ring.running svg { animation: none; }
+  .marquee-track > div { animation-duration: 160s; }
+  .lantern { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { @starting-style { #cart[open] { transform: none; opacity: 0; } .cookie-bar { transform: none; } } }
+</style>
+</head>
+<body>
+
+<div class="curtain" aria-hidden="true"><div class="curtain-inner"><span class="curtain-moon"></span><span class="curtain-word">Vespérale</span></div></div>
+<div class="lantern" id="lantern" aria-hidden="true"></div>
+
+<div class="top">
+  <span class="progress" id="progress" aria-hidden="true"></span>
+  <div class="wrap">
+    <nav aria-label="Navigation principale">
+      <a class="logo" href="#accueil">Vespérale</a>
+      <div class="nav-links">
+        <a href="#heure">Votre heure</a>
+        <a href="#carte">La carte</a>
+        <a href="#rituel">Le rituel</a>
+        <a href="#film">Le film</a>
+        <a href="#maison">La maison</a>
+        <a href="#lunaison">L'abonnement</a>
+      </div>
+      <div class="nav-tools">
+        <a class="pill" href="#compte" id="nav-account">Se connecter</a>
+        <button class="pill" id="open-cart" type="button" data-act="open-cart" aria-label="Ouvrir le panier"><span class="lbl">Panier</span> <b id="cart-count" aria-hidden="true">0</b></button>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<!-- ======================= ACCUEIL ======================= -->
+<main id="view-home">
+<header class="hero" id="accueil">
+  <div class="sky-wrap" id="sky-wrap" aria-hidden="true"><canvas id="sky"></canvas><canvas id="twinkle"></canvas></div>
+  <div class="moon-wrap" id="moon-wrap"><div class="moon-par" id="moon-par"><svg class="big-moon" id="hero-moon" viewBox="-110 -110 220 220" role="img" aria-label="La lune de ce soir"><circle r="100" class="moon-dark"/></svg></div></div>
+  <svg class="hills" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,70 C160,20 300,90 470,55 C640,20 760,80 930,48 C1040,28 1130,50 1200,38 L1200,120 L0,120 Z" fill="#0d1530"/>
+    <path d="M0,96 C200,60 380,112 600,84 C800,58 980,108 1200,76 L1200,120 L0,120 Z" fill="#080d1c"/>
+  </svg>
+  <div class="wrap hero-body">
+    <h1><span class="ln"><span>La nuit se boit</span></span><span class="ln"><span style="--d:110ms">lentement.</span></span></h1>
+    <p class="lede hero-in" style="--d:380ms">Six infusions de plantes entières, sans théine, composées à Nyons pour les heures qui vont du dîner au sommeil.</p>
+    <p class="tonight hero-in" id="tonight" style="--d:460ms">Ce soir, la lune veille.</p>
+    <div class="hero-cta hero-in" style="--d:520ms">
+      <a class="btn" href="#carte">Voir la carte de nuit</a>
+      <a class="btn ghost" href="#heure">Trouver mon infusion</a>
+    </div>
+  </div>
+  <a class="scroll-cue hero-in" href="#heure" style="--d:760ms" aria-label="Faire défiler jusqu'à la nuit, heure par heure"><span>Défiler</span><i></i></a>
+</header>
+
+<section class="journey" id="heure" aria-labelledby="journey-title">
+  <div class="journey-sticky" id="journey-sticky">
+    <div class="journey-night" id="journey-night" aria-hidden="true"></div>
+    <div class="journey-arc" aria-hidden="true"><svg viewBox="0 0 100 40" preserveAspectRatio="none"><path d="M0,40 Q50,-40 100,40"/></svg><span class="journey-moon" id="journey-moon"></span></div>
+    <div class="wrap journey-grid">
+      <div class="journey-time">
+        <h2 id="journey-title">La nuit, heure par heure</h2>
+        <p class="journey-clock" aria-hidden="true"><span id="clock-h">20</span><small>h</small><span id="clock-m">00</span></p>
+        <ol class="stations" id="stations" aria-label="Choisir une heure de la soirée"></ol>
+      </div>
+      <div class="cup-wrap" aria-hidden="true">
+        <div class="steam"><span></span><span></span><span></span></div>
+        <svg class="cup" viewBox="-130 -130 260 260">
+          <defs><radialGradient id="sheen" cx="36%" cy="30%" r="78%"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".25"/></radialGradient></defs>
+          <circle r="120" fill="rgba(243,236,220,.05)"/>
+          <circle r="119" fill="none" stroke="rgba(243,236,220,.14)"/>
+          <rect x="66" y="-15" width="58" height="30" rx="15" fill="#e4dbc7"/>
+          <circle r="86" fill="#f3ecdc"/>
+          <circle r="73" class="liquid" id="liquid" fill="#d6d98c"/>
+          <circle r="73" fill="url(#sheen)"/>
+          <circle r="30" class="ripple" id="ripple" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.5" opacity="0"/>
+        </svg>
+      </div>
+      <div class="journey-teas" id="journey-teas"></div>
+    </div>
+    <p class="journey-hint" id="journey-hint" aria-hidden="true">Faites défiler, la soirée avance</p>
+  </div>
+</section>
+
+<section class="band" id="carte">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>La carte de nuit</h2>
+      <p class="lede">Six infusions, de la tombée du jour aux petites heures. Plus la lune est pleine à côté de l'heure, plus la tasse est ronde et enveloppante. Sa couleur est celle de l'infusion dans la tasse.</p>
+    </div>
+    <ol class="carte" id="carte-list"></ol>
+    <p class="carte-foot">Prix TTC. Livraison offerte dès 45&nbsp;€ en France métropolitaine. Les plantes accompagnent le soir, elles ne remplacent pas un avis médical. Valériane, houblon et passiflore sont déconseillés pendant la grossesse et l'allaitement, et aux enfants de moins de 12 ans.</p>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee-track"><div><span>Verveine citronnée</span><i>✦</i><span>Mélisse</span><i>✦</i><span>Tilleul des Baronnies</span><i>✦</i><span>Camomille</span><i>✦</i><span>Fleur d’oranger</span><i>✦</i><span>Aubépine</span><i>✦</i><span>Rooibos</span><i>✦</i><span>Vanille Bourbon</span><i>✦</i><span>Passiflore</span><i>✦</i><span>Lavande fine</span><i>✦</i><span>Valériane</span><i>✦</i><span>Houblon</span><i>✦</i><span>Menthe douce</span><i>✦</i></div><div><span>Verveine citronnée</span><i>✦</i><span>Mélisse</span><i>✦</i><span>Tilleul des Baronnies</span><i>✦</i><span>Camomille</span><i>✦</i><span>Fleur d’oranger</span><i>✦</i><span>Aubépine</span><i>✦</i><span>Rooibos</span><i>✦</i><span>Vanille Bourbon</span><i>✦</i><span>Passiflore</span><i>✦</i><span>Lavande fine</span><i>✦</i><span>Valériane</span><i>✦</i><span>Houblon</span><i>✦</i><span>Menthe douce</span><i>✦</i></div></div></div>
+
+<section class="band rituel" id="rituel">
+  <div class="wrap">
+    <div class="sec-head"><h2>Sept minutes à couvert</h2></div>
+    <div class="rituel-grid">
+      <ol class="steps">
+        <li><div><h3>Frémir, pas bouillir</h3><p>Chauffez l'eau à 90&nbsp;°C. Coupez le feu aux premières petites bulles&nbsp;: l'eau bouillante brûle les fleurs et rend la tasse amère.</p></div></li>
+        <li><div><h3>Couvrir la tasse</h3><p>Comptez 2&nbsp;g de plantes, une cuillère à soupe bombée, pour 25&nbsp;cl. Posez une soucoupe sur la tasse&nbsp;: les huiles essentielles restent dans l'infusion au lieu de partir en vapeur.</p></div></li>
+        <li><div><h3>Attendre dans le noir</h3><p>Éteignez l'écran, baissez la lampe et laissez infuser sept minutes. C'est le temps que nous conseillons pour toute la carte, sauf mention contraire sur la boîte.</p></div></li>
+      </ol>
+      <div class="timer">
+        <div class="ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="bg" cx="60" cy="60" r="54"/><circle class="fg" id="ring-fg" cx="60" cy="60" r="54"/></svg>
+          <output id="timer-out" for="timer-btn">7:00</output>
+        </div>
+        <button class="btn ghost" id="timer-btn" type="button">Lancer les 7 minutes</button>
+        <p id="timer-msg">Le minuteur tourne tant que cette page reste ouverte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band film" id="film" aria-labelledby="film-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="film-title">La nuit en dix-neuf secondes</h2>
+      <p class="lede">De 20 h à 1 h 30, le ciel tourne, la tasse change de couleur, et les six infusions de la carte passent l'une après l'autre.</p>
+    </div>
+  </div>
+  <div class="wrap film-wrap">
+    <figure class="film-frame" id="film-frame">
+      <video id="film-video" muted loop playsinline preload="none" poster="assets/vesperale-film-poster.jpg" aria-label="Film Vespérale : la soirée de 20 h à 1 h 30 et les six infusions de la carte">
+        <source src="assets/vesperale-film.webm" type="video/webm">
+        <source src="assets/vesperale-film.mp4" type="video/mp4">
+      </video>
+      <button class="film-toggle" id="film-toggle" type="button" aria-pressed="false"><span class="ico" aria-hidden="true"></span><span class="lbl">Lire le film</span></button>
+    </figure>
+  </div>
+</section>
+
+<section class="band maison" id="maison">
+  <div class="wrap">
+    <div class="sec-head"><h2>Des plantes cueillies le matin pour être bues le soir</h2></div>
+    <div class="maison-grid">
+      <div class="text">
+        <p>Vespérale est née en 2019 dans une ancienne magnanerie des Baronnies provençales, au-dessus de Nyons. Nous y cultivons et assemblons des plantes à infusion pour un seul moment de la journée&nbsp;: sa fin.</p>
+        <p>Le tilleul vient des arbres du village, récolté en juin à l'échelle et au drap. La verveine, la mélisse et la camomille poussent sur nos trois hectares en agriculture biologique. Le reste arrive de producteurs que nous connaissons par leur prénom.</p>
+        <p>Les plantes sèchent quatre jours à l'ombre, à 35&nbsp;°C, puis restent entières. Pas de poudre, pas d'arôme ajouté&nbsp;: ce que vous sentez en ouvrant la boîte, c'est la plante.</p>
+      </div>
+      <dl class="facts">
+        <div><dt>9</dt><dd>plantes sur toute la carte, toutes sans théine ni caféine</dd></div>
+        <div><dt>35&nbsp;°C</dt><dd>température de séchage, pendant quatre jours, pour garder les huiles essentielles</dd></div>
+        <div><dt>0</dt><dd>arôme ajouté, sucre ou colorant</dd></div>
+        <div><dt>80&nbsp;g</dt><dd>par boîte en fer rechargeable, recharges en sachet kraft compostable</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="band lunaison" id="lunaison">
+  <div class="wrap">
+    <div class="phases" id="phases" aria-hidden="true"></div>
+    <div class="lunaison-grid">
+      <div>
+        <h2>La Lunaison</h2>
+        <p class="lede">Un coffret expédié à chaque nouvelle lune&nbsp;: trois infusions de la carte choisies selon la saison, de quoi tenir les 29 soirs et demi jusqu'à la suivante.</p>
+        <p class="next" id="next-moon">Prochain envoi à la nouvelle lune.</p>
+      </div>
+      <div class="offer">
+        <button class="btn" type="button" data-add="lunaison">S'abonner pour 26&nbsp;€ par lunaison</button>
+        <p class="terms">Livraison comprise. Sans engagement&nbsp;: vous résiliez en ligne depuis votre compte, quand vous voulez.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band lettre">
+  <div class="wrap lettre-grid">
+    <div>
+      <h2>La lettre de la pleine lune</h2>
+      <p class="lede">Une fois par lunaison&nbsp;: les récoltes en cours, une recette du soir, les nouvelles boîtes. Rien d'autre.</p>
+    </div>
+    <form class="form" id="lettre-form" novalidate>
+      <div class="inline-form">
+        <div class="field"><label for="nl-email">Votre adresse e-mail</label><input type="email" id="nl-email" name="email" placeholder="vous@exemple.fr" autocomplete="email" required></div>
+        <button class="btn" type="submit" style="align-self:end">Recevoir la lettre</button>
+      </div>
+      <label class="check"><input type="checkbox" id="nl-ok"><span>J'accepte de recevoir la lettre de Vespérale par e-mail. Je peux me désinscrire à tout moment. Voir la <a href="#confidentialite">politique de confidentialité</a>.</span></label>
+      <p class="msg" id="nl-msg" role="status"></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<!-- ======================= AUTRES VUES ======================= -->
+<main class="page" id="view-compte" hidden><div class="wrap" id="compte-body"></div></main>
+<main class="page" id="view-commande" hidden><div class="wrap" id="commande-body"></div></main>
+<main class="page" id="view-retractation" hidden><div class="wrap" id="retractation-body"></div></main>
+<main class="page" id="view-legal" hidden><div class="wrap"><a class="back" href="#accueil">Retour à la boutique</a><div id="legal-body"></div></div></main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div><a class="logo" href="#accueil" style="color:var(--moon)">Vespérale</a><p style="margin-top:10px;max-width:30ch">Infusions de plantes entières pour les heures du soir, composées à Nyons.</p></div>
+      <div><h4>Boutique</h4><ul><li><a href="#carte">La carte de nuit</a></li><li><a href="#lunaison">L'abonnement La Lunaison</a></li><li><a href="#rituel">Le rituel</a></li><li><a href="#compte">Mon compte</a></li></ul></div>
+      <div><h4>Informations</h4><ul><li><a href="#mentions-legales">Mentions légales</a></li><li><a href="#cgv">Conditions de vente</a></li><li><a href="#cgu">Conditions d'utilisation</a></li><li><a href="#confidentialite">Confidentialité</a></li><li><a href="#cookies">Cookies</a></li></ul></div>
+      <div><h4>Vos droits</h4><ul><li><a href="#retractation">Me rétracter d'une commande</a></li><li><button class="link" type="button" data-act="open-cookies">Gérer mes cookies</button></li><li id="foot-contact"></li></ul></div>
+    </div>
+    <p class="foot-base" id="foot-base"></p>
+    <p class="foot-mark" id="foot-mark" aria-hidden="true">Vespérale</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast" aria-hidden="true"><span id="toast-msg"></span><button class="btn ghost" type="button" data-act="open-cart">Voir le panier</button></div>
+<p class="sr" id="toast-live" role="status" aria-live="polite"></p>
+
+<dialog id="cart" aria-labelledby="cart-title" data-lenis-prevent>
+  <div class="cart">
+    <header><h2 id="cart-title">Votre panier</h2><button class="x" type="button" data-act="close-cart" aria-label="Fermer le panier">×</button></header>
+    <ul class="cart-list" id="cart-list"></ul>
+    <footer>
+      <p class="ship" id="ship-msg"></p>
+      <p class="total"><span>Sous-total TTC</span><b id="cart-total">0,00&nbsp;€</b></p>
+      <a class="btn" id="go-checkout" href="#commande">Passer la commande</a>
+    </footer>
+  </div>
+</dialog>
+
+<div class="cookie-bar" id="cookie-bar" role="region" aria-label="Cookies" hidden>
+  <div>
+    <h2>Vos cookies, votre choix</h2>
+    <p>Le panier et la connexion fonctionnent sans votre accord, car la boutique en a besoin. Avec votre accord, nous mesurons aussi la fréquentation, pour améliorer la boutique. <a href="#cookies">En savoir plus</a></p>
+  </div>
+  <div class="actions">
+    <button class="btn ghost" type="button" data-act="cookies-refuse">Tout refuser</button>
+    <button class="btn ghost" type="button" data-act="cookies-accept">Tout accepter</button>
+    <button class="link" type="button" data-act="open-cookies">Personnaliser</button>
+  </div>
+</div>
+
+<dialog id="cookie-prefs" aria-labelledby="ck-title" data-lenis-prevent>
+  <h2 id="ck-title">Gérer mes cookies</h2>
+  <p style="color:var(--mist);font-size:.92rem;margin-bottom:14px">Votre choix est conservé six mois. Vous pouvez le modifier à tout moment depuis le pied de page.</p>
+  <div class="toggle"><b>Nécessaires</b><input type="checkbox" id="ck-need" checked disabled aria-label="Cookies nécessaires, toujours actifs"><p>Panier, connexion à votre compte, mémorisation de ce choix. Toujours actifs.</p></div>
+  <div class="toggle"><label for="ck-stats"><b>Mesure d'audience</b></label><input type="checkbox" id="ck-stats"><p>Compter les visites pour améliorer la boutique. Aucune publicité, aucune revente.</p></div>
+  <div class="actions" style="margin-top:20px">
+    <button class="btn" type="button" data-act="cookies-save">Enregistrer mes choix</button>
+    <button class="btn ghost" type="button" data-act="cookies-refuse">Tout refuser</button>
+    <button class="btn ghost" type="button" data-act="cookies-accept">Tout accepter</button>
+  </div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.27/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script>
+(() => {
+'use strict';
+/* =====================================================================
+   RÉGLAGES DE LA BOUTIQUE : tout ce qui est propre à l'entreprise est ici.
+   Un champ laissé vide apparaît « à compléter » dans les pages légales.
+   ===================================================================== */
+const CONFIG = {
+  demo: true,                 // true : comptes et commandes dans ce navigateur. Passer à false une fois le serveur branché.
+  paymentUrl: '',             // lien de paiement du prestataire (Stripe, Mollie, etc.). Vide : la commande reste « en attente de paiement ».
+  analytics: null,            // fonction appelée seulement si la mesure d'audience est acceptée, ex. () => chargerMatomo()
+  freeShippingFrom: 45,
+  company: {
+    brand: 'Vespérale',
+    legalName: '',            // raison sociale
+    legalForm: '',            // SAS, SARL, EI...
+    capital: '',              // capital social
+    address: 'Chemin de la Magnanerie, 26110 Nyons',
+    siret: '', rcs: '', vat: '',
+    director: '',             // directeur ou directrice de la publication
+    email: 'bonsoir@vesperale.example',
+    phone: '',
+    host: '',                 // nom, adresse et téléphone de l'hébergeur
+    mediator: '',             // nom, adresse et site du médiateur de la consommation
+    updated: '16 novembre 2026'
+  }
+};
+
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const euro = (n) => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+const dateFr = (d) => new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const HAS_GSAP = !!(window.gsap && window.ScrollTrigger);
+const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+const DAY = 864e5;
+
+/* ---------- Stockage (navigateur). À remplacer par des appels serveur : voir API plus bas. ---------- */
+const mem = {};
+const LS = {
+  get(k) { try { const v = localStorage.getItem('vsp:' + k); return v ? JSON.parse(v) : (k in mem ? mem[k] : null); } catch { return k in mem ? mem[k] : null; } },
+  set(k, v) { mem[k] = v; try { localStorage.setItem('vsp:' + k, JSON.stringify(v)); } catch {} },
+  del(k) { delete mem[k]; try { localStorage.removeItem('vsp:' + k); } catch {} }
+};
+
+/* ---------- Catalogue ---------- */
+const TEAS = [
+  { id: 'chien-loup', h: 20, hour: '20 h 00', moon: .07, c: '#d6d98c', name: 'Entre chien et loup', plants: 'Verveine citronnée, mélisse, écorce d\'orange', ingr: 'Verveine citronnée (55 %), mélisse (30 %), écorce d\'orange douce (15 %)', note: 'Vive et citronnée, pour sortir de table sans alourdir la soirée.', dial: 'Le dîner se termine, le ciel n\'est pas encore noir. Une tasse fraîche et citronnée pour passer de la table au canapé.', temp: '90 °C', time: '5 min', price: 12.5 },
+  { id: 'premiere-etoile', h: 21, hour: '21 h 00', moon: .16, c: '#ecc75e', name: 'Première étoile', plants: 'Camomille matricaire, tilleul, pétales de souci', ingr: 'Camomille matricaire (50 %), tilleul (40 %), pétales de souci (10 %)', note: 'Un goût de miel et de foin coupé. La plus douce de la carte, celle que les enfants réclament.', dial: 'La maison ralentit. Une infusion dorée, au goût de miel, qui se partage avec toute la tablée.', temp: '90 °C', time: '7 min', price: 13 },
+  { id: 'couvre-feu', h: 22, hour: '22 h 00', moon: .26, c: '#e6a653', name: 'Couvre-feu', plants: 'Tilleul des Baronnies, fleur d\'oranger, aubépine', ingr: 'Tilleul des Baronnies (60 %), fleur d\'oranger (25 %), sommités d\'aubépine (15 %)', note: 'Notre signature. Florale et ronde, avec la longueur du tilleul récolté au village.', dial: 'L\'heure de poser le téléphone. Tilleul et fleur d\'oranger, la tasse que nos grands-mères préparaient déjà à cette heure-ci.', temp: '90 °C', time: '7 min', price: 14 },
+  { id: 'lune-rousse', h: 23, hour: '23 h 00', moon: .38, c: '#d2703f', name: 'Lune rousse', plants: 'Rooibos, vanille Bourbon, cannelle, fève tonka', ingr: 'Rooibos (82 %), cannelle de Ceylan (10 %), vanille Bourbon (5 %), fève tonka (3 %)', note: 'Gourmande et cuivrée, pour remplacer le dessert ou le dernier carré de chocolat.', dial: 'Une envie de sucré avant de monter ? Rooibos, vanille et tonka, le dessert sans le dessert.', temp: '95 °C', time: '6 min', price: 14.5 },
+  { id: 'minuit-pile', h: 24, hour: '0 h 00', moon: .5, c: '#c9b17a', name: 'Minuit pile', plants: 'Passiflore, lavande fine, mélisse', ingr: 'Passiflore (50 %), mélisse (35 %), lavande fine (15 %)', note: 'Dense et enveloppante. La lavande reste discrète, juste ce qu\'il faut pour sentir la Drôme.', dial: 'La maison dort, vous pas encore. Passiflore et lavande fine, une tasse pleine et enveloppante pour le dernier chapitre.', temp: '90 °C', time: '8 min', price: 15 },
+  { id: 'nuit-blanche', h: 25.5, hour: '1 h 30', moon: .62, c: '#a9bf96', name: 'Nuit blanche', plants: 'Valériane, houblon, menthe douce', ingr: 'Racine de valériane (40 %), menthe douce (35 %), cônes de houblon (25 %)', note: 'Pour les nuits qui tardent. Terreuse, adoucie par la menthe, à boire sans regarder l\'heure.', dial: 'Le sommeil se fait attendre. Valériane et houblon, adoucis de menthe, pour les petites heures.', temp: '90 °C', time: '10 min', price: 16 }
+];
+const EXTRA = { lunaison: { id: 'lunaison', name: 'La Lunaison', sub: 'Abonnement, un coffret par nouvelle lune', price: 26, subscription: true } };
+const item = (id) => TEAS.find((t) => t.id === id) || EXTRA[id];
+
+/* =====================================================================
+   API : la seule couche à réécrire pour brancher un vrai serveur.
+   Chaque méthode est asynchrone et renvoie les mêmes objets qu'un serveur renverrait.
+   ===================================================================== */
+const enc = new TextEncoder();
+async function hashPw(pw, salt) {
+  if (!crypto.subtle) throw new Error('Ce navigateur ne permet pas de protéger le mot de passe. Ouvrez le site en https.');
+  const key = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode(salt), iterations: 150000, hash: 'SHA-256' }, key, 256);
+  return [...new Uint8Array(bits)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+const users = () => LS.get('users') || {};
+const saveUser = (u) => { const all = users(); all[u.email] = u; LS.set('users', all); };
+const pub = (u) => { if (!u) return null; const { salt, hash, ...rest } = u; return rest; };
+const API = {
+  current() { const e = LS.get('session'); return e ? pub(users()[e]) : null; },
+  async signUp({ first, last, email, password, newsletter }) {
+    email = email.trim().toLowerCase();
+    if (users()[email]) throw new Error('Un compte existe déjà avec cette adresse. Connectez-vous, ou choisissez une autre adresse.');
+    const salt = crypto.randomUUID();
+    const now = new Date().toISOString();
+    saveUser({ email, first, last, phone: '', address: { line: '', zip: '', city: '' }, newsletter: newsletter ? now : null, created: now, consent: { cgu: now, privacy: now }, orders: [], salt, hash: await hashPw(password, salt) });
+    LS.set('session', email);
+    return API.current();
+  },
+  async signIn(email, password) {
+    email = email.trim().toLowerCase();
+    const u = users()[email];
+    if (!u || u.hash !== await hashPw(password, u.salt)) throw new Error('Adresse ou mot de passe incorrect. Vérifiez les deux, puis réessayez.');
+    LS.set('session', email);
+    return API.current();
+  },
+  async signOut() { LS.del('session'); },
+  async update(patch) { const u = users()[LS.get('session')]; Object.assign(u, patch); saveUser(u); return pub(u); },
+  async placeOrder(order) {
+    const e = LS.get('session');
+    if (e) { const u = users()[e]; u.orders.unshift(order); saveUser(u); }
+    else { const g = LS.get('guest-orders') || []; g.unshift(order); LS.set('guest-orders', g); }
+    return order;
+  },
+  async updateOrder(id, patch) { const u = users()[LS.get('session')]; const o = u.orders.find((x) => x.id === id); if (o) Object.assign(o, patch); saveUser(u); return o; },
+  async withdraw(rec) { const all = LS.get('withdrawals') || []; all.unshift(rec); LS.set('withdrawals', all); const u = users()[LS.get('session')]; const o = u && u.orders.find((x) => x.id === rec.order); if (o) { o.status = 'Rétractation demandée'; o.withdrawn = rec.date; saveUser(u); } return rec; },
+  async newsletter(email) { const all = LS.get('newsletter') || []; if (!all.some((x) => x.email === email)) all.push({ email, date: new Date().toISOString() }); LS.set('newsletter', all); },
+  async exportData() { return { compte: API.current(), exporte_le: new Date().toISOString() }; },
+  async deleteAccount() { const all = users(); delete all[LS.get('session')]; LS.set('users', all); LS.del('session'); }
+};
+
+/* ---------- Lune ---------- */
+const SYN = 29.530588853;
+const phaseAt = (d) => { const p = ((d - Date.UTC(2000, 0, 6, 18, 14)) / DAY / SYN) % 1; return p < 0 ? p + 1 : p; };
+function moonD(p, r) {
+  const w = p <= .5 ? p : 1 - p;
+  const rx = (Math.abs(Math.cos(2 * Math.PI * w)) * r).toFixed(2);
+  return `M0,${-r}A${r},${r} 0 0 1 0,${r}A${rx},${r} 0 0 ${w < .25 ? 0 : 1} 0,${-r}Z`;
+}
+const flip = (p) => (p > .5 ? ' transform="scale(-1,1)"' : '');
+const moonSVG = (p, size, c) => `<svg viewBox="-11 -11 22 22" width="${size}" height="${size}" aria-hidden="true"${c ? ` style="--c:${c}"` : ''}><circle r="10" class="moon-dark"/><path class="moon-lit" d="${moonD(p, 10)}"${flip(p)}/></svg>`;
+function phaseName(p) {
+  if (p < .03 || p > .97) return 'nouvelle lune';
+  if (p < .22) return 'premier croissant';
+  if (p < .28) return 'premier quartier';
+  if (p < .47) return 'lune gibbeuse croissante';
+  if (p < .53) return 'pleine lune';
+  if (p < .72) return 'lune gibbeuse décroissante';
+  if (p < .78) return 'dernier quartier';
+  return 'dernier croissant';
+}
+const now = new Date(), P = phaseAt(now);
+$('#hero-moon').insertAdjacentHTML('beforeend',
+  `<path class="moon-lit" d="${moonD(P, 100)}"${flip(P)}/><g fill="rgba(8,13,28,.08)"${flip(P)}><circle cx="38" cy="-30" r="17"/><circle cx="58" cy="26" r="10"/><circle cx="22" cy="48" r="13"/><circle cx="70" cy="-8" r="6"/><circle cx="14" cy="-62" r="8"/></g>`);
+$('#tonight').textContent = `Ce soir au-dessus de la maison : ${phaseName(P)}, éclairée à ${Math.round((1 - Math.cos(2 * Math.PI * P)) / 2 * 100)} %.`;
+$('#phases').innerHTML = [0, .125, .25, .375, .5, .625, .75, .875].map((p) => moonSVG(p, 42)).join('');
+$('#next-moon').textContent = `Prochain envoi : nouvelle lune du ${new Date(now.getTime() + (1 - P) * SYN * DAY).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}.`;
+
+/* ---------- Ciel étoilé : dessiné une fois, il bouge seulement avec le défilement ---------- */
+const cv = $('#sky'), ctx = cv.getContext('2d');
+function rng(seed) { return () => (seed = (seed * 16807) % 2147483647) / 2147483647; }
+function drawSky() {
+  const r = cv.getBoundingClientRect(); if (!r.width) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  cv.width = r.width * dpr; cv.height = r.height * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const rand = rng(1911), n = Math.round(r.width * r.height / 3400);
+  ctx.clearRect(0, 0, r.width, r.height);
+  for (let i = 0; i < n; i++) {
+    const x = rand() * r.width, y = Math.pow(rand(), 1.6) * r.height * .8, rad = .3 + rand() * 1.1, a = .2 + rand() * .65, warm = rand() > .88;
+    ctx.globalAlpha = a; ctx.fillStyle = warm ? '#e6b064' : '#f3ecdc';
+    ctx.beginPath(); ctx.arc(x, y, rad, 0, 6.2832); ctx.fill();
+  }
+}
+
+/* ---------- Carte ---------- */
+$('#carte-list').innerHTML = TEAS.map((t) => `
+  <li id="t-${t.id}" style="--c:${t.c}">
+    <div class="hour">${moonSVG(t.moon, 28, t.c)}<span>${t.hour}</span></div>
+    <div>
+      <h3>${t.name}</h3><p class="plants">${t.plants}</p><p class="note">${t.note}</p>
+      <details><summary>Composition et préparation</summary>
+        <dl><dt>Ingrédients</dt><dd>${t.ingr}. Plantes entières, sans arôme ajouté.</dd>
+        <dt>Préparation</dt><dd>2 g pour 25 cl d'eau à ${t.temp}, ${t.time} à couvert.</dd>
+        <dt>Poids net</dt><dd>80 g, environ 40 tasses (${euro(t.price / .08)} le kilo).</dd>
+        <dt>Conservation</dt><dd>18 mois au sec et à l'abri de la lumière. Date sur le fond de la boîte.</dd>
+        <dt>Allergènes</dt><dd>Aucun allergène à déclaration obligatoire. Atelier sans fruits à coque.</dd></dl>
+      </details>
+    </div>
+    <div class="buy"><span class="price">${euro(t.price)}<small>la boîte de 80 g</small></span><button class="btn ghost" type="button" data-add="${t.id}" aria-label="Ajouter ${t.name} au panier">Ajouter au panier</button></div>
+  </li>`).join('');
+
+/* ---------- La nuit, heure par heure ---------- */
+const journey = $('#heure'), jSticky = $('#journey-sticky'), jMoon = $('#journey-moon'), jArc = $('.journey-arc');
+$('#stations').innerHTML = TEAS.map((t, i) => `<li><button type="button" data-station="${i}"><span>${t.hour.replace(' 00', '')}</span><span>${t.name}</span></button></li>`).join('');
+$('#journey-teas').innerHTML = TEAS.map((t, i) => `
+  <article class="jt" style="--c:${t.c}" inert>
+    <h3>${t.name}</h3><p class="plants">${t.plants}</p><p class="dial">${t.dial}</p>
+    <div class="actions"><button class="btn" type="button" data-add="${t.id}">Ajouter au panier, ${euro(t.price)}</button><a class="btn ghost" href="#carte" data-show="${t.id}">Voir la composition</a></div>
+  </article>`).join('');
+let station = -1;
+function setStation(i) {
+  if (i === station) return;
+  station = i;
+  document.querySelectorAll('.jt').forEach((el, k) => { el.toggleAttribute('data-active', k === i); el.inert = k !== i; });
+  document.querySelectorAll('[data-station]').forEach((b, k) => (k === i ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
+  $('#liquid').style.fill = TEAS[i].c;
+  // Un remous dans la tasse à chaque changement d'heure.
+  if (HAS_GSAP && !reduced) gsap.fromTo('#ripple', { attr: { r: 12 }, opacity: .8 }, { attr: { r: 70 }, opacity: 0, duration: 1.1, ease: 'power2.out', overwrite: true });
+}
+
+/* ---------- Défilement fluide (Lenis) ----------
+   Règles suivies (skills d'Emil Kowalski, Impeccable, UI/UX Pro Max) :
+   aucune lecture de mise en page pendant le défilement (tout est mesuré d'avance),
+   on n'écrit que transform, opacity, ou un texte qui a vraiment changé. */
+const easeInOutQuart = (t) => (t < .5 ? 8 * t ** 4 : 1 - (-2 * t + 2) ** 4 / 2);
+let lenis = null;
+try { if (window.Lenis) lenis = new window.Lenis({ autoRaf: !HAS_GSAP, lerp: .075, wheelMultiplier: .9, smoothWheel: true }); } catch { lenis = null; }
+// Lenis et ScrollTrigger partagent la même horloge : celle de GSAP.
+if (lenis && HAS_GSAP) { lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add((t) => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+const topBar = $('.top'), skyWrap = $('#sky-wrap'), moonWrap = $('#moon-wrap'), night = $('#journey-night'), hint = $('#journey-hint'), clockH = $('#clock-h'), clockM = $('#clock-m'), HEADER = 76;
+const G = { jTop: 0, jSpan: 1, arcW: 0, heroEnd: 0, vh: innerHeight };
+const last = { scrolled: null, p: -1, h: '', m: '', gone: null, par: -1 };
+function measure() {
+  if ($('#view-home').hidden) return;
+  const y = scrollY;
+  G.vh = innerHeight;
+  G.jTop = journey.getBoundingClientRect().top + y;
+  G.jSpan = Math.max(1, journey.offsetHeight - G.vh);
+  G.arcW = jArc.clientWidth;
+  G.heroEnd = $('#accueil').offsetHeight + 200;
+  last.p = -1; last.par = -1;
+  onScroll();
+}
+function onScroll() {
+  const y = scrollY;
+  const scrolled = y > 24;
+  if (scrolled !== last.scrolled) { last.scrolled = scrolled; topBar.toggleAttribute('data-scrolled', scrolled); }
+  if ($('#view-home').hidden) return;
+  if (!reduced) {
+    const py = Math.min(y, G.heroEnd);
+    if (py !== last.par) { last.par = py; skyWrap.style.transform = `translate3d(0,${(py * .18).toFixed(1)}px,0)`; moonWrap.style.transform = `translate3d(0,${(py * .34).toFixed(1)}px,0)`; }
+  }
+  if (y < G.jTop - G.vh || y > G.jTop + G.jSpan + G.vh) return;
+  const p = Math.min(1, Math.max(0, (y - G.jTop) / G.jSpan));
+  if (Math.abs(p - last.p) < .0004) return;
+  last.p = p;
+  const time = 20 + p * 6, h = String(Math.floor(time) % 24), m = String(Math.floor((time % 1) * 12) * 5).padStart(2, '0');
+  if (h !== last.h) { last.h = h; clockH.textContent = h; }
+  if (m !== last.m) { last.m = m; clockM.textContent = m; }
+  let i = 0; TEAS.forEach((t, k) => { if (time >= t.h) i = k; });
+  setStation(i);
+  night.style.opacity = p.toFixed(3);
+  jMoon.style.transform = `translate3d(${(p * G.arcW).toFixed(1)}px,${(-280 * p * (1 - p)).toFixed(1)}px,0)`;
+  const gone = p > .03;
+  if (gone !== last.gone) { last.gone = gone; hint.toggleAttribute('data-gone', gone); }
+}
+if (lenis) lenis.on('scroll', onScroll); else addEventListener('scroll', onScroll, { passive: true });
+let rsz = 0;
+const remeasure = () => { cancelAnimationFrame(rsz); rsz = requestAnimationFrame(measure); };
+addEventListener('resize', () => { drawSky(); remeasure(); });
+if (window.ResizeObserver) new ResizeObserver(remeasure).observe(document.body);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+// Durée proportionnelle à la distance : un saut court reste vif, un long reste doux.
+const glide = (dist) => Math.min(1.8, Math.max(.7, .6 + Math.abs(dist) / 3500));
+function smoothTo(target, offset = 0, extra = {}) {
+  const dest = typeof target === 'number' ? target : target.getBoundingClientRect().top + scrollY + offset;
+  if (!lenis) return window.scrollTo({ top: dest, behavior: reduced ? 'auto' : 'smooth' });
+  lenis.scrollTo(dest, { duration: glide(dest - scrollY), easing: easeInOutQuart, force: true, ...extra });
+}
+function toTop() { lenis ? lenis.scrollTo(0, { immediate: true, force: true }) : window.scrollTo(0, 0); }
+function goTo(el, immediate) {
+  const offset = el.id === 'heure' ? 0 : -HEADER;
+  if (!immediate) return smoothTo(el, offset);
+  if (lenis) lenis.scrollTo(el, { offset, immediate: true, force: true }); else window.scrollTo(0, el.getBoundingClientRect().top + scrollY + offset);
+}
+function goStation(i) { smoothTo(G.jTop + ((TEAS[i].h + .15 - 20) / 6) * G.jSpan); }
+function openDialog(d) { if (!d.open) { d.showModal(); if (lenis) lenis.stop(); } }
+['#cart', '#cookie-prefs'].forEach((sel) => $(sel).addEventListener('close', () => { if (lenis) lenis.start(); }));
+function flash(li) { li.classList.add('lit'); setTimeout(() => li.classList.remove('lit'), 1600); }
+
+/* ---------- Notification d'ajout : se met en pause au survol et quand l'onglet est caché ---------- */
+const toastEl = $('#toast'); let toastT = null, toastLeft = 0, toastAt = 0;
+const toastOn = () => toastEl.hasAttribute('data-show');
+function hideToast() { clearTimeout(toastT); toastEl.removeAttribute('data-show'); toastEl.setAttribute('aria-hidden', 'true'); }
+function armToast(ms) { clearTimeout(toastT); toastLeft = ms; toastAt = Date.now(); toastT = setTimeout(hideToast, ms); }
+function pauseToast() { clearTimeout(toastT); toastLeft -= Date.now() - toastAt; }
+function showToast(msg) { $('#toast-msg').textContent = msg; $('#toast-live').textContent = msg; toastEl.setAttribute('data-show', ''); toastEl.removeAttribute('aria-hidden'); armToast(4000); }
+toastEl.addEventListener('pointerenter', () => { if (toastOn()) pauseToast(); });
+toastEl.addEventListener('pointerleave', () => { if (toastOn()) armToast(Math.max(1200, toastLeft)); });
+document.addEventListener('visibilitychange', () => { if (!toastOn()) return; if (document.hidden) pauseToast(); else armToast(Math.max(1200, toastLeft)); });
+
+/* ---------- Cookies et consentement ---------- */
+function consent() { const c = LS.get('consent'); return c && Date.now() - new Date(c.date) < 182 * DAY ? c : null; }
+function applyConsent() {
+  const c = consent(), bar = $('#cookie-bar');
+  if (c && !bar.hidden) { bar.setAttribute('data-leaving', ''); setTimeout(() => { bar.hidden = true; bar.removeAttribute('data-leaving'); }, reduced ? 0 : 200); }
+  if (!c) bar.hidden = false;
+  LS.del('hour');
+  if (c && c.stats && typeof CONFIG.analytics === 'function' && !applyConsent.done) { applyConsent.done = true; CONFIG.analytics(); }
+}
+function setConsent(stats) { LS.set('consent', { stats, date: new Date().toISOString() }); if ($('#cookie-prefs').open) $('#cookie-prefs').close(); applyConsent(); }
+
+/* ---------- Panier ---------- */
+let cart = LS.get('cart') || {};
+const cartEl = $('#cart');
+const subtotal = () => Object.keys(cart).reduce((n, id) => n + cart[id] * item(id).price, 0);
+const goodsTotal = () => Object.keys(cart).filter((id) => !item(id).subscription).reduce((n, id) => n + cart[id] * item(id).price, 0);
+function renderCart() {
+  Object.keys(cart).forEach((id) => { if (!item(id)) delete cart[id]; });
+  LS.set('cart', cart);
+  const ids = Object.keys(cart), count = ids.reduce((n, id) => n + cart[id], 0), total = subtotal(), goods = goodsTotal();
+  $('#cart-count').textContent = count;
+  $('#cart-total').textContent = euro(total);
+  $('#go-checkout').hidden = !count;
+  $('#ship-msg').textContent = !goods ? '' : goods >= CONFIG.freeShippingFrom ? 'La livraison vous est offerte.' : `Plus que ${euro(CONFIG.freeShippingFrom - goods)} pour la livraison offerte.`;
+  $('#cart-list').innerHTML = ids.length ? ids.map((id) => { const t = item(id); return `
+    <li><div><h3>${t.name}</h3><p class="sub">${t.sub || 'Boîte de 80 g'}</p></div>
+    <span class="price" style="font-size:1.2rem">${euro(t.price * cart[id])}</span>
+    <span class="qty"><button type="button" data-qty="-1" data-id="${id}" aria-label="Retirer un ${t.name}">−</button>${cart[id]}<button type="button" data-qty="1" data-id="${id}" aria-label="Ajouter un ${t.name}">+</button></span></li>`; }).join('')
+    : '<li class="empty">Votre panier est vide. La carte de nuit vous attend.</li>';
+  if (currentView === 'commande' && !orderDone) renderCheckout();
+}
+
+/* ---------- Champs de formulaire ---------- */
+const field = (id, label, type = 'text', extra = '', hint = '') => `<div class="field"><label for="${id}">${label}</label><input id="${id}" name="${id}" type="${type}" ${extra}>${hint ? `<small>${hint}</small>` : ''}</div>`;
+const val = (id) => ($('#' + id) ? $('#' + id).value.trim() : '');
+const say = (id, text, bad) => { const m = $('#' + id); if (m) { m.textContent = text; m.classList.toggle('bad', !!bad); } };
+const emailOk = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);
+
+/* ---------- Compte ---------- */
+function renderNav() { const u = API.current(); $('#nav-account').textContent = u ? `Bonsoir, ${u.first}` : 'Se connecter'; }
+function renderAccount() {
+  const u = API.current(), el = $('#compte-body');
+  if (!u) {
+    el.innerHTML = `
+      <h1>Votre compte</h1>
+      <p class="intro">Retrouvez vos commandes, gérez votre abonnement et vos données. Vous pouvez aussi commander sans compte.</p>
+      <div class="two">
+        <form class="panel form" id="login-form" novalidate>
+          <h2>Se connecter</h2>
+          ${field('li-email', 'Adresse e-mail', 'email', 'autocomplete="email" required')}
+          ${field('li-pw', 'Mot de passe', 'password', 'autocomplete="current-password" required')}
+          <p class="msg" id="li-msg" role="status"></p>
+          <div class="actions"><button class="btn" type="submit">Se connecter</button><button class="link" type="button" data-act="forgot" style="font-size:.88rem;color:var(--mist)">Mot de passe oublié</button></div>
+        </form>
+        <form class="panel form" id="signup-form" novalidate>
+          <h2>Créer un compte</h2>
+          <div class="row2">${field('su-first', 'Prénom', 'text', 'autocomplete="given-name" required')}${field('su-last', 'Nom', 'text', 'autocomplete="family-name" required')}</div>
+          ${field('su-email', 'Adresse e-mail', 'email', 'autocomplete="email" required')}
+          ${field('su-pw', 'Mot de passe', 'password', 'autocomplete="new-password" minlength="12" required', '12 caractères au moins, avec une majuscule, une minuscule et un chiffre.')}
+          <label class="check"><input type="checkbox" id="su-cgu"><span>J'accepte les <a href="#cgu">conditions d'utilisation</a> et j'ai lu la <a href="#confidentialite">politique de confidentialité</a>.</span></label>
+          <label class="check"><input type="checkbox" id="su-nl"><span>Je souhaite recevoir la lettre de la pleine lune, une fois par mois (facultatif).</span></label>
+          <p class="msg" id="su-msg" role="status"></p>
+          <div><button class="btn" type="submit">Créer mon compte</button></div>
+        </form>
+      </div>`;
+    return;
+  }
+  const sub = u.orders.find((o) => o.items.some((i) => i.id === 'lunaison') && !o.subCancelled && !o.withdrawn);
+  el.innerHTML = `
+    <div class="account-head"><h1>Bonsoir, ${esc(u.first)}</h1><button class="btn ghost" type="button" data-act="logout">Se déconnecter</button></div>
+    <div class="two">
+      <div class="stack">
+        <section class="panel"><h2>Mes commandes</h2>
+          ${u.orders.length ? u.orders.map((o) => `
+            <div class="order">
+              <div class="order-top"><b>${o.id}</b><span class="tag">${esc(o.status)}</span></div>
+              <p>${dateFr(o.date)}, ${o.items.map((i) => `${i.qty} × ${esc(i.name)}`).join(', ')}</p>
+              <div class="order-top"><p>${esc(o.delivery)}</p><b>${euro(o.total)}</b></div>
+              ${!o.withdrawn && Date.now() - new Date(o.date) < 14 * DAY ? `<div><a class="link" href="#retractation" data-withdraw="${o.id}" style="font-size:.88rem">Me rétracter de cette commande</a></div>` : ''}
+            </div>`).join('') : `<p style="color:var(--mist)">Aucune commande pour l'instant. <a href="#carte">Voir la carte de nuit</a></p>`}
+        </section>
+        <section class="panel"><h2>Abonnement La Lunaison</h2>
+          ${sub ? `<p style="color:#c3cae0;margin-bottom:16px">Actif depuis le ${dateFr(sub.date)}, 26 € par lunaison.</p>
+            <div class="actions" id="sub-actions"><button class="btn ghost" type="button" data-act="cancel-sub" data-id="${sub.id}">Résilier mon abonnement</button></div><p class="msg" id="sub-msg" role="status"></p>`
+            : `<p style="color:var(--mist)">Vous n'avez pas d'abonnement en cours. <a href="#lunaison">Découvrir La Lunaison</a></p><p class="msg" id="sub-msg" role="status"></p>`}
+        </section>
+      </div>
+      <div class="stack">
+        <form class="panel form" id="profile-form" novalidate>
+          <h2>Mes informations</h2>
+          <div class="row2">${field('pf-first', 'Prénom', 'text', `value="${esc(u.first)}" autocomplete="given-name" required`)}${field('pf-last', 'Nom', 'text', `value="${esc(u.last)}" autocomplete="family-name" required`)}</div>
+          ${field('pf-email', 'Adresse e-mail', 'email', `value="${esc(u.email)}" readonly`)}
+          ${field('pf-phone', 'Téléphone (facultatif, pour le livreur)', 'tel', `value="${esc(u.phone)}" autocomplete="tel"`)}
+          ${field('pf-line', 'Adresse de livraison', 'text', `value="${esc(u.address.line)}" autocomplete="street-address"`)}
+          <div class="row3">${field('pf-zip', 'Code postal', 'text', `value="${esc(u.address.zip)}" autocomplete="postal-code" inputmode="numeric"`)}${field('pf-city', 'Ville', 'text', `value="${esc(u.address.city)}" autocomplete="address-level2"`)}</div>
+          <label class="check"><input type="checkbox" id="pf-nl" ${u.newsletter ? 'checked' : ''}><span>Recevoir la lettre de la pleine lune</span></label>
+          <p class="msg" id="pf-msg" role="status"></p>
+          <div><button class="btn" type="submit">Enregistrer mes informations</button></div>
+        </form>
+        <section class="panel"><h2>Mes données personnelles</h2>
+          <p style="color:#c3cae0;font-size:.93rem;margin-bottom:16px">Vous pouvez obtenir une copie de vos données ou supprimer votre compte, sans avoir à nous écrire. Le détail de vos droits figure dans la <a href="#confidentialite">politique de confidentialité</a>.</p>
+          <div class="actions" id="data-actions"><button class="btn ghost" type="button" data-act="export">Obtenir une copie de mes données</button><button class="btn danger" type="button" data-act="delete-ask">Supprimer mon compte</button></div>
+          <div id="data-out" style="margin-top:16px"></div>
+        </section>
+      </div>
+    </div>`;
+}
+function pwOk(p) { return p.length >= 12 && /[a-z]/.test(p) && /[A-Z]/.test(p) && /\d/.test(p); }
+
+/* ---------- Commande ---------- */
+let orderDone = false;
+const DELIVERY = { domicile: { label: 'Colissimo à domicile, 2 à 3 jours ouvrés', price: 5.9 }, relais: { label: 'Point relais, 3 à 5 jours ouvrés', price: 3.9 } };
+function shipCost(mode) { const goods = goodsTotal(); return !goods || goods >= CONFIG.freeShippingFrom ? 0 : DELIVERY[mode].price; }
+function renderSummary() {
+  const mode = (document.querySelector('input[name=delivery]:checked') || {}).value || 'domicile';
+  const ship = shipCost(mode), total = subtotal() + ship;
+  $('#summary').innerHTML = `
+    <h2>Votre commande</h2>
+    ${Object.keys(cart).map((id) => `<div class="sum-line"><span>${cart[id]} × ${item(id).name}</span><span>${euro(cart[id] * item(id).price)}</span></div>`).join('')}
+    <div class="sum-line"><span>Livraison</span><span>${ship ? euro(ship) : 'Offerte'}</span></div>
+    <div class="sum-line sum-total"><span>Total TTC</span><b>${euro(total)}</b></div>
+    <p style="font-size:.8rem;color:var(--mist);margin-top:6px">Dont TVA à 5,5 % : ${euro(total - total / 1.055)}</p>
+    ${cart.lunaison ? `<p style="font-size:.85rem;color:var(--mist);margin-top:12px">La Lunaison est ensuite prélevée 26 € à chaque nouvelle lune. Vous la résiliez en ligne depuis votre compte.</p>` : ''}
+    <p style="margin-top:14px"><button class="link" type="button" data-act="open-cart" style="font-size:.88rem;color:var(--mist)">Modifier mon panier</button></p>`;
+}
+function renderCheckout() {
+  const el = $('#commande-body'), u = API.current();
+  if (!Object.keys(cart).length) { el.innerHTML = `<h1>Votre panier est vide</h1><p class="intro">Choisissez une infusion sur la carte de nuit, elle vous attendra ici.</p><a class="btn" href="#carte">Voir la carte de nuit</a>`; return; }
+  const keep = {}; el.querySelectorAll('input').forEach((i) => { keep[i.id] = i.type === 'checkbox' || i.type === 'radio' ? i.checked : i.value; });
+  const a = (u && u.address) || {};
+  el.innerHTML = `
+    <a class="back" href="#carte">Continuer mes achats</a>
+    <h1>Finaliser la commande</h1>
+    <p class="intro">${u ? `Vous commandez avec le compte ${esc(u.email)}.` : `Vous commandez sans compte. <a href="#compte">Me connecter ou créer un compte</a> pour retrouver vos commandes.`}</p>
+    <form class="checkout" id="checkout-form" novalidate>
+      <div class="stack">
+        <fieldset class="panel form"><h2>Vos coordonnées</h2>
+          <div class="row2">${field('co-first', 'Prénom', 'text', `value="${esc(u ? u.first : '')}" autocomplete="given-name" required`)}${field('co-last', 'Nom', 'text', `value="${esc(u ? u.last : '')}" autocomplete="family-name" required`)}</div>
+          ${field('co-email', 'Adresse e-mail, pour la confirmation', 'email', `value="${esc(u ? u.email : '')}" autocomplete="email" required`)}
+          ${field('co-phone', 'Téléphone (facultatif, pour le livreur)', 'tel', `value="${esc(u ? u.phone : '')}" autocomplete="tel"`)}
+        </fieldset>
+        <fieldset class="panel form"><h2>Adresse de livraison</h2>
+          ${field('co-line', 'Numéro et rue', 'text', `value="${esc(a.line || '')}" autocomplete="street-address" required`)}
+          <div class="row3">${field('co-zip', 'Code postal', 'text', `value="${esc(a.zip || '')}" autocomplete="postal-code" inputmode="numeric" required`)}${field('co-city', 'Ville', 'text', `value="${esc(a.city || '')}" autocomplete="address-level2" required`)}</div>
+          <p style="font-size:.85rem;color:var(--mist)">Nous livrons en France métropolitaine.</p>
+        </fieldset>
+        <fieldset class="panel form"><h2>Mode de livraison</h2>
+          ${Object.entries(DELIVERY).map(([k, d], i) => `<label class="radio"><input type="radio" name="delivery" id="dl-${k}" value="${k}" ${i === 0 ? 'checked' : ''}><span>${d.label}</span><span>${shipCost(k) ? euro(shipCost(k)) : 'Offerte'}</span></label>`).join('')}
+        </fieldset>
+      </div>
+      <div class="panel summary">
+        <div id="summary"></div>
+        <div class="form" style="margin-top:20px">
+          <label class="check"><input type="checkbox" id="co-cgv"><span>J'ai lu et j'accepte les <a href="#cgv">conditions générales de vente</a>, dont les règles du droit de rétractation.</span></label>
+          <p class="msg" id="co-msg" role="status"></p>
+          <button class="btn" type="submit">Commander avec obligation de paiement</button>
+          <p style="font-size:.8rem;color:var(--mist)">Vos données servent à traiter la commande. Voir la <a href="#confidentialite">politique de confidentialité</a>.</p>
+        </div>
+      </div>
+    </form>`;
+  Object.entries(keep).forEach(([id, v]) => { const i = id && $('#' + id); if (i && v !== '' && v !== false) { if (i.type === 'checkbox' || i.type === 'radio') i.checked = v; else i.value = v; } });
+  renderSummary();
+}
+async function submitCheckout() {
+  const need = { 'co-first': 'votre prénom', 'co-last': 'votre nom', 'co-line': 'votre adresse', 'co-city': 'votre ville' };
+  for (const [id, label] of Object.entries(need)) if (!val(id)) { $('#' + id).focus(); return say('co-msg', `Indiquez ${label} pour continuer.`, true); }
+  if (!emailOk(val('co-email'))) { $('#co-email').focus(); return say('co-msg', 'Cette adresse e-mail semble incomplète. Vérifiez-la.', true); }
+  if (!/^\d{5}$/.test(val('co-zip'))) { $('#co-zip').focus(); return say('co-msg', 'Le code postal doit comporter 5 chiffres.', true); }
+  if (!$('#co-cgv').checked) return say('co-msg', 'Cochez la case des conditions générales de vente pour valider la commande.', true);
+  const mode = document.querySelector('input[name=delivery]:checked').value, ship = shipCost(mode);
+  const d = new Date();
+  const order = {
+    id: `VSP-${String(d.getFullYear()).slice(2)}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}-${String(crypto.getRandomValues(new Uint16Array(1))[0] % 10000).padStart(4, '0')}`,
+    date: d.toISOString(), status: 'En attente de paiement',
+    items: Object.keys(cart).map((id) => ({ id, name: item(id).name, qty: cart[id], price: item(id).price })),
+    subtotal: subtotal(), shipping: ship, total: subtotal() + ship, delivery: DELIVERY[mode].label,
+    customer: { first: val('co-first'), last: val('co-last'), email: val('co-email'), phone: val('co-phone') },
+    address: { line: val('co-line'), zip: val('co-zip'), city: val('co-city') }, cgvAccepted: d.toISOString()
+  };
+  await API.placeOrder(order);
+  const u = API.current();
+  if (u && !u.address.line) await API.update({ address: order.address, phone: u.phone || order.customer.phone });
+  cart = {}; orderDone = true; renderCart();
+  if (CONFIG.paymentUrl) { location.href = CONFIG.paymentUrl; return; }
+  $('#commande-body').innerHTML = `
+    <h1>Commande ${order.id} enregistrée</h1>
+    <p class="intro">Merci ${esc(order.customer.first)}. Votre commande de ${euro(order.total)} est enregistrée et sera expédiée dès réception du paiement, à l'adresse ${esc(order.address.line)}, ${esc(order.address.zip)} ${esc(order.address.city)}.</p>
+    ${CONFIG.demo ? `<p class="notice">Mode démonstration : le paiement n'est pas encore relié à un prestataire. Aucune somme n'a été débitée et aucun e-mail n'a été envoyé.</p>` : ''}
+    <div class="actions"><a class="btn" href="#${u ? 'compte' : 'carte'}">${u ? 'Voir mes commandes' : 'Retourner à la carte'}</a><a class="btn ghost" href="#retractation">Me rétracter de cette commande</a></div>`;
+  toTop();
+}
+
+/* ---------- Rétractation en ligne ---------- */
+let withdrawPrefill = '';
+function renderWithdraw() {
+  const u = API.current();
+  $('#retractation-body').innerHTML = `
+    <a class="back" href="#accueil">Retour à la boutique</a>
+    <h1>Me rétracter d'une commande</h1>
+    <p class="intro">Vous disposez de 14 jours après réception de votre colis pour changer d'avis, sans avoir à donner de raison. Remplissez ce formulaire, puis confirmez. Les boîtes ouvertes ne peuvent pas être reprises, pour des raisons d'hygiène. Le détail figure dans les <a href="#cgv">conditions générales de vente</a>.</p>
+    <form class="panel form" id="withdraw-form" novalidate style="max-width:640px">
+      <div class="row2">${field('wd-name', 'Nom et prénom', 'text', `value="${esc(u ? u.first + ' ' + u.last : '')}" autocomplete="name" required`)}${field('wd-order', 'Numéro de commande', 'text', `value="${esc(withdrawPrefill)}" placeholder="VSP-000000-0000" required`)}</div>
+      ${field('wd-email', 'Adresse e-mail, pour l\'accusé de réception', 'email', `value="${esc(u ? u.email : '')}" autocomplete="email" required`)}
+      <div class="field"><label for="wd-what">Articles concernés (laissez vide pour toute la commande)</label><textarea id="wd-what" rows="3"></textarea></div>
+      <p class="msg" id="wd-msg" role="status"></p>
+      <div><button class="btn" type="submit">Confirmer ma rétractation</button></div>
+    </form>`;
+}
+async function submitWithdraw() {
+  if (!val('wd-name')) return say('wd-msg', 'Indiquez votre nom et votre prénom.', true);
+  if (!val('wd-order')) return say('wd-msg', 'Indiquez le numéro de la commande. Il figure dans votre compte et sur votre confirmation.', true);
+  if (!emailOk(val('wd-email'))) return say('wd-msg', 'Cette adresse e-mail semble incomplète. Vérifiez-la.', true);
+  const rec = await API.withdraw({ order: val('wd-order').toUpperCase(), name: val('wd-name'), email: val('wd-email'), what: val('wd-what') || 'Toute la commande', date: new Date().toISOString() });
+  const text = `Accusé de réception de rétractation\n${CONFIG.company.brand}\nCommande : ${rec.order}\nNom : ${rec.name}\nArticles : ${rec.what}\nDéclaration reçue le ${new Date(rec.date).toLocaleString('fr-FR')}`;
+  $('#retractation-body').innerHTML = `
+    <h1>Rétractation enregistrée</h1>
+    <p class="intro">Nous avons bien reçu votre rétractation pour la commande ${esc(rec.order)}. Renvoyez les boîtes non ouvertes sous 14 jours à l'adresse ${esc(CONFIG.company.address)}. Le remboursement, frais de livraison initiaux compris, intervient dans les 14 jours.</p>
+    <div class="panel" style="max-width:640px"><h2>Votre accusé de réception</h2>
+      <textarea class="data" id="wd-receipt" readonly style="min-height:150px">${esc(text)}</textarea>
+      <div class="actions" style="margin-top:14px"><button class="btn ghost" type="button" data-copy="wd-receipt">Copier l'accusé</button><a class="btn" href="#accueil">Retourner à la boutique</a></div>
+    </div>`;
+  withdrawPrefill = ''; toTop();
+}
+
+/* ---------- Pages légales ---------- */
+const C = CONFIG.company;
+const f = (v, label) => (v ? esc(v) : `<mark class="todo">à compléter : ${label}</mark>`);
+const LEGAL = {
+  'mentions-legales': () => `
+    <h1>Mentions légales</h1>
+    <div class="prose">
+      <h2>Éditeur du site</h2>
+      <p>${f(C.legalName, 'raison sociale')}, ${f(C.legalForm, 'forme juridique')} au capital de ${f(C.capital, 'capital social')}, exploitant la marque ${esc(C.brand)}.</p>
+      <p>Siège social : ${f(C.address, 'adresse du siège')}.<br>SIRET : ${f(C.siret, 'numéro SIRET')}. RCS : ${f(C.rcs, 'ville et numéro RCS')}.<br>TVA intracommunautaire : ${f(C.vat, 'numéro de TVA')}.</p>
+      <p>Contact : ${f(C.email, 'adresse e-mail')}, ${f(C.phone, 'numéro de téléphone')}.</p>
+      <p>Directeur ou directrice de la publication : ${f(C.director, 'nom et prénom')}.</p>
+      <h2>Hébergeur</h2>
+      <p>${f(C.host, 'nom, adresse et téléphone de l\'hébergeur')}.</p>
+      <h2>Propriété intellectuelle</h2>
+      <p>Les textes, illustrations, noms d'infusions et éléments graphiques de ce site appartiennent à ${esc(C.brand)}. Toute reproduction sans accord écrit est interdite.</p>
+      <h2>Données personnelles et cookies</h2>
+      <p>Voir la <a href="#confidentialite">politique de confidentialité</a> et la <a href="#cookies">politique de cookies</a>.</p>
+      <h2>Litiges</h2>
+      <p>Médiateur de la consommation : ${f(C.mediator, 'nom, adresse et site du médiateur')}. Voir l'article 11 des <a href="#cgv">conditions générales de vente</a>.</p>
+    </div>`,
+  cgv: () => `
+    <h1>Conditions générales de vente</h1>
+    <p class="intro">En vigueur au ${esc(C.updated)}. Elles s'appliquent à toute commande passée sur ce site par un consommateur.</p>
+    <div class="prose">
+      <h2>1. Vendeur</h2><p>${f(C.legalName, 'raison sociale')}, ${f(C.address, 'adresse')}, SIRET ${f(C.siret, 'SIRET')}. Contact : ${f(C.email, 'e-mail')}.</p>
+      <h2>2. Produits</h2><p>Nous vendons des infusions de plantes en boîtes de 80 g et un abonnement, La Lunaison. La composition, le poids, la préparation et la conservation figurent sur chaque fiche. Les offres valent dans la limite des stocks.</p>
+      <h2>3. Prix</h2><p>Les prix sont indiqués en euros, toutes taxes comprises (TVA à 5,5 %), hors frais de livraison. Les frais de livraison sont affichés avant la validation de la commande. Le prix appliqué est celui affiché au moment de la commande.</p>
+      <h2>4. Commande</h2><p>Vous composez votre panier, renseignez vos coordonnées, vérifiez le récapitulatif, acceptez les présentes conditions puis cliquez sur « Commander avec obligation de paiement ». Le contrat est conclu à ce moment. Nous confirmons la commande par e-mail. Vous pouvez commander avec ou sans compte.</p>
+      <h2>5. Paiement</h2><p>Le paiement se fait en ligne par carte bancaire, via un prestataire de paiement sécurisé. Nous n'avons jamais accès à vos numéros de carte. La commande est expédiée après encaissement.</p>
+      <h2>6. Livraison</h2><p>Nous livrons en France métropolitaine, à domicile (5,90 €, 2 à 3 jours ouvrés) ou en point relais (3,90 €, 3 à 5 jours ouvrés). La livraison est offerte dès ${CONFIG.freeShippingFrom} € d'achat hors abonnement. La Lunaison est livrée frais compris. À défaut de livraison dans les 30 jours, vous pouvez annuler la commande et être remboursé sous 14 jours. Vérifiez le colis à réception et signalez toute avarie au transporteur et à notre service client.</p>
+      <h2>7. Droit de rétractation</h2>
+      <p>Vous disposez de 14 jours à compter de la réception du colis pour vous rétracter, sans motif. Pour l'abonnement, le délai court à compter de la réception du premier coffret.</p>
+      <p>Pour l'exercer, utilisez le <a href="#retractation">formulaire de rétractation en ligne</a>, accessible à tout moment depuis le pied de page, ou envoyez-nous toute déclaration dénuée d'ambiguïté, par exemple le modèle ci-dessous. Nous en accusons réception sans délai.</p>
+      <p>Renvoyez les produits au plus tard 14 jours après votre déclaration. Les frais de retour sont à votre charge. Nous remboursons la totalité des sommes versées, frais de livraison standard compris, dans les 14 jours suivant votre déclaration, et au plus tôt à la réception des produits ou de la preuve de leur expédition, par le moyen de paiement utilisé à la commande.</p>
+      <p>Exception : conformément à l'article L221-28 du Code de la consommation, les boîtes descellées après la livraison ne peuvent pas être reprises, pour des raisons d'hygiène et de protection de la santé.</p>
+      <div class="box"><h3 style="margin-top:0">Modèle de formulaire de rétractation</h3><p>À l'attention de ${f(C.legalName, 'raison sociale')}, ${f(C.address, 'adresse')}, ${f(C.email, 'e-mail')}.</p><p>Je vous notifie par la présente ma rétractation du contrat portant sur la vente des produits ci-dessous : … Commandé le … / reçu le … Nom du consommateur : … Adresse du consommateur : … Date : … Signature (seulement en cas de notification sur papier).</p></div>
+      <h2>8. Abonnement La Lunaison</h2><p>L'abonnement est conclu pour une durée indéterminée, sans engagement. Il est facturé 26 € TTC à chaque nouvelle lune, soit environ tous les 29 jours et demi, livraison comprise. Vous pouvez le résilier à tout moment, gratuitement et en ligne, depuis la rubrique « Abonnement » de votre compte. La résiliation prend effet avant le prochain envoi ; aucun prélèvement n'a lieu ensuite. Toute modification du prix vous est annoncée au moins un mois avant, avec la possibilité de résilier.</p>
+      <h2>9. Garanties légales</h2><p>Tous nos produits bénéficient de la garantie légale de conformité (articles L217-3 et suivants du Code de la consommation), pendant deux ans à compter de la délivrance, et de la garantie des vices cachés (articles 1641 à 1649 du Code civil). En cas de défaut de conformité, vous pouvez demander le remplacement du produit ou, à défaut, son remboursement. Écrivez-nous à ${f(C.email, 'e-mail')} avec votre numéro de commande.</p>
+      <h2>10. Service client</h2><p>${f(C.email, 'e-mail')}, ${f(C.phone, 'téléphone')}, du lundi au vendredi. Nous répondons sous deux jours ouvrés.</p>
+      <h2>11. Médiation</h2><p>En cas de litige non résolu par notre service client, vous pouvez saisir gratuitement le médiateur de la consommation dont nous relevons : ${f(C.mediator, 'nom, adresse et site du médiateur')}. La saisine doit intervenir dans l'année qui suit votre réclamation écrite.</p>
+      <h2>12. Données personnelles</h2><p>Le traitement de vos données est décrit dans la <a href="#confidentialite">politique de confidentialité</a>.</p>
+      <h2>13. Droit applicable</h2><p>Les présentes conditions sont soumises au droit français. Vous conservez le bénéfice des dispositions impératives de votre pays de résidence et pouvez saisir le tribunal de votre domicile.</p>
+    </div>`,
+  cgu: () => `
+    <h1>Conditions générales d'utilisation</h1>
+    <p class="intro">En vigueur au ${esc(C.updated)}. Elles encadrent l'usage du site et du compte client. Les ventes relèvent des <a href="#cgv">conditions générales de vente</a>.</p>
+    <div class="prose">
+      <h2>1. Accès au site</h2><p>Le site est accessible gratuitement. Nous faisons le nécessaire pour qu'il soit disponible, sans pouvoir garantir l'absence d'interruption, notamment pour maintenance.</p>
+      <h2>2. Compte client</h2><p>La création d'un compte est facultative et réservée aux personnes majeures. Vous fournissez des informations exactes et gardez votre mot de passe confidentiel. Prévenez-nous sans délai en cas d'utilisation non autorisée. Vous pouvez supprimer votre compte à tout moment depuis la rubrique « Mes données personnelles ».</p>
+      <h2>3. Usage attendu</h2><p>Vous utilisez le site pour vous informer et commander pour vos besoins personnels. Il est interdit d'en perturber le fonctionnement, d'en extraire le contenu de façon automatisée ou d'usurper l'identité d'un tiers. Nous pouvons suspendre un compte en cas de manquement, après vous en avoir informé.</p>
+      <h2>4. Informations sur les plantes</h2><p>Les informations publiées sur les plantes sont données à titre général. Elles ne constituent pas un avis médical. Demandez conseil à un professionnel de santé en cas de grossesse, d'allaitement, de traitement en cours, et pour les enfants.</p>
+      <h2>5. Propriété intellectuelle</h2><p>Le site et ses contenus appartiennent à ${esc(C.brand)}. Vous disposez d'un droit d'usage personnel, non cessible.</p>
+      <h2>6. Responsabilité</h2><p>Nous sommes responsables de la bonne exécution de nos obligations dans les conditions prévues par la loi. Nous ne répondons pas des dommages dus à un usage du site contraire aux présentes conditions ni des sites tiers vers lesquels nous renvoyons.</p>
+      <h2>7. Évolution</h2><p>Nous pouvons modifier ces conditions. La version applicable est celle en ligne au moment de votre visite ; les titulaires d'un compte sont prévenus par e-mail des changements importants.</p>
+      <h2>8. Droit applicable et contact</h2><p>Ces conditions sont soumises au droit français. Pour toute question : ${f(C.email, 'e-mail')}.</p>
+    </div>`,
+  confidentialite: () => `
+    <h1>Politique de confidentialité</h1>
+    <p class="intro">En vigueur au ${esc(C.updated)}. Elle explique quelles données nous utilisons, pourquoi, combien de temps, et comment exercer vos droits.</p>
+    <div class="prose">
+      <h2>Qui est responsable de vos données</h2><p>${f(C.legalName, 'raison sociale')}, ${f(C.address, 'adresse')}. Pour toute question sur vos données : ${f(C.email, 'e-mail')}.</p>
+      <h2>Quelles données, pour quoi faire</h2>
+      <div class="table"><table>
+        <tr><th>Finalité</th><th>Données</th><th>Base légale</th><th>Durée</th></tr>
+        <tr><td>Traiter et livrer vos commandes</td><td>Identité, coordonnées, adresse, contenu de la commande</td><td>Contrat</td><td>Durée de la relation, puis 5 ans en archive</td></tr>
+        <tr><td>Factures et comptabilité</td><td>Identité, commande, montant</td><td>Obligation légale</td><td>10 ans</td></tr>
+        <tr><td>Gérer votre compte</td><td>Identité, e-mail, mot de passe chiffré, adresse</td><td>Contrat</td><td>Jusqu'à suppression du compte, ou 3 ans sans connexion</td></tr>
+        <tr><td>Envoyer la lettre mensuelle</td><td>E-mail, date du consentement</td><td>Consentement</td><td>Jusqu'à désinscription</td></tr>
+        <tr><td>Répondre à vos demandes et rétractations</td><td>Identité, e-mail, contenu de la demande</td><td>Contrat, obligation légale</td><td>5 ans</td></tr>
+        <tr><td>Mesurer la fréquentation</td><td>Pages vues, données techniques</td><td>Consentement</td><td>13 mois</td></tr>
+      </table></div>
+      <p>Les champs obligatoires sont signalés dans les formulaires. Sans eux, nous ne pouvons pas traiter la commande. Nous ne prenons aucune décision automatisée et ne faisons aucun profilage publicitaire.</p>
+      <h2>Qui reçoit vos données</h2><p>Nos équipes, et nos prestataires dans la limite de leur mission : hébergeur (${f(C.host, 'hébergeur')}), prestataire de paiement, transporteurs, outil d'envoi d'e-mails. Nous ne vendons ni ne louons vos données. ${f('', 'préciser les éventuels transferts hors Union européenne et leurs garanties')}.</p>
+      <h2>Vos droits</h2>
+      <ul><li>Accéder à vos données et en obtenir une copie</li><li>Les faire rectifier ou effacer</li><li>Limiter leur traitement ou vous y opposer</li><li>Les récupérer dans un format réutilisable (portabilité)</li><li>Retirer votre consentement à tout moment, pour la lettre comme pour les cookies</li><li>Donner des directives sur le sort de vos données après votre décès</li></ul>
+      <p>Depuis votre compte, vous obtenez une copie de vos données et supprimez votre compte en quelques clics. Pour le reste, écrivez à ${f(C.email, 'e-mail')}. Nous répondons dans un délai d'un mois. Si la réponse ne vous satisfait pas, vous pouvez adresser une réclamation à la CNIL, 3 place de Fontenoy, 75007 Paris, cnil.fr.</p>
+      <h2>Sécurité</h2><p>Les échanges avec le site sont chiffrés. Les mots de passe sont conservés sous forme d'empreinte irréversible. L'accès aux données est limité aux personnes qui en ont besoin.</p>
+      <h2>Cookies</h2><p>Voir la <a href="#cookies">politique de cookies</a>.</p>
+    </div>`,
+  cookies: () => `
+    <h1>Politique de cookies</h1>
+    <p class="intro">Un cookie ou traceur est une petite information enregistrée dans votre navigateur. Voici ceux que le site utilise.</p>
+    <div class="prose">
+      <div class="table"><table>
+        <tr><th>Catégorie</th><th>À quoi ça sert</th><th>Durée</th><th>Accord demandé</th></tr>
+        <tr><td>Nécessaires</td><td>Garder votre panier, vous maintenir connecté, retenir votre choix sur les cookies</td><td>Panier et session : jusqu'à déconnexion ou vidage. Choix : 6 mois</td><td>Non, la boutique ne fonctionne pas sans eux</td></tr>
+        
+        <tr><td>Mesure d'audience</td><td>Compter les visites et les pages consultées</td><td>13 mois</td><td>Oui</td></tr>
+      </table></div>
+      <p>Le site n'utilise aucun cookie publicitaire ni de réseau social.</p>
+      <h2>Votre choix</h2><p>À votre première visite, vous pouvez tout accepter, tout refuser ou choisir par catégorie. Refuser ne change rien à votre accès à la boutique. Votre choix est conservé six mois, puis nous vous reposons la question.</p>
+      <p><button class="btn ghost" type="button" data-act="open-cookies">Modifier mon choix</button></p>
+      <p>Choix actuel : <span id="ck-state"></span></p>
+    </div>`
+};
+function renderLegal(view) {
+  const missing = ['legalName', 'legalForm', 'capital', 'siret', 'rcs', 'vat', 'director', 'phone', 'host', 'mediator'].some((k) => !C[k]);
+  $('#legal-body').innerHTML = (missing && CONFIG.demo ? `<p class="notice">Modèle à compléter : les mentions surlignées attendent les informations de l'entreprise. Faites relire ces pages par un juriste avant la mise en ligne.</p>` : '') + LEGAL[view]();
+  const st = $('#ck-state'); if (st) { const c = consent(); st.textContent = !c ? 'aucun choix enregistré.' : `mesure d'audience ${c.stats ? 'acceptée' : 'refusée'}, enregistré le ${dateFr(c.date)}.`; }
+}
+
+/* ---------- Navigation entre les vues ---------- */
+const VIEWS = { compte: 'compte', commande: 'commande', retractation: 'retractation', 'mentions-legales': 'legal', cgv: 'legal', cgu: 'legal', confidentialite: 'legal', cookies: 'legal' };
+let currentView = 'home';
+function route() {
+  const h = location.hash.slice(1), target = VIEWS[h] || 'home';
+  ['home', 'compte', 'commande', 'retractation', 'legal'].forEach((v) => { $('#view-' + v).hidden = v !== target; });
+  currentView = VIEWS[h] ? h : 'home';
+  if (cartEl.open) cartEl.close();
+  if (lenis) lenis.resize();
+  if (target === 'home') {
+    drawSky();
+    const el = h && h !== 'accueil' && document.getElementById(h);
+    measure();
+    if (el) requestAnimationFrame(() => { if (lenis) lenis.resize(); goTo(el, true); measure(); }); else toTop();
+    onScroll(); if (HAS_GSAP) requestAnimationFrame(() => ScrollTrigger.refresh()); return;
+  }
+  if (target === 'compte') renderAccount();
+  if (target === 'commande') { orderDone = false; renderCheckout(); }
+  if (target === 'retractation') renderWithdraw();
+  if (target === 'legal') renderLegal(h);
+  toTop(); onScroll();
+}
+addEventListener('hashchange', route);
+
+/* ---------- Clics ---------- */
+document.addEventListener('click', async (e) => {
+  const t = e.target;
+  const add = t.closest('[data-add]'), qty = t.closest('[data-qty]'), show = t.closest('[data-show]'), act = t.closest('[data-act]'), copy = t.closest('[data-copy]'), wd = t.closest('[data-withdraw]');
+  const anchor = t.closest('a[href^="#"]'), station_ = t.closest('[data-station]');
+  if (add) { const id = add.dataset.add; cart[id] = item(id).subscription ? 1 : (cart[id] || 0) + 1; flyToCart(add, item(id).c); renderCart(); showToast(`${item(id).name} est dans votre panier.`); }
+  if (station_) goStation(+station_.dataset.station);
+  if (anchor && !show && currentView === 'home') {
+    const id = anchor.getAttribute('href').slice(1);
+    if (!VIEWS[id]) {
+      e.preventDefault();
+      const el = id && id !== 'accueil' && document.getElementById(id);
+      if (el) goTo(el); else smoothTo(0);
+    }
+  }
+  if (qty) { const id = qty.dataset.id; cart[id] += +qty.dataset.qty; if (item(id).subscription && cart[id] > 1) cart[id] = 1; if (cart[id] <= 0) delete cart[id]; renderCart(); }
+  if (show) {
+    e.preventDefault();
+    if (currentView !== 'home') location.hash = 'carte';
+    const li = $('#t-' + show.dataset.show);
+    requestAnimationFrame(() => { if (lenis) smoothTo(li, -innerHeight * .28, { onComplete: () => flash(li) }); else { li.scrollIntoView({ block: 'center', behavior: reduced ? 'auto' : 'smooth' }); flash(li); } });
+  }
+  if (wd) withdrawPrefill = wd.dataset.withdraw;
+  if (copy) { const ta = $('#' + copy.dataset.copy); try { await navigator.clipboard.writeText(ta.value); copy.textContent = 'Copié'; } catch { ta.select(); copy.textContent = 'Sélectionné : copiez avec Ctrl+C'; } }
+  if (t === cartEl) cartEl.close();
+  if (t === $('#cookie-prefs')) $('#cookie-prefs').close();
+  if (!act) return;
+  switch (act.dataset.act) {
+    case 'open-cart': hideToast(); openDialog(cartEl); break;
+    case 'close-cart': cartEl.close(); break;
+    case 'cookies-accept': setConsent(true); break;
+    case 'cookies-refuse': setConsent(false); break;
+    case 'cookies-save': setConsent($('#ck-stats').checked); break;
+    case 'open-cookies': { const c = consent() || {}; $('#ck-stats').checked = !!c.stats; openDialog($('#cookie-prefs')); break; }
+    case 'logout': await API.signOut(); renderNav(); renderAccount(); break;
+    case 'forgot': say('li-msg', CONFIG.demo ? 'En mode démonstration, aucun e-mail ne peut être envoyé. Créez un nouveau compte pour essayer.' : `Écrivez-nous à ${C.email} depuis l'adresse de votre compte, nous vous envoyons un lien de réinitialisation.`); break;
+    case 'export': { const data = await API.exportData(); $('#data-out').innerHTML = `<textarea class="data" id="export-data" readonly>${esc(JSON.stringify(data, null, 2))}</textarea><div style="margin-top:10px"><button class="btn ghost" type="button" data-copy="export-data">Copier mes données</button></div>`; break; }
+    case 'delete-ask': $('#data-out').innerHTML = `<p style="color:var(--bad);font-size:.93rem;margin-bottom:12px">Votre compte, vos adresses et votre historique seront supprimés. Les factures restent conservées le temps prévu par la loi. Cette action ne peut pas être annulée.</p><div class="actions"><button class="btn danger" type="button" data-act="delete-yes">Supprimer définitivement mon compte</button><button class="btn ghost" type="button" data-act="delete-no">Garder mon compte</button></div>`; break;
+    case 'delete-no': $('#data-out').innerHTML = ''; break;
+    case 'delete-yes': await API.deleteAccount(); renderNav(); renderAccount(); break;
+    case 'cancel-sub': $('#sub-actions').innerHTML = `<button class="btn danger" type="button" data-act="cancel-sub-yes" data-id="${act.dataset.id}">Confirmer la résiliation</button><button class="btn ghost" type="button" data-act="cancel-sub-no">Garder mon abonnement</button>`; break;
+    case 'cancel-sub-no': renderAccount(); break;
+    case 'cancel-sub-yes': await API.updateOrder(act.dataset.id, { subCancelled: new Date().toISOString(), status: 'Abonnement résilié' }); renderAccount(); say('sub-msg', 'Abonnement résilié. Aucun autre coffret ne sera envoyé ni facturé.'); break;
+  }
+});
+
+/* ---------- Formulaires ---------- */
+document.addEventListener('change', (e) => { if (e.target.name === 'delivery') renderSummary(); });
+document.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = e.target.id;
+  try {
+    if (id === 'login-form') {
+      if (!emailOk(val('li-email')) || !$('#li-pw').value) return say('li-msg', 'Saisissez votre adresse e-mail et votre mot de passe.', true);
+      await API.signIn(val('li-email'), $('#li-pw').value); renderNav(); renderAccount();
+    }
+    if (id === 'signup-form') {
+      if (!val('su-first') || !val('su-last')) return say('su-msg', 'Indiquez votre prénom et votre nom.', true);
+      if (!emailOk(val('su-email'))) return say('su-msg', 'Cette adresse e-mail semble incomplète. Vérifiez-la.', true);
+      if (!pwOk($('#su-pw').value)) return say('su-msg', 'Le mot de passe doit compter 12 caractères au moins, avec une majuscule, une minuscule et un chiffre.', true);
+      if (!$('#su-cgu').checked) return say('su-msg', 'Cochez la case des conditions d\'utilisation pour créer votre compte.', true);
+      say('su-msg', 'Création du compte…');
+      await API.signUp({ first: val('su-first'), last: val('su-last'), email: val('su-email'), password: $('#su-pw').value, newsletter: $('#su-nl').checked });
+      if ($('#su-nl').checked) await API.newsletter(val('su-email').toLowerCase());
+      renderNav(); renderAccount();
+    }
+    if (id === 'profile-form') {
+      if (!val('pf-first') || !val('pf-last')) return say('pf-msg', 'Le prénom et le nom ne peuvent pas être vides.', true);
+      if (val('pf-zip') && !/^\d{5}$/.test(val('pf-zip'))) return say('pf-msg', 'Le code postal doit comporter 5 chiffres.', true);
+      const u = API.current();
+      await API.update({ first: val('pf-first'), last: val('pf-last'), phone: val('pf-phone'), address: { line: val('pf-line'), zip: val('pf-zip'), city: val('pf-city') }, newsletter: $('#pf-nl').checked ? (u.newsletter || new Date().toISOString()) : null });
+      renderNav(); say('pf-msg', 'Informations enregistrées.');
+    }
+    if (id === 'checkout-form') await submitCheckout();
+    if (id === 'withdraw-form') await submitWithdraw();
+    if (id === 'lettre-form') {
+      if (!emailOk(val('nl-email'))) return say('nl-msg', 'Cette adresse semble incomplète. Vérifiez qu\'elle contient un @ et un nom de domaine.', true);
+      if (!$('#nl-ok').checked) return say('nl-msg', 'Cochez la case pour confirmer que vous souhaitez recevoir la lettre.', true);
+      await API.newsletter(val('nl-email').toLowerCase()); e.target.reset(); say('nl-msg', 'Inscription enregistrée. À la prochaine pleine lune.');
+    }
+  } catch (err) { const m = { 'login-form': 'li-msg', 'signup-form': 'su-msg', 'profile-form': 'pf-msg', 'checkout-form': 'co-msg', 'withdraw-form': 'wd-msg', 'lettre-form': 'nl-msg' }[id]; if (m) say(m, err.message, true); }
+});
+
+/* ---------- Minuteur ---------- */
+const TOTAL = 420, CIRC = 339.3; let end = 0, tick = null;
+const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+function stopTimer(done) {
+  clearInterval(tick); tick = null;
+  $('.ring').classList.remove('running');
+  $('#timer-btn').textContent = done ? 'Relancer 7 minutes' : 'Lancer les 7 minutes';
+  $('#timer-msg').textContent = done ? 'C\'est prêt. Retirez les plantes et bonne nuit.' : 'Le minuteur tourne tant que cette page reste ouverte.';
+  if (!done) { $('#timer-out').textContent = fmt(TOTAL); $('#ring-fg').style.strokeDashoffset = CIRC; }
+}
+$('#timer-btn').addEventListener('click', () => {
+  if (tick) return stopTimer(false);
+  end = Date.now() + TOTAL * 1000;
+  $('#timer-btn').textContent = 'Arrêter le minuteur';
+  $('.ring').classList.add('running');
+  $('#timer-msg').textContent = 'Infusion en cours, tasse couverte.';
+  tick = setInterval(() => {
+    const left = Math.max(0, Math.ceil((end - Date.now()) / 1000));
+    $('#timer-out').textContent = fmt(left);
+    $('#ring-fg').style.strokeDashoffset = CIRC * (left / TOTAL);
+    if (!left) stopTimer(true);
+  }, 250);
+});
+
+/* ---------- Démarrage ---------- */
+$('#foot-contact').textContent = C.email;
+$('#foot-base').textContent = `© ${now.getFullYear()} ${C.brand}, ${C.address}.`;
+
+/* =====================================================================
+   ANIMATIONS
+   GSAP + ScrollTrigger + SplitText (skills officiels GreenSock), branchés sur l'horloge de Lenis.
+   Règles : on n'anime que transform, opacity, clip-path ; chaque apparition ne joue qu'une fois ;
+   les boucles (ciel, film) s'arrêtent hors écran ; mouvement réduit = fondus seulement.
+   ===================================================================== */
+
+/* ---------- Ajout au panier : une petite lune vole jusqu'au panier ---------- */
+function flyToCart(btn, color) {
+  const count = $('#cart-count');
+  if (!HAS_GSAP || reduced) return;
+  const a = btn.getBoundingClientRect(), b = count.getBoundingClientRect();
+  const dot = document.createElement('span');
+  dot.className = 'fly'; if (color) dot.style.setProperty('--c', color);
+  document.body.appendChild(dot);
+  const x0 = a.left + a.width / 2, y0 = a.top + a.height / 2, x1 = b.left + b.width / 2, y1 = b.top + b.height / 2;
+  const lift = Math.min(220, Math.abs(y1 - y0) * .35 + 80);
+  gsap.set(dot, { x: x0, y: y0, scale: 0 });
+  const tl = gsap.timeline({ onComplete: () => dot.remove() });
+  tl.to(dot, { scale: 1, duration: .18, ease: 'back.out(3)' })
+    .to(dot, { x: x1, duration: .75, ease: 'power1.inOut' }, .1)
+    .to(dot, { keyframes: [{ y: Math.min(y0, y1) - lift, duration: .32, ease: 'power2.out' }, { y: y1, duration: .43, ease: 'power2.in' }] }, .1)
+    .to(dot, { scale: .3, opacity: 0, duration: .16, ease: 'power2.in' }, .72)
+    .fromTo(count, { scale: 1 }, { scale: 1.6, duration: .16, ease: 'power2.out', yoyo: true, repeat: 1 }, .78);
+}
+
+/* ---------- Ciel vivant : étoiles qui scintillent, étoiles filantes, lucioles ---------- */
+const tw = $('#twinkle'), twx = tw.getContext('2d');
+let twStars = [], twFlies = [], twShoot = null, twNext = 0, twRun = false, twW = 0, twH = 0, twRaf = 0;
+function sizeTwinkle() {
+  const r = tw.getBoundingClientRect(); if (!r.width) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  twW = r.width; twH = r.height; tw.width = twW * dpr; tw.height = twH * dpr; twx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const rand = rng(4242), n = Math.round(twW * twH / 14000);
+  twStars = Array.from({ length: n }, () => ({ x: rand() * twW, y: Math.pow(rand(), 1.4) * twH * .7, r: .7 + rand() * 1.3, a: .35 + rand() * .6, s: .6 + rand() * 2.2, p: rand() * 6.28 }));
+  twFlies = Array.from({ length: Math.round(Math.min(22, twW / 70)) }, () => ({ x: rand() * twW, y: twH * (.55 + rand() * .4), r: 1 + rand() * 1.6, s: .15 + rand() * .35, p: rand() * 6.28, dx: (rand() - .5) * 18, dy: (rand() - .5) * 10 }));
+}
+function drawTwinkle(t) {
+  twx.clearRect(0, 0, twW, twH);
+  const s = t / 1000;
+  for (const st of twStars) {
+    twx.globalAlpha = st.a * (.45 + .55 * (.5 + .5 * Math.sin(s * st.s + st.p)));
+    twx.fillStyle = '#f3ecdc'; twx.beginPath(); twx.arc(st.x, st.y, st.r, 0, 6.2832); twx.fill();
+  }
+  for (const f of twFlies) {
+    const x = f.x + Math.sin(s * f.s + f.p) * f.dx * 3, y = f.y + Math.cos(s * f.s * 1.3 + f.p) * f.dy * 3;
+    const a = .25 + .5 * (.5 + .5 * Math.sin(s * f.s * 4 + f.p));
+    const g = twx.createRadialGradient(x, y, 0, x, y, f.r * 7);
+    g.addColorStop(0, `rgba(230,176,100,${a})`); g.addColorStop(1, 'rgba(230,176,100,0)');
+    twx.globalAlpha = 1; twx.fillStyle = g; twx.beginPath(); twx.arc(x, y, f.r * 7, 0, 6.2832); twx.fill();
+  }
+  if (!twShoot && s > twNext) { const rand = Math.random; twShoot = { x: twW * (.35 + rand() * .6), y: twH * rand() * .3, t0: s, len: 120 + rand() * 120, ang: 2.55 + rand() * .3, dur: .9 + rand() * .4 }; }
+  if (twShoot) {
+    const k = (s - twShoot.t0) / twShoot.dur;
+    if (k >= 1) { twShoot = null; twNext = s + 4 + Math.random() * 6; }
+    else {
+      const d = k * twW * .45, hx = twShoot.x + Math.cos(twShoot.ang) * d, hy = twShoot.y + Math.sin(twShoot.ang) * d;
+      const tx = hx - Math.cos(twShoot.ang) * twShoot.len, ty = hy - Math.sin(twShoot.ang) * twShoot.len;
+      const g = twx.createLinearGradient(tx, ty, hx, hy);
+      const fade = k < .15 ? k / .15 : 1 - Math.max(0, (k - .6) / .4);
+      g.addColorStop(0, 'rgba(243,236,220,0)'); g.addColorStop(1, `rgba(243,236,220,${.9 * fade})`);
+      twx.globalAlpha = 1; twx.strokeStyle = g; twx.lineWidth = 1.6; twx.lineCap = 'round';
+      twx.beginPath(); twx.moveTo(tx, ty); twx.lineTo(hx, hy); twx.stroke();
+    }
+  }
+  twx.globalAlpha = 1;
+}
+function loopTwinkle(t) { if (!twRun) return; drawTwinkle(t); twRaf = requestAnimationFrame(loopTwinkle); }
+function setTwinkle(on) { if (on === twRun || reduced) return; twRun = on; cancelAnimationFrame(twRaf); if (on) { twNext = performance.now() / 1000 + 2.5; twRaf = requestAnimationFrame(loopTwinkle); } }
+if (!reduced) {
+  sizeTwinkle();
+  addEventListener('resize', () => { cancelAnimationFrame(sizeTwinkle.r); sizeTwinkle.r = requestAnimationFrame(sizeTwinkle); });
+  if (window.IntersectionObserver) new IntersectionObserver(([e]) => setTwinkle(e.isIntersecting && !document.hidden)).observe($('#accueil'));
+  document.addEventListener('visibilitychange', () => setTwinkle(!document.hidden && scrollY < G.heroEnd));
+}
+
+/* ---------- Le film : lecture automatique quand il est à l'écran, bouton pour l'arrêter ---------- */
+const film = $('#film-video'), filmBtn = $('#film-toggle');
+let filmUserPaused = false;
+function filmState() { const on = !film.paused; filmBtn.setAttribute('aria-pressed', String(on)); filmBtn.querySelector('.lbl').textContent = on ? 'Mettre en pause' : 'Lire le film'; }
+film.addEventListener('play', filmState); film.addEventListener('pause', filmState);
+filmBtn.addEventListener('click', () => { if (film.paused) { filmUserPaused = false; film.play().catch(() => {}); } else { filmUserPaused = true; film.pause(); } });
+if (window.IntersectionObserver && !reduced) {
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) { if (!filmUserPaused) { film.preload = 'auto'; film.play().catch(() => {}); } }
+    else if (!film.paused) film.pause();
+  }, { threshold: .35 }).observe($('#film-frame'));
+}
+
+/* ---------- Lanterne et boutons magnétiques (souris uniquement) ---------- */
+if (HAS_GSAP && finePointer && !reduced) {
+  const lantern = $('#lantern');
+  const lx = gsap.quickTo(lantern, 'x', { duration: .7, ease: 'power3' }), ly = gsap.quickTo(lantern, 'y', { duration: .7, ease: 'power3' });
+  const mpx = gsap.quickTo('#moon-par', 'x', { duration: 1.4, ease: 'power3' }), mpy = gsap.quickTo('#moon-par', 'y', { duration: 1.4, ease: 'power3' });
+  const tpx = gsap.quickTo('#twinkle', 'x', { duration: 1.6, ease: 'power3' }), tpy = gsap.quickTo('#twinkle', 'y', { duration: 1.6, ease: 'power3' });
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    lx(e.clientX); ly(e.clientY); lantern.toggleAttribute('data-on', true);
+    if (scrollY < innerHeight) { const nx = e.clientX / innerWidth - .5, ny = e.clientY / innerHeight - .5; mpx(nx * -28); mpy(ny * -18); tpx(nx * 14); tpy(ny * 8); }
+  }, { passive: true });
+  document.documentElement.addEventListener('pointerleave', () => lantern.removeAttribute('data-on'));
+  document.querySelectorAll('.hero-cta .btn, .lunaison .offer .btn, #lettre-form .btn').forEach((b) => {
+    b.classList.add('magnetic');
+    const bx = gsap.quickTo(b, 'x', { duration: .5, ease: 'power3' }), by = gsap.quickTo(b, 'y', { duration: .5, ease: 'power3' });
+    b.addEventListener('pointermove', (e) => { const r = b.getBoundingClientRect(); bx((e.clientX - r.left - r.width / 2) * .28); by((e.clientY - r.top - r.height / 2) * .38); });
+    b.addEventListener('pointerleave', () => { bx(0); by(0); });
+    b.addEventListener('pointerdown', () => gsap.to(b, { scale: .96, duration: .12, ease: 'power2.out' }));
+    ['pointerup', 'pointerleave'].forEach((ev) => b.addEventListener(ev, () => gsap.to(b, { scale: 1, duration: .5, ease: 'elastic.out(1, .5)' })));
+  });
+}
+
+/* ---------- Apparitions au défilement ---------- */
+document.querySelectorAll('#phases svg').forEach((el, i) => el.style.setProperty('--i', i));
+if (HAS_GSAP) {
+  gsap.registerPlugin(ScrollTrigger);
+  if (window.SplitText) gsap.registerPlugin(SplitText);
+  gsap.defaults({ ease: 'expo.out', duration: 1 });
+
+  // Barre de progression (toutes les vues)
+  gsap.to('#progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: .3 } });
+
+  if (!reduced) {
+    const once = (trigger, start = 'top 85%') => ({ trigger, start, once: true });
+
+    // Titres de section : chaque ligne sort de son masque
+    const heads = document.querySelectorAll('#view-home .sec-head h2, .lunaison h2, .lettre h2');
+    if (window.SplitText) {
+      heads.forEach((h) => {
+        h.classList.add('split-ready');
+        SplitText.create(h, { type: 'lines', mask: 'lines', linesClass: 'split-line', autoSplit: true,
+          onSplit: (self) => gsap.from(self.lines, { yPercent: 115, rotate: 2.5, stagger: .09, duration: 1.15, scrollTrigger: once(h) }) });
+      });
+    } else {
+      heads.forEach((h) => gsap.from(h, { y: 40, opacity: 0, scrollTrigger: once(h) }));
+    }
+    document.querySelectorAll('#view-home .sec-head .lede').forEach((el) => gsap.from(el, { y: 24, opacity: 0, duration: 1.1, delay: .15, scrollTrigger: once(el) }));
+
+    // Tasse du parcours : elle tourne doucement avec la soirée
+    gsap.to('.cup', { rotation: 140, ease: 'none', scrollTrigger: { trigger: '#heure', start: 'top top', end: 'bottom bottom', scrub: 1 } });
+
+    // La carte : les lignes arrivent par vagues
+    gsap.set('.carte > li', { opacity: 0, y: 46 });
+    ScrollTrigger.batch('.carte > li', {
+      start: 'top 88%', once: true, interval: .12,
+      onEnter: (els) => {
+        gsap.to(els, { opacity: 1, y: 0, duration: 1.1, stagger: .1, overwrite: true });
+        els.forEach((li, k) => { const ic = li.querySelector('.hour svg'); gsap.set(ic, { transition: 'none' }); gsap.from(ic, { rotate: -120, scale: .4, opacity: 0, duration: 1.3, delay: .1 + k * .1, clearProps: 'transition,transform,opacity' }); });
+      }
+    });
+
+    // Bandeau de plantes : il penche et accélère avec la vitesse du défilement
+    const track = $('#marquee-track');
+    const skew = gsap.quickTo(track, 'skewX', { duration: .5, ease: 'power3' });
+    ScrollTrigger.create({ trigger: '.marquee', start: 'top bottom', end: 'bottom top',
+      onUpdate: (self) => skew(gsap.utils.clamp(-10, 10, self.getVelocity() / -260)),
+      onLeave: () => skew(0), onLeaveBack: () => skew(0) });
+    gsap.fromTo(track, { x: 0 }, { x: () => -innerWidth * .25, ease: 'none', scrollTrigger: { trigger: '.marquee', start: 'top bottom', end: 'bottom top', scrub: 1, invalidateOnRefresh: true } });
+
+    // Rituel : les étapes glissent, le minuteur se pose
+    gsap.from('.steps li', { x: -40, opacity: 0, stagger: .14, duration: 1.1, scrollTrigger: once('.steps') });
+    gsap.from('.timer', { scale: .9, opacity: 0, duration: 1.2, scrollTrigger: once('.timer') });
+    gsap.from('#ring-fg', { attr: { 'stroke-dashoffset': 0 }, duration: 1.8, ease: 'power2.inOut', scrollTrigger: once('.timer') });
+
+    // Le film : le cadre s'ouvre en grand en arrivant, l'image se pose
+    gsap.fromTo('#film-frame', { clipPath: 'inset(9% 7% 9% 7% round 28px)' }, { clipPath: 'inset(0% 0% 0% 0% round 22px)', ease: 'none',
+      scrollTrigger: { trigger: '#film-frame', start: 'top 95%', end: 'top 25%', scrub: .6 } });
+    gsap.fromTo('#film-video', { scale: 1.18 }, { scale: 1, ease: 'none', scrollTrigger: { trigger: '#film-frame', start: 'top bottom', end: 'bottom top', scrub: .6 } });
+
+    // La maison : paragraphes, puis les chiffres qui comptent
+    gsap.from('.maison .text p', { y: 30, opacity: 0, stagger: .12, duration: 1.1, scrollTrigger: once('.maison .text') });
+    document.querySelectorAll('.facts div').forEach((row, k) => {
+      gsap.from(row, { y: 26, opacity: 0, duration: 1, delay: k * .08, scrollTrigger: once('.facts') });
+      const dt = row.querySelector('dt'), m = dt.textContent.match(/^(\d+)(.*)$/s);
+      if (!m) return;
+      const end = +m[1], from = end === 0 ? 24 : 0, rest = m[2];
+      const o = { v: from };
+      gsap.to(o, { v: end, duration: 1.8, ease: 'power3.out', delay: .15 + k * .08, scrollTrigger: once('.facts'),
+        onStart: () => { dt.textContent = from + rest; }, onUpdate: () => { dt.textContent = Math.round(o.v) + rest; } });
+    });
+
+    // Lunaison : les phases se lèvent l'une après l'autre
+    gsap.from('#phases svg', { y: 30, opacity: 0, rotate: -40, stagger: .08, duration: 1.2, scrollTrigger: once('#phases') });
+    gsap.from('.lunaison .offer > *', { y: 24, opacity: 0, stagger: .1, scrollTrigger: once('.lunaison .offer') });
+
+    // Pied de page : la signature monte lettre par lettre
+    const mark = $('#foot-mark');
+    if (window.SplitText) {
+      SplitText.create(mark, { type: 'chars', charsClass: 'char', aria: 'none',
+        onSplit: (self) => gsap.from(self.chars, { yPercent: 100, opacity: 0, stagger: .045, duration: 1.4, scrollTrigger: once(mark, 'top 98%') }) });
+    }
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
+  addEventListener('load', () => ScrollTrigger.refresh());
+}
+setTimeout(() => document.documentElement.classList.remove('intro'), 2600);
+
+drawSky(); renderCart(); renderNav(); applyConsent(); route(); measure();
+})();
+</script>
+</body>
+</html>

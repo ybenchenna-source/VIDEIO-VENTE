@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Vespérale, le film de la nuit</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #080d1c; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+      #fade { position: absolute; inset: 0; background: #080d1c; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="19" data-width="1920" data-height="1080">
+      <div id="sky-host" class="clip" data-composition-id="sky" data-composition-src="compositions/sky.html"
+        data-start="0" data-duration="19" data-track-index="0" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="opening-host" class="clip" data-composition-id="opening" data-composition-src="compositions/opening.html"
+        data-start="0" data-duration="3.3" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="hours-host" class="clip" data-composition-id="hours" data-composition-src="compositions/hours.html"
+        data-start="3" data-duration="13.2" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <div id="outro-host" class="clip" data-composition-id="outro" data-composition-src="compositions/outro.html"
+        data-start="16.1" data-duration="2.9" data-track-index="1" data-track-kind="graphics" data-width="1920" data-height="1080"></div>
+      <!-- Fondu d'entrée et de sortie, pour une boucle sans couture sur le site -->
+      <div id="fade" class="clip" data-start="0" data-duration="19" data-track-index="2" data-track-kind="graphics"></div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#fade", { opacity: 1 }, { opacity: 0, duration: 0.9, ease: "power2.out" }, 0);
+      tl.to("#fade", { opacity: 1, duration: 0.55, ease: "power2.in" }, 18.4);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

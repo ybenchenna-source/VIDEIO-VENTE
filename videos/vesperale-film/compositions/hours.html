@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+  <head><meta charset="UTF-8" /><title>La nuit, heure par heure</title></head>
+  <body>
+    <template>
+      <style>
+        @font-face { font-family: "Bodoni Moda"; font-style: italic; font-weight: 400 700; src: url("assets/fonts/bodoni-italic.woff2") format("woff2"); }
+        @font-face { font-family: "Albert Sans"; font-style: normal; font-weight: 300 600; src: url("assets/fonts/albert-var.woff2") format("woff2"); }
+        #root { position: absolute; inset: 0; color: #f3ecdc; font-family: "Albert Sans", sans-serif; }
+        #cup-stage { position: absolute; left: 330px; top: 250px; width: 640px; height: 640px; }
+        #glow { position: absolute; inset: -140px; border-radius: 50%; background: radial-gradient(circle, var(--glow, rgba(214,217,140,.34)) 0%, rgba(0,0,0,0) 62%); }
+        #ring-text { position: absolute; left: -70px; top: -70px; width: 780px; height: 780px; }
+        #ring-text text { font: 400 21px "Albert Sans", sans-serif; letter-spacing: .3em; text-transform: uppercase; fill: rgba(243,236,220,.66); }
+        #cup { position: absolute; left: 0; top: 0; width: 640px; height: 640px; }
+        .steam { position: absolute; width: 220px; height: 220px; border-radius: 50%; filter: blur(34px);
+          background: radial-gradient(circle, rgba(243,236,220,.35), rgba(243,236,220,0) 70%); opacity: 0; }
+        #copy { position: absolute; left: 1090px; top: 300px; width: 760px; }
+        #clock { position: relative; height: 190px; font: italic 400 180px/1 "Bodoni Moda", serif; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+        #clock > div { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; }
+        #clock small { font-size: .34em; color: #a3acc9; margin: 0 .14em; }
+        #rule { width: 520px; height: 1px; margin: 34px 0 38px; background: rgba(243,236,220,.25); transform-origin: 0 50%; }
+        #names { position: relative; height: 240px; }
+        .tea { position: absolute; left: 0; top: 0; width: 760px; }
+        .tea h2 { font: italic 400 86px/1.02 "Bodoni Moda", serif; letter-spacing: -.015em; margin: 0 0 22px; opacity: 0; }
+        .tea p { font: 400 30px/1.4 "Albert Sans", sans-serif; letter-spacing: .02em; color: var(--c); margin: 0; opacity: 0; }
+      </style>
+
+      <div id="root" data-composition-id="hours" data-width="1920" data-height="1080" data-layout-allow-overflow data-layout-allow-overlap>
+        <div id="cup-stage">
+          <div id="glow"></div>
+          <svg id="ring-text" viewBox="0 0 780 780" aria-hidden="true">
+            <defs><path id="ring-path" d="M390,390 m-350,0 a350,350 0 1,1 700,0 a350,350 0 1,1 -700,0" /></defs>
+            <text><textPath href="#ring-path">verveine · mélisse · tilleul · camomille · fleur d'oranger · rooibos · passiflore · lavande · valériane · houblon ·</textPath></text>
+          </svg>
+          <svg id="cup" viewBox="-160 -160 320 320" aria-hidden="true">
+            <defs>
+              <radialGradient id="sheen" cx="36%" cy="30%" r="78%"><stop offset="0" stop-color="#fff" stop-opacity=".38" /><stop offset=".45" stop-color="#fff" stop-opacity="0" /><stop offset="1" stop-color="#000" stop-opacity=".28" /></radialGradient>
+            </defs>
+            <circle r="150" fill="rgba(243,236,220,.06)" />
+            <circle r="149" fill="none" stroke="rgba(243,236,220,.16)" />
+            <rect x="80" y="-18" width="70" height="36" rx="18" fill="#e4dbc7" />
+            <circle r="104" fill="#f3ecdc" />
+            <circle r="104" fill="none" stroke="rgba(8,13,28,.18)" stroke-width="2" />
+            <circle r="88" id="liquid" fill="#d6d98c" />
+            <circle r="88" fill="url(#sheen)" />
+            <ellipse id="ripple" rx="40" ry="40" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5" opacity="0" />
+          </svg>
+          <div class="steam" id="steam-1" style="left: 150px; top: 120px"></div>
+          <div class="steam" id="steam-2" style="left: 260px; top: 170px"></div>
+          <div class="steam" id="steam-3" style="left: 200px; top: 230px"></div>
+        </div>
+
+        <div id="copy">
+          <div id="clock">
+            <div id="clk-0">20<small>h</small>00</div>
+            <div id="clk-1">21<small>h</small>00</div>
+            <div id="clk-2">22<small>h</small>00</div>
+            <div id="clk-3">23<small>h</small>00</div>
+            <div id="clk-4">0<small>h</small>00</div>
+            <div id="clk-5">1<small>h</small>30</div>
+          </div>
+          <div id="rule"></div>
+          <div id="names">
+            <div class="tea" id="tea-0" style="--c: #d6d98c"><h2>Entre chien et loup</h2><p>Verveine citronnée, mélisse, écorce d'orange</p></div>
+            <div class="tea" id="tea-1" style="--c: #ecc75e"><h2>Première étoile</h2><p>Camomille matricaire, tilleul, pétales de souci</p></div>
+            <div class="tea" id="tea-2" style="--c: #e6a653"><h2>Couvre-feu</h2><p>Tilleul des Baronnies, fleur d'oranger, aubépine</p></div>
+            <div class="tea" id="tea-3" style="--c: #e08a5a"><h2>Lune rousse</h2><p>Rooibos, vanille Bourbon, cannelle, fève tonka</p></div>
+            <div class="tea" id="tea-4" style="--c: #c9b17a"><h2>Minuit pile</h2><p>Passiflore, lavande fine, mélisse</p></div>
+            <div class="tea" id="tea-5" style="--c: #a9bf96"><h2>Nuit blanche</h2><p>Valériane, houblon, menthe douce</p></div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          const END = 13.2;
+          tl.from("#cup-stage", { scale: 0.82, opacity: 0, rotation: -12, duration: 1.2, ease: "expo.out" }, 0);
+          tl.fromTo("#ring-text", { rotation: 0 }, { rotation: 60, duration: END, ease: "none" }, 0);
+          tl.from("#rule", { scaleX: 0, duration: 0.9, ease: "expo.out" }, 0.25);
+
+          /* Vapeur : trois volutes qui montent et se dissipent */
+          [["#steam-1", 0.6], ["#steam-2", 1.4], ["#steam-3", 2.2]].forEach(([s, o]) => {
+            const cyc = 2.4, reps = Math.max(0, Math.floor((12.6 - o) / cyc) - 1);
+            tl.fromTo(s, { y: 40, x: 0, scale: 0.7, opacity: 0 }, { keyframes: [
+              { opacity: 0.85, y: -40, x: 18, scale: 1, duration: cyc * 0.45, ease: "sine.out" },
+              { opacity: 0, y: -150, x: -14, scale: 1.35, duration: cyc * 0.55, ease: "sine.in" }
+            ], repeat: reps }, o);
+          });
+
+          /* Les six heures de la carte */
+          const COLORS = ["#d6d98c", "#ecc75e", "#e6a653", "#d2703f", "#c9b17a", "#a9bf96"];
+          const GLOWS = ["rgba(214,217,140,.34)", "rgba(236,199,94,.34)", "rgba(230,166,83,.36)", "rgba(210,112,63,.38)", "rgba(201,177,122,.32)", "rgba(169,191,150,.32)"];
+          const T0 = 0.35, STEP = 2.1;
+          for (let i = 0; i < 6; i++) {
+            const t = T0 + i * STEP, last = i === 5;
+            tl.fromTo(`#clk-${i}`, { yPercent: 60, opacity: 0, filter: "blur(10px)" }, { yPercent: 0, opacity: 1, filter: "blur(0px)", duration: 0.7, ease: "expo.out" }, t);
+            tl.fromTo(`#tea-${i} h2`, { y: 44, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "expo.out" }, t + 0.06);
+            tl.fromTo(`#tea-${i} p`, { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: "expo.out" }, t + 0.12);
+            if (i > 0) {
+              tl.to("#liquid", { attr: { fill: COLORS[i] }, duration: 0.7, ease: "sine.inOut" }, t - 0.1);
+              tl.to("#glow", { "--glow": GLOWS[i], duration: 0.7, ease: "sine.inOut" }, t - 0.1);
+              tl.fromTo("#ripple", { attr: { rx: 20, ry: 20 }, opacity: 0.7 }, { attr: { rx: 86, ry: 86 }, opacity: 0, duration: 0.9, ease: "power2.out", immediateRender: false }, t - 0.05);
+            }
+            const out = last ? 12.55 : t + STEP - 0.24;
+            tl.to(`#clk-${i}`, { yPercent: -60, opacity: 0, filter: "blur(10px)", duration: 0.32, ease: "power2.in" }, out);
+            tl.to(`#tea-${i} h2`, { y: -36, opacity: 0, duration: 0.3, ease: "power2.in" }, out);
+            tl.to(`#tea-${i} p`, { y: -20, opacity: 0, duration: 0.3, ease: "power2.in" }, out + 0.03);
+          }
+          tl.to("#cup-stage", { scale: 0.9, opacity: 0, duration: 0.5, ease: "power2.in" }, 12.5);
+          tl.to("#rule", { scaleX: 0, transformOrigin: "100% 50%", duration: 0.45, ease: "power2.in" }, 12.5);
+          window.__timelines["hours"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

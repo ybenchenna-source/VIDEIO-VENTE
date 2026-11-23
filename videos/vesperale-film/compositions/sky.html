@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="fr">
+  <head><meta charset="UTF-8" /><title>Ciel</title></head>
+  <body>
+    <template>
+      <style>
+        #root { position: absolute; inset: 0; overflow: hidden; }
+        #sky-dusk { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 110%, #3a3f78 0%, #27305e 38%, #141b3c 100%); }
+        #sky-night { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 110%, #121a3a 0%, #080d1c 60%); opacity: 0; }
+        #stars { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+        #shooting { position: absolute; left: 1360px; top: 120px; width: 280px; height: 2px; border-radius: 2px; transform-origin: 100% 50%;
+          background: linear-gradient(90deg, rgba(243,236,220,0), rgba(243,236,220,.95)); opacity: 0; }
+        #arc { position: absolute; left: 160px; top: 90px; width: 1600px; height: 220px; }
+        #arc path { fill: none; stroke: rgba(243,236,220,.22); stroke-width: 1.5; stroke-dasharray: 3 10; }
+        #small-moon { position: absolute; left: 149px; top: 289px; width: 22px; height: 22px; border-radius: 50%; background: #f3ecdc;
+          box-shadow: 0 0 30px rgba(243,236,220,.7), 0 0 90px rgba(243,236,220,.25); opacity: 0; }
+        #hills { position: absolute; left: 0; bottom: 0; width: 1920px; height: 180px; }
+        #vignette { position: absolute; inset: 0; background: radial-gradient(130% 100% at 50% 45%, rgba(0,0,0,0) 55%, rgba(2,4,10,.6) 100%); }
+      </style>
+
+      <div id="root" data-composition-id="sky" data-width="1920" data-height="1080" data-layout-allow-overflow data-layout-allow-overlap>
+        <div id="sky-dusk"></div>
+        <div id="sky-night"></div>
+        <svg id="stars" viewBox="0 0 1920 1080" aria-hidden="true"></svg>
+        <div id="shooting"></div>
+        <svg id="arc" viewBox="0 0 1600 220" preserveAspectRatio="none" aria-hidden="true"><path d="M0,210 Q800,-190 1600,210" /></svg>
+        <div id="small-moon"></div>
+        <svg id="hills" viewBox="0 0 1920 180" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,104 C260,40 480,130 760,84 C1030,40 1220,118 1490,72 C1660,46 1810,74 1920,58 L1920,180 L0,180 Z" fill="#0d1530" />
+          <path d="M0,142 C320,92 610,164 960,124 C1280,88 1570,160 1920,112 L1920,180 L0,180 Z" fill="#080d1c" />
+        </svg>
+        <div id="vignette"></div>
+      </div>
+
+      <script>
+        (function () {
+          const tl = gsap.timeline({ paused: true });
+          const DUR = 19;
+          /* Étoiles : placement et scintillement tirés d'un générateur à graine fixe. */
+          let seed = 1911;
+          const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+          const ns = "http://www.w3.org/2000/svg";
+          const svg = document.getElementById("stars");
+          const tw = [];
+          for (let i = 0; i < 240; i++) {
+            const c = document.createElementNS(ns, "circle");
+            const x = rand() * 1920, y = Math.pow(rand(), 1.5) * 860, r = 0.5 + rand() * 1.6, a = 0.25 + rand() * 0.7, warm = rand() > 0.88;
+            c.setAttribute("cx", x.toFixed(1)); c.setAttribute("cy", y.toFixed(1)); c.setAttribute("r", r.toFixed(2));
+            c.setAttribute("fill", warm ? "#e6b064" : "#f3ecdc"); c.setAttribute("opacity", a.toFixed(2));
+            svg.appendChild(c);
+            if (rand() > 0.55) tw.push({ c, a, d: 0.7 + rand() * 1.4, o: rand() * 1.2 });
+          }
+          tw.forEach(({ c, a, d, o }) => {
+            const reps = Math.max(0, Math.floor((DUR - o) / d) - 1);
+            tl.to(c, { attr: { opacity: (a * 0.25).toFixed(2) }, duration: d, ease: "sine.inOut", yoyo: true, repeat: reps }, o);
+          });
+          tl.fromTo("#stars", { y: 18 }, { y: -18, duration: DUR, ease: "none" }, 0);
+
+          /* La soirée avance : le ciel passe du crépuscule à la pleine nuit, la lune traverse l'arc. */
+          tl.to("#sky-night", { opacity: 1, duration: 12, ease: "sine.inOut" }, 3.2);
+          tl.to("#small-moon", { opacity: 1, duration: 0.5 }, 3.2);
+          tl.to("#small-moon", { x: 1600, duration: 12.4, ease: "none" }, 3.2);
+          tl.to("#small-moon", { y: -200, duration: 6.2, ease: "sine.out" }, 3.2);
+          tl.to("#small-moon", { y: 0, duration: 6.2, ease: "sine.in" }, 9.4);
+          tl.to("#small-moon", { opacity: 0, duration: 0.4 }, 15.6);
+
+          /* Étoile filante */
+          tl.set("#shooting", { rotation: 154 }, 0);
+          tl.fromTo("#shooting", { x: 0, y: 0, opacity: 0, scaleX: 0.3 }, { x: -560, y: 270, scaleX: 1, opacity: 1, duration: 0.6, ease: "power2.in" }, 8.1);
+          tl.to("#shooting", { opacity: 0, duration: 0.25, ease: "power1.out" }, 8.7);
+
+          window.__timelines["sky"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
